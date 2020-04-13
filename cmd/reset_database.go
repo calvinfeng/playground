@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/calvinfeng/calvinblog/sqlstore"
+	"github.com/calvinfeng/calvinblog/datastore"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -13,13 +13,14 @@ import (
 	"os"
 )
 
-var databaseFilePath = fmt.Sprintf("./%s.db", sqlstore.DatabaseName)
+var databaseFilePath = fmt.Sprintf("./%s.db", datastore.DatabaseName)
 
 // Reset the database, apply migrations and then seed it.
 func resetDatabaseRunE(_ *cobra.Command, _ []string) error {
-
-	if err := os.Remove(databaseFilePath); err != nil {
-		return err
+	if fileExists(databaseFilePath) {
+		if err := os.Remove(databaseFilePath); err != nil {
+			return err
+		}
 	}
 
 	m, err := migrate.New("file://./migrations", fmt.Sprintf("sqlite3://%s", databaseFilePath))
@@ -40,23 +41,32 @@ func seed() error {
 	if err != nil {
 		return err
 	}
-
 	db.SetMaxOpenConns(1)
-	store := sqlstore.New(db)
+	store := datastore.New(db)
 	if numInserted, err := store.BatchInsertRecordings(recordings...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
 	} else {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
 	}
 
-	recordings, err := store.SelectRecordings()
+	recordings, err := store.SelectRecordings(datastore.ByRecordedYear("2020"), datastore.ByPracticeRecordings())
 	if err != nil {
 		return err
 	}
 
 	for _, recording := range recordings {
-		fmt.Println(recording)
+		fmt.Printf("Recording %03d %d-%02d-%02d on %s\n", recording.ID, recording.RecordedYear, recording.RecordedMonth, recording.RecordedDay, recording.YoutubeURL)
 	}
 
 	return nil
+}
+
+// fileExists checks if a file exists and is not a directory before we
+// try using it to prevent further errors.
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

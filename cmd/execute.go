@@ -25,6 +25,11 @@ func Execute() {
 			Short: "reset database and re-seed it",
 			RunE:  resetDatabaseRunE,
 		},
+		&cobra.Command{
+			Use:   "serve",
+			Short: "serve application to clients",
+			RunE:  serveRunE,
+		},
 	)
 
 	if err := root.Execute(); err != nil {

@@ -1,9 +1,13 @@
-package sqlstore
+package datastore
+
+import "github.com/Masterminds/squirrel"
 
 const DatabaseName = "blog"
 
+type SQLFilter func(squirrel.Eq)
+
 type Store interface {
-	SelectRecordings() ([]*PracticeRecording, error)
+	SelectRecordings(...SQLFilter) ([]*PracticeRecording, error)
 	BatchInsertRecordings(...*PracticeRecording) (int64, error)
 }
 

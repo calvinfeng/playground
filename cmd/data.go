@@ -1,8 +1,8 @@
 package cmd
 
-import "github.com/calvinfeng/calvinblog/sqlstore"
+import "github.com/calvinfeng/calvinblog/datastore"
 
-var recordings = []*sqlstore.PracticeRecording{
+var recordings = []*datastore.PracticeRecording{
 	{
 		RecordedYear:     2019,
 		RecordedMonth:    10,

@@ -1,4 +1,4 @@
-package sqlstore
+package datastore
 
 import (
 	"fmt"
@@ -16,12 +16,17 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) SelectRecordings() ([]*PracticeRecording, error) {
+func (s *store) SelectRecordings(filters ...SQLFilter) ([]*PracticeRecording, error) {
 	query := squirrel.Select("*").
 		From((PracticeRecording{}).Table()).
 		OrderBy("recorded_year DESC, recorded_month DESC")
 
-	statement, args, err := query.ToSql()
+	eqCondition := squirrel.Eq{}
+	for _, f := range filters {
+		f(eqCondition)
+	}
+
+	statement, args, err := query.Where(eqCondition).PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct query %w", err)
 	}
