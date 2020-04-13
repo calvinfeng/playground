@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/calvinfeng/calvinblog/datastore"
+import "github.com/calvinfeng/playground/datastore"
 
 var recordings = []*datastore.PracticeRecording{
 	{

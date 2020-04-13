@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/calvinfeng/calvinblog/datastore"
-	"github.com/calvinfeng/calvinblog/httphandler"
+	"github.com/calvinfeng/playground/datastore"
+	"github.com/calvinfeng/playground/httphandler"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -25,7 +25,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	e.Static("/", "./blogui/build/")
+	e.Static("/", "./playgroundui/build/")
 	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
 	logrus.Infof("http server is listening on 8080")

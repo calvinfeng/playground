@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/calvinfeng/calvinblog/datastore"
+	"github.com/calvinfeng/playground/datastore"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

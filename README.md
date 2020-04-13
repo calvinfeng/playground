@@ -1,15 +1,15 @@
-# Calvin Blog
+# My Playground
 
 I am trying to put this on Elastic Beanstalk but I am too cheap to pay for RDS. So I will use SQLite!
 
 ## Docker
 
-```
-docker build -t calvinblog .
+```bash
+docker build -t playground .
 ```
 
-```
-docker run --rm -p 8080:8080 calvinblog
+```bash
+docker run --rm -p 8080:8080 playground
 ```
 
 ## Deployment
@@ -29,11 +29,11 @@ eb local run --port 8080
 Create an environment if not exist
 
 ```bash
-eb create calvinblog-server-environment
+eb create playground-server-environment
 ```
 
 Otherwise,
 
 ```bash
-eb deploy calvinblog-server-environment
+eb deploy playground-server-environment
 ```

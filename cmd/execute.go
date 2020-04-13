@@ -15,7 +15,7 @@ func init() {
 
 func Execute() {
 	root := &cobra.Command{
-		Use:   "calvinblog",
+		Use:   "playground",
 		Short: "this is my blog",
 	}
 

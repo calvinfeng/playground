@@ -1,7 +1,7 @@
 package httphandler
 
 import (
-	"github.com/calvinfeng/calvinblog/datastore"
+	"github.com/calvinfeng/playground/datastore"
 )
 
 type Config struct {
