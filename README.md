@@ -17,7 +17,7 @@ docker run --rm -p 8080:8080 playground
 I got my AWS credentials in root directory.
 
 ```bash
-eb init --profile cfeng-aws
+eb init --profile calvinfeng
 ```
 
 Test it locally
@@ -29,11 +29,11 @@ eb local run --port 8080
 Create an environment if not exist
 
 ```bash
-eb create playground-server-environment
+eb create playground-server-env
 ```
 
 Otherwise,
 
 ```bash
-eb deploy playground-server-environment
+eb deploy playground-server-env
 ```
