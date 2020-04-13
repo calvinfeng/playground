@@ -2,6 +2,7 @@ CREATE TABLE practice_recordings (
     id INTEGER PRIMARY KEY,
     recorded_year INTEGER NOT NULL,
     recorded_month INTEGER NOT NULL,
+    recorded_day INTEGER NOT NULL,
     is_progress_report INT2 NOT NULL,
     youtube_url VARCHAR(255) NOT NULL,
     video_orientation VARCHAR(255) NOT NULL,
