@@ -18,6 +18,7 @@ function App() {
         >
           Learn React
         </a>
+        <p>You are running this application in {process.env.NODE_ENV}, with sever URL {process.env.REACT_APP_API_URL}</p>
       </header>
     </div>
   );
