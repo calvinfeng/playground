@@ -1,0 +1,28 @@
+.TimelineElement {
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .VideoPopover {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.paper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.landscaope-mode {
+    width: 490px;
+    height: 290px;
+  }
+  &.portrait-mode {
+    width: 280px;
+    height: 490px;
+  }
+}
+

@@ -2,9 +2,10 @@ package httphandler
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/calvinfeng/playground/datastore"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
@@ -29,6 +30,7 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 				YoutubeURL:  recording.YoutubeURL,
 				Title:       recording.Title,
 				Description: recording.Description,
+				Orientation: recording.VideoOrientation,
 			})
 		}
 
@@ -60,6 +62,7 @@ func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 				YoutubeURL:  recording.YoutubeURL,
 				Title:       recording.Title,
 				Description: recording.Description,
+				Orientation: recording.VideoOrientation,
 			})
 		}
 

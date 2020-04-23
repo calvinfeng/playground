@@ -28,8 +28,9 @@ type RecordingJSON struct {
 	Month       string `json:"month"`
 	Day         int64  `json:"day"`
 	YoutubeURL  string `json:"youtube_url"`
-	Title       string `json:"title;omitempty'"`
-	Description string `json:"description;omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Orientation string `json:"orientation"`
 }
 
 type RecordingListJSONResponse struct {
