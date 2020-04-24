@@ -174,6 +174,14 @@ var recordings = []*datastore.PracticeRecording{
 	{
 		RecordedYear:     2020,
 		RecordedMonth:    2,
+		RecordedDay:      24,
+		YoutubeURL:       "https://www.youtube.com/watch?v=fkttcMBj5BM",
+		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Yesterday",
+	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    2,
 		RecordedDay:      29,
 		YoutubeURL:       "https://www.youtube.com/watch?v=uJYoKvneN88",
 		VideoOrientation: "landscape",
