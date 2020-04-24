@@ -19,7 +19,7 @@ type store struct {
 func (s *store) SelectRecordings(filters ...SQLFilter) ([]*PracticeRecording, error) {
 	query := squirrel.Select("*").
 		From((PracticeRecording{}).Table()).
-		OrderBy("recorded_year DESC, recorded_month DESC")
+		OrderBy("recorded_year DESC, recorded_month DESC, recorded_day DESC")
 
 	eqCondition := squirrel.Eq{}
 	for _, f := range filters {

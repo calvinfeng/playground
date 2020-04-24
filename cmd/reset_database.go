@@ -49,7 +49,7 @@ func seed() error {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
 	}
 
-	recordings, err := store.SelectRecordings(datastore.ByRecordedYear("2020"), datastore.ByPracticeRecordings())
+	recordings, err := store.SelectRecordings(datastore.ByPracticeRecordings())
 	if err != nil {
 		return err
 	}

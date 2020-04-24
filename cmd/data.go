@@ -9,6 +9,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      4,
 		YoutubeURL:       "https://www.youtube.com/watch?v=U4-0h6go0RA",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2019,
@@ -16,6 +17,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      7,
 		YoutubeURL:       "https://www.youtube.com/watch?v=fu_npFZMHkc",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2019,
@@ -23,6 +25,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      23,
 		YoutubeURL:       "https://www.youtube.com/watch?v=OeN2GGssoJ4",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Perfect",
 	},
 	{
 		RecordedYear:     2019,
@@ -30,6 +33,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      26,
 		YoutubeURL:       "https://www.youtube.com/watch?v=_mQIFluFuv8",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Now & Forever",
 	},
 	{
 		RecordedYear:     2019,
@@ -37,6 +41,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      7,
 		YoutubeURL:       "https://www.youtube.com/watch?v=AGhYB0QryhU",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - 21 Guns",
 	},
 	{
 		RecordedYear:     2019,
@@ -44,6 +49,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      9,
 		YoutubeURL:       "https://www.youtube.com/watch?v=SWWCfI0Qavc",
 		VideoOrientation: "landscape",
+		Title:            "Fetch Band Session - 21 Guns",
 	},
 	{
 		RecordedYear:     2019,
@@ -51,6 +57,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      9,
 		YoutubeURL:       "https://www.youtube.com/watch?v=-_nJNU8sXOc",
 		VideoOrientation: "landscape",
+		Title:            "Fetch Band Session - 海闊天空",
 	},
 	{
 		RecordedYear:     2019,
@@ -58,6 +65,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      17,
 		YoutubeURL:       "https://www.youtube.com/watch?v=w9VWkEnjH8o",
 		VideoOrientation: "portrait",
+		Title:            "Fetch Band Session - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2019,
@@ -65,6 +73,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      17,
 		YoutubeURL:       "https://www.youtube.com/watch?v=0-2C1Z9Qwqg",
 		VideoOrientation: "portrait",
+		Title:            "Fetch Band Session - 21 Guns",
 	},
 	{
 		RecordedYear:     2019,
@@ -72,6 +81,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      20,
 		YoutubeURL:       "https://www.youtube.com/watch?v=rcOqJuiFrQM",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2019,
@@ -79,6 +89,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      26,
 		YoutubeURL:       "https://www.youtube.com/watch?v=J3sxA_JeyBo",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - 21 Guns Solo",
 	},
 	{
 		RecordedYear:     2019,
@@ -86,6 +97,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      29,
 		YoutubeURL:       "https://www.youtube.com/watch?v=emjmvfMPtqs",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Perfect Solo",
 	},
 	{
 		RecordedYear:     2020,
@@ -93,6 +105,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      4,
 		YoutubeURL:       "https://www.youtube.com/watch?v=tLh_cBTHLOY",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2020,
@@ -100,6 +113,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      8,
 		YoutubeURL:       "https://www.youtube.com/watch?v=qmrl3do41lo",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Perfect",
 	},
 	{
 		RecordedYear:     2020,
@@ -107,6 +121,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      5,
 		YoutubeURL:       "https://www.youtube.com/watch?v=4W1_zKsl7wE",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Now & Forever",
 	},
 	{
 		RecordedYear:     2020,
@@ -114,6 +129,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      25,
 		YoutubeURL:       "https://www.youtube.com/watch?v=XZ2zg1Nww5U",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - 21 Guns Take 1",
 	},
 	{
 		RecordedYear:     2020,
@@ -121,6 +137,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      26,
 		YoutubeURL:       "https://www.youtube.com/watch?v=FKmWPsknfuc",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - 21 Guns Take 2",
 	},
 	{
 		RecordedYear:     2020,
@@ -128,6 +145,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      2,
 		YoutubeURL:       "https://www.youtube.com/watch?v=tfJ4ou280js",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Perfect",
 	},
 	{
 		RecordedYear:     2020,
@@ -135,6 +153,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      14,
 		YoutubeURL:       "https://www.youtube.com/watch?v=Nkoxd0XPgyk",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2020,
@@ -142,6 +161,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      15,
 		YoutubeURL:       "https://www.youtube.com/watch?v=a0tmaY6MabQ",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Wonderful Tonight",
 	},
 	{
 		RecordedYear:     2020,
@@ -149,6 +169,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      24,
 		YoutubeURL:       "https://www.youtube.com/watch?v=Jn9K7wxdAeA",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - 21 Guns Take 3",
 	},
 	{
 		RecordedYear:     2020,
@@ -156,6 +177,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      29,
 		YoutubeURL:       "https://www.youtube.com/watch?v=uJYoKvneN88",
 		VideoOrientation: "landscape",
+		Title:            "Fetch Band Session - Back in Black 1st Attempt",
 	},
 	{
 		RecordedYear:     2020,
@@ -163,6 +185,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      6,
 		YoutubeURL:       "https://www.youtube.com/watch?v=Dogm9asWlRY",
 		VideoOrientation: "landscape",
+		Title:            "Fetch Band Session - Back in Black 2nd Attempt",
 	},
 	{
 		RecordedYear:     2020,
@@ -170,6 +193,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      14,
 		YoutubeURL:       "https://www.youtube.com/watch?v=3zEoEEIkUAw",
 		VideoOrientation: "landscape",
+		Title:            "Fetch Band Session - Back in Black 3rd Attempt at 95 BPM",
 	},
 	{
 		RecordedYear:     2020,
@@ -177,6 +201,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      14,
 		YoutubeURL:       "https://www.youtube.com/watch?v=IXeOGHn9hSQ",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Back in Black",
 	},
 	{
 		RecordedYear:     2020,
@@ -184,6 +209,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      24,
 		YoutubeURL:       "https://www.youtube.com/watch?v=MkGWwgaejE4",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Back in Black",
 	},
 	{
 		RecordedYear:     2020,
@@ -191,6 +217,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      30,
 		YoutubeURL:       "https://www.youtube.com/watch?v=7DUoqQkeXG0",
 		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Back in Black",
 	},
 	{
 		RecordedYear:     2020,
@@ -198,6 +225,7 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      9,
 		YoutubeURL:       "https://www.youtube.com/watch?v=ifYsuZX9sOQ",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Back in Black Solo 70% Speed",
 	},
 	{
 		RecordedYear:     2020,
@@ -205,5 +233,22 @@ var recordings = []*datastore.PracticeRecording{
 		RecordedDay:      10,
 		YoutubeURL:       "https://www.youtube.com/watch?v=DKDFRyKTXIU",
 		VideoOrientation: "portrait",
+		Title:            "Practice Recording - Back in Black Solo 80% Speed",
+	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    4,
+		RecordedDay:      15,
+		YoutubeURL:       "https://www.youtube.com/watch?v=8TvQOgy0C-Y",
+		VideoOrientation: "landscape",
+		Title:            "Practice Recording - 不再犹豫",
+	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    4,
+		RecordedDay:      20,
+		YoutubeURL:       "https://www.youtube.com/watch?v=esnvUHSC8-Y",
+		VideoOrientation: "landscape",
+		Title:            "Practice Recording - Back in Black Solo 100% Speed",
 	},
 }
