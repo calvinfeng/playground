@@ -4,7 +4,7 @@ export const contentStyle = {
 }
     
 export const contentArrowStyle = {
-  borderRight: '7px solid  #1565c0'
+  borderRight: '7px solid  rgb(255, 255, 255)'
 }
   
 export const iconStyle = {

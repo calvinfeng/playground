@@ -18,7 +18,7 @@ type PracticeRecording struct {
 	RecordedDay      int64  `db:"recorded_day"`
 	IsProgressReport int64  `db:"is_progress_report"`
 	VideoOrientation string `db:"video_orientation"`
-	YoutubeURL       string `db:"youtube_url"`
+	YouTubeVideoID   string `db:"youtube_video_id"`
 	Title            string `db:"title"`
 	Description      string `db:"description"`
 }

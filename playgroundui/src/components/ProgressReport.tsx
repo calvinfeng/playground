@@ -52,7 +52,7 @@ export default class ProgressReport extends React.Component<Props, State> {
     return (
       <div className="ProgressReport">
         <ReactPlayer 
-          url={this.state.video.youtube_url}
+          url={`https://www.youtube.com/watch?v=${this.state.video.youtube_video_id}`}
           width={"100%"}
           height={270}
           controls={true} />

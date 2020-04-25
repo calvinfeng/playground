@@ -2,7 +2,7 @@ import React from 'react'
 import ReactPlayer from 'react-player'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
-import { Popover, Button, Paper } from '@material-ui/core'
+import { Popover, Button, Paper, ButtonBase, Typography } from '@material-ui/core'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
 import { VideoJSON, Orientation } from './types'
 import './TimelineElement.scss'
@@ -58,7 +58,9 @@ class TimelineElement extends React.Component<TimelineElementProps, TimelineElem
         contentStyle={contentStyle}
         iconStyle={iconStyle}
         icon={<MusicNoteIcon />}>
-        <div className='TimelineElement'>
+        <div
+          className='TimelineElement'
+          id={`timeline-element-${this.props.year}-${this.props.month}`}>
           {this.state.videos.map((video: VideoJSON) => {
             return <VideoPopover video={video} />
           })}
@@ -99,11 +101,23 @@ function VideoPopover(props: VideoPopoverProps) {
     className = 'paper landscape-mode'
   }
 
+  const oldButton = (
+    <Button variant="contained" color="primary" onClick={handleClick}>
+      {props.video.title}
+    </Button >
+  )
+
+  const newButton = (
+    <ButtonBase onClick={handleClick} id={`video-popover-button-${props.video.youtube_video_id}`}>
+      <img
+        alt="youtube-video-thumbnail"
+        src={`https://img.youtube.com/vi/${props.video.youtube_video_id}/1.jpg`} />
+    </ButtonBase>
+  )
+
   return (
-    <div className="VideoPopover">
-      <Button variant="contained" color="primary" onClick={handleClick}>
-        {props.video.title}
-      </Button >
+    <div className="VideoPopover" id={`video-popover-${props.video.youtube_video_id}`}>
+      {newButton}
       <Popover
         id={id}
         open={open}
@@ -113,7 +127,7 @@ function VideoPopover(props: VideoPopoverProps) {
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Paper className={className}>
             <ReactPlayer 
-              url={props.video.youtube_url}
+              url={`https://www.youtube.com/watch?v=${props.video.youtube_video_id}`}
               width={width}
               height={height}
               controls={true} />

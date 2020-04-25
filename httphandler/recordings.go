@@ -24,13 +24,13 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 				continue
 			}
 			resp.Results = append(resp.Results, RecordingJSON{
-				Year:        recording.RecordedYear,
-				Month:       month,
-				Day:         recording.RecordedDay,
-				YoutubeURL:  recording.YoutubeURL,
-				Title:       recording.Title,
-				Description: recording.Description,
-				Orientation: recording.VideoOrientation,
+				Year:           recording.RecordedYear,
+				Month:          month,
+				Day:            recording.RecordedDay,
+				YouTubeVideoID: recording.YouTubeVideoID,
+				Title:          recording.Title,
+				Description:    recording.Description,
+				Orientation:    recording.VideoOrientation,
 			})
 		}
 
@@ -56,13 +56,13 @@ func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 				continue
 			}
 			resp.Results = append(resp.Results, RecordingJSON{
-				Year:        recording.RecordedYear,
-				Month:       month,
-				Day:         recording.RecordedDay,
-				YoutubeURL:  recording.YoutubeURL,
-				Title:       recording.Title,
-				Description: recording.Description,
-				Orientation: recording.VideoOrientation,
+				Year:           recording.RecordedYear,
+				Month:          month,
+				Day:            recording.RecordedDay,
+				YouTubeVideoID: recording.YouTubeVideoID,
+				Title:          recording.Title,
+				Description:    recording.Description,
+				Orientation:    recording.VideoOrientation,
 			})
 		}
 
