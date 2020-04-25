@@ -55,7 +55,18 @@ func seed() error {
 	}
 
 	for _, recording := range recordings {
-		fmt.Printf("Recording %03d %d-%02d-%02d on %s\n", recording.ID, recording.RecordedYear, recording.RecordedMonth, recording.RecordedDay, recording.YoutubeURL)
+		fmt.Printf("Practice Recording %03d %d-%02d-%02d on %s\n",
+			recording.ID, recording.RecordedYear, recording.RecordedMonth, recording.RecordedDay, recording.YoutubeURL)
+	}
+
+	recordings, err = store.SelectRecordings(datastore.ByMonthlyProgressRecordings())
+	if err != nil {
+		return err
+	}
+
+	for _, recording := range recordings {
+		fmt.Printf("Monthly Progress Recording %03d %d-%02d-%02d on %s\n",
+			recording.ID, recording.RecordedYear, recording.RecordedMonth, recording.RecordedDay, recording.YoutubeURL)
 	}
 
 	return nil

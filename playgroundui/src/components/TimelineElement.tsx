@@ -1,48 +1,74 @@
 import React from 'react'
 import ReactPlayer from 'react-player'
+import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
 import { Popover, Button, Paper } from '@material-ui/core'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
 import { VideoJSON, Orientation } from './types'
 import './TimelineElement.scss'
+import { contentStyle, contentArrowStyle, iconStyle } from './config' 
 
-const contentStyle = {
-  background: 'rgb(255, 255, 255)',
-  color: 'rgb(0, 0, 0)'
-}
-  
-const contentArrowStyle = {
-  borderRight: '7px solid  #1565c0'
-}
-
-const iconStyle = {
-  background: '#1565c0',
-  color: '#fff'
+type TimelineElementState = {
+  videos: VideoJSON[]
 }
 
 type TimelineElementProps = {
   year: number
-  month: string
-  videos: VideoJSON[]
+  month: number
 }
 
-export default function TimelineElement(props: TimelineElementProps) {
+class TimelineElement extends React.Component<TimelineElementProps, TimelineElementState> {
+  private http: AxiosInstance
 
-  return (
-    <VerticalTimelineElement
-      date={`${props.month}, ${props.year}`}
-      contentArrowStyle={contentArrowStyle}
-      contentStyle={contentStyle}
-      iconStyle={iconStyle}
-      icon={<MusicNoteIcon />}>
-      <div className='TimelineElement'>
-        {props.videos.map((video: VideoJSON) => {
-          return <VideoPopover video={video} />
-        })}
-      </div>
-    </VerticalTimelineElement>
-  )
+  constructor(props: TimelineElementProps) {
+    super(props)
+    this.state = {
+      videos: [],
+    }
+    this.http = axios.create({
+      baseURL: `${process.env.REACT_APP_API_URL}`,
+      timeout: 1000,
+      headers: {'Authorization': 'Bearer 1234'}
+    });
+  }
+
+  componentDidMount() {
+    this.http.get('/api/recordings/practices/', {
+      params: {
+        year: this.props.year,
+        month: this.props.month
+      }
+    }).then((resp: AxiosResponse) => {
+      this.setState({
+        videos: resp.data.results
+      })
+    })
+  }
+
+  render() {
+    let date = `${this.props.year}`
+    if (this.state.videos.length > 0) {
+      date = `${this.state.videos[0].month}, ${this.props.year}`
+    }
+  
+    return (
+      <VerticalTimelineElement
+        date={date}
+        contentArrowStyle={contentArrowStyle}
+        contentStyle={contentStyle}
+        iconStyle={iconStyle}
+        icon={<MusicNoteIcon />}>
+        <div className='TimelineElement'>
+          {this.state.videos.map((video: VideoJSON) => {
+            return <VideoPopover video={video} />
+          })}
+        </div>
+      </VerticalTimelineElement>
+    )
+  }
 }
+
+export default TimelineElement
 
 type VideoPopoverProps = {
   video: VideoJSON
