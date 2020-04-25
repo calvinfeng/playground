@@ -14,7 +14,7 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
-		
+
 		resp := new(RecordingListJSONResponse)
 		resp.Count = len(recordings)
 		resp.Results = make([]RecordingJSON, 0, len(recordings))
