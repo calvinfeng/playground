@@ -313,4 +313,13 @@ var recordings = []*datastore.PracticeRecording{
 		VideoOrientation: "landscape",
 		Title:            "Practice Recording - Back in Black Solo 100% Speed",
 	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    4,
+		RecordedDay:      26,
+		YouTubeVideoID:   "pup3LIMZANM",
+		VideoOrientation: "landscape",
+		Title:            "Monthly Progress Recording 007 - Back in Black",
+		IsProgressReport: 1,
+	},
 }

@@ -2,11 +2,18 @@ import React from 'react'
 import ReactPlayer from 'react-player'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
-import { Popover, Button, Paper, ButtonBase, Typography } from '@material-ui/core'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
+import {
+  Popover,
+  Paper,
+  ButtonBase,
+  Tooltip,
+  Typography
+} from '@material-ui/core'
+
 import { VideoJSON, Orientation } from './types'
-import './TimelineElement.scss'
 import { contentStyle, contentArrowStyle, iconStyle } from './config' 
+import './TimelineElement.scss'
 
 type TimelineElementState = {
   videos: VideoJSON[]
@@ -15,6 +22,8 @@ type TimelineElementState = {
 type TimelineElementProps = {
   year: number
   month: number
+  title: string
+  paragraph: string
 }
 
 class TimelineElement extends React.Component<TimelineElementProps, TimelineElementState> {
@@ -58,12 +67,16 @@ class TimelineElement extends React.Component<TimelineElementProps, TimelineElem
         contentStyle={contentStyle}
         iconStyle={iconStyle}
         icon={<MusicNoteIcon />}>
-        <div
-          className='TimelineElement'
-          id={`timeline-element-${this.props.year}-${this.props.month}`}>
-          {this.state.videos.map((video: VideoJSON) => {
-            return <VideoPopover video={video} />
-          })}
+        <div className='TimelineElement' id={`timeline-element-${this.props.year}-${this.props.month}`}>
+          <div className="video-thumbnail-container">
+            {this.state.videos.map((video: VideoJSON) => {
+              return <VideoPopover video={video} />
+            })}
+          </div>
+          <div className="text-container">
+            <Typography variant="h6">{this.props.title}</Typography>
+            <Typography variant="body2">{this.props.paragraph}</Typography>
+          </div>
         </div>
       </VerticalTimelineElement>
     )
@@ -101,23 +114,21 @@ function VideoPopover(props: VideoPopoverProps) {
     className = 'paper landscape-mode'
   }
 
-  const oldButton = (
-    <Button variant="contained" color="primary" onClick={handleClick}>
-      {props.video.title}
-    </Button >
-  )
-
-  const newButton = (
-    <ButtonBase onClick={handleClick} id={`video-popover-button-${props.video.youtube_video_id}`}>
-      <img
-        alt="youtube-video-thumbnail"
-        src={`https://img.youtube.com/vi/${props.video.youtube_video_id}/1.jpg`} />
-    </ButtonBase>
-  )
+  // const oldButton = (
+  //   <Button variant="contained" color="primary" onClick={handleClick}>
+  //     {props.video.title}
+  //   </Button >
+  // )
 
   return (
     <div className="VideoPopover" id={`video-popover-${props.video.youtube_video_id}`}>
-      {newButton}
+      <Tooltip title={props.video.title}>
+        <ButtonBase onClick={handleClick} id={`video-popover-button-${props.video.youtube_video_id}`}>
+        <img
+          alt="youtube-video-thumbnail"
+          src={`https://img.youtube.com/vi/${props.video.youtube_video_id}/1.jpg`} />
+        </ButtonBase>
+      </Tooltip>
       <Popover
         id={id}
         open={open}
@@ -125,14 +136,14 @@ function VideoPopover(props: VideoPopoverProps) {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-          <Paper className={className}>
-            <ReactPlayer 
-              url={`https://www.youtube.com/watch?v=${props.video.youtube_video_id}`}
-              width={width}
-              height={height}
-              controls={true} />
-          </Paper>
-        </Popover>
+        <Paper className={className}>
+          <ReactPlayer 
+            url={`https://www.youtube.com/watch?v=${props.video.youtube_video_id}`}
+            width={width}
+            height={height}
+            controls={true} />
+        </Paper>
+      </Popover>
     </div>
   )
 }

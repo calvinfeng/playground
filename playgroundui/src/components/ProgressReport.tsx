@@ -4,6 +4,7 @@ import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import { VideoJSON } from './types'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
 import { contentStyle, contentArrowStyle, iconStyle } from './config' 
+import { Typography } from '@material-ui/core'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
 import './ProgressReport.scss'
 
@@ -68,7 +69,7 @@ export default class ProgressReport extends React.Component<Props, State> {
         contentStyle={contentStyle}
         iconStyle={iconStyle}
         icon={<MusicNoteIcon />}>
-      <h3 className="vertical-timeline-element-title">Monthly Progress Recording</h3>
+      <Typography variant="h6">Monthly Progress Recording</Typography>
       {this.content}
       </VerticalTimelineElement>
     )
