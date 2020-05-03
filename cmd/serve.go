@@ -25,7 +25,15 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	e.Static("/", "./playgroundui/build/")
+	e.File("/", "playgroundui/build/index.html")
+	e.File("/about", "playgroundui/build/index.html")
+
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:   "playgroundui/build/",
+		Browse: true,
+	}))
+	
+	// 	e.Static("/", "./playgroundui/build/")
 	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
 	logrus.Infof("http server is listening on 8080")
