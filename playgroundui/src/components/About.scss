@@ -1,0 +1,92 @@
+.About {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+
+  .bio {
+    width: 100%;
+    max-width: 1280px;
+    flex-grow: 1;
+
+    .card {
+      display: flex;
+      flex-direction: row;
+      .media {
+        padding: 24px;
+        width: 400px;
+        height: 300px;
+      }
+
+      .content {
+        width: calc(100% - 400px);
+        height: 300px;
+      }
+    }
+  }
+
+  .quote {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .background {
+    width: 100%;
+    max-width: 1280px;
+    flex-grow: 1;
+    margin-top: 1rem;
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      .math {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        justify-content: center;
+        .eqn {
+          margin: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .activities {
+    width: 100%;
+    max-width: 1280px;
+    flex-grow: 1;
+    margin-top: 1rem;
+
+    .column {
+      flex-grow: 1;
+      width: 100%;
+      max-width: 1280px;
+      .row {
+        .medium-card {
+          display: flex;
+          flex-direction: column;
+          max-width: 620px;
+          .media {
+            width: 620px;
+            height: 500px;
+          }
+        }
+        .long-card {
+          display: flex;
+          flex-direction: column;
+          max-width: inherit;
+          .media {
+            width: 1280px;
+            height: 720px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ import {
   IconButton
 } from '@material-ui/core'
 import Timeline from './Timeline'
+import About from './About'
 import './App.scss';
 
 function App() {
@@ -55,15 +56,11 @@ function App() {
       <p>You are running this application in {process.env.NODE_ENV}, with sever URL {process.env.REACT_APP_API_URL}</p>
       <Switch>
         <Route path="/" exact component={Timeline} />
-        <Route path="/about" exact component={EmptyDiv} />
+        <Route path="/about" exact component={About} />
       </Switch>
       </BrowserRouter>
     </div>
   );
-}
-
-function EmptyDiv() {
-  return <div>Hello</div>
 }
 
 enum Path {
