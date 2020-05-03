@@ -1,26 +1,9 @@
 .App {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-
-  .text-card {
-    width: 80%;
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    .media {
-      padding: 24px; // Had to apply same padding because Material Card has similar padding ratios
-      width: 300px;
-      height: 300px;
-    }
-    .content {
-      width: calc(100% - 400px);
-      height: 300px;
-    }
-  }
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 body {

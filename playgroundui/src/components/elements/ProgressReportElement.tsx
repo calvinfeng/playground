@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactPlayer from 'react-player'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
-import { VideoJSON } from './types'
+import { VideoJSON } from '../types'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
-import { contentStyle, contentArrowStyle, iconStyle } from './config' 
+import { contentStyle, contentArrowStyle, iconStyle } from '../config' 
 import { Typography } from '@material-ui/core'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
-import './ProgressReport.scss'
+import './ProgressReportElement.scss'
 
 type Props = {
   index: number
@@ -17,7 +17,7 @@ type State = {
   video: VideoJSON | null
 }
 
-export default class ProgressReport extends React.Component<Props, State> {
+export default class ProgressReportElement extends React.Component<Props, State> {
   private http: AxiosInstance
 
   constructor(props: Props) {
@@ -51,7 +51,7 @@ export default class ProgressReport extends React.Component<Props, State> {
     }
 
     return (
-      <div className="ProgressReport">
+      <div className="ProgressReportElement">
         <ReactPlayer 
           url={`https://www.youtube.com/watch?v=${this.state.video.youtube_video_id}`}
           width={"100%"}

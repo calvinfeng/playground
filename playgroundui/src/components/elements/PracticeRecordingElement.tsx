@@ -1,8 +1,8 @@
 import React from 'react'
-import ReactPlayer from 'react-player'
-import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import { VerticalTimelineElement }  from 'react-vertical-timeline-component'
+import ReactPlayer from 'react-player'
 import MusicNoteIcon from '@material-ui/icons/MusicNote'
+import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 import {
   Popover,
   Paper,
@@ -11,25 +11,25 @@ import {
   Typography
 } from '@material-ui/core'
 
-import { VideoJSON, Orientation } from './types'
-import { contentStyle, contentArrowStyle, iconStyle } from './config' 
-import './TimelineElement.scss'
+import { VideoJSON, Orientation } from '../types'
+import { contentStyle, contentArrowStyle, iconStyle } from '../config' 
+import './PracticeRecordingElement.scss'
 
-type TimelineElementState = {
+type State = {
   videos: VideoJSON[]
 }
 
-type TimelineElementProps = {
+type Props = {
   year: number
   month: number
   title: string
   paragraph: string
 }
 
-class TimelineElement extends React.Component<TimelineElementProps, TimelineElementState> {
+export default  class PracticeRecordingElement extends React.Component<Props, State> {
   private http: AxiosInstance
 
-  constructor(props: TimelineElementProps) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       videos: [],
@@ -67,7 +67,9 @@ class TimelineElement extends React.Component<TimelineElementProps, TimelineElem
         contentStyle={contentStyle}
         iconStyle={iconStyle}
         icon={<MusicNoteIcon />}>
-        <div className='TimelineElement' id={`timeline-element-${this.props.year}-${this.props.month}`}>
+        <div
+          className='PracticeRecordingElement'
+          id={`practice-recording-element-${this.props.year}-${this.props.month}`}>
           <div className="video-thumbnail-container">
             {this.state.videos.map((video: VideoJSON) => {
               return <VideoPopover video={video} />
@@ -83,7 +85,6 @@ class TimelineElement extends React.Component<TimelineElementProps, TimelineElem
   }
 }
 
-export default TimelineElement
 
 type VideoPopoverProps = {
   video: VideoJSON
