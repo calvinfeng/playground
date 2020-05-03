@@ -99,7 +99,7 @@ export default function About() {
           <Grid item>
             <Card className="medium-card">
               <CardHeader
-                title="Things I do outside of work"
+                title="My Other Facets of Life"
                 subheader="I enjoy shopping for guitars besides playing them." />
               <CardMedia
                 image={process.env.PUBLIC_URL + '/img/guitarshop.png'}
@@ -110,8 +110,8 @@ export default function About() {
           <Grid item>
             <Card className="medium-card">
               <CardHeader
-                title="Things I do outside of work"
-                subheader="I enjoy driving with my coworkers on the weekends." />
+                title="My Other Facets of Life"
+                subheader="I enjoy driving with my friends on the weekends." />
               <Tooltip title="They are not in the picture. But trust me, they were there.">
                 <CardMedia
                   image={process.env.PUBLIC_URL + '/img/boxster.jpg'}
