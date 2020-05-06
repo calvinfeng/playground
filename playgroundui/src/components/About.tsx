@@ -11,6 +11,7 @@ import {
   Tooltip
 } from '@material-ui/core'
 import './About.scss'
+
 enum Equations {
   BlochEqn = "\\psi(\\vec{r}) = u(r)e^{i k \\cdot \\vec{r}}",
   LondonEqn1 = "\\frac{\\partial j_{s}}{\\partial t} = \\frac{n_{s} e^{2}}{m} E",

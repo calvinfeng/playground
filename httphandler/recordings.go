@@ -29,7 +29,6 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 				Day:            recording.RecordedDay,
 				YouTubeVideoID: recording.YouTubeVideoID,
 				Title:          recording.Title,
-				Description:    recording.Description,
 				Orientation:    recording.VideoOrientation,
 			})
 		}
@@ -59,10 +58,9 @@ func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 				Year:           recording.RecordedYear,
 				Month:          month,
 				Day:            recording.RecordedDay,
-				YouTubeVideoID: recording.YouTubeVideoID,
 				Title:          recording.Title,
-				Description:    recording.Description,
 				Orientation:    recording.VideoOrientation,
+				YouTubeVideoID: recording.YouTubeVideoID,
 			})
 		}
 

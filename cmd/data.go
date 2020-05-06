@@ -322,4 +322,20 @@ var recordings = []*datastore.PracticeRecording{
 		Title:            "Monthly Progress Recording 007 - Back in Black",
 		IsProgressReport: 1,
 	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    5,
+		RecordedDay:      3,
+		YouTubeVideoID:   "8JzexnsOhMY",
+		VideoOrientation: "landscape",
+		Title:            "Practice Recording 真的爱你",
+	},
+	{
+		RecordedYear:     2020,
+		RecordedMonth:    5,
+		RecordedDay:      5,
+		YouTubeVideoID:   "2qC7TREtepM",
+		VideoOrientation: "landscape",
+		Title:            "Practice Recording 真的爱你 Incorporating Lead Harmony",
+	},
 }
