@@ -3,6 +3,7 @@ CREATE TABLE monthly_summaries (
     year INTEGER NOT NULL,
     month INTEGER NOT NULL,
     title TEXT,
+    subtitle TEXT,
     body TEXT
 );
 

@@ -36,6 +36,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	// 	e.Static("/", "./playgroundui/build/")
 	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")
 }

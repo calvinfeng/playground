@@ -29,11 +29,12 @@ func (PracticeRecording) Table() string {
 }
 
 type MonthlySummary struct {
-	ID    int64  `db:"id"`
-	Year  int64  `db:"year"`
-	Month int64  `db:"month"`
-	Title string `db:"title"`
-	Body  string `db:"body"`
+	ID       int64  `db:"id"`
+	Year     int64  `db:"year"`
+	Month    int64  `db:"month"`
+	Title    string `db:"title"`
+	Subtitle string `db:"subtitle"`
+	Body     string `db:"body"`
 }
 
 func (MonthlySummary) Table() string {

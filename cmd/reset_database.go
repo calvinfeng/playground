@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/calvinfeng/playground/data"
 	"github.com/calvinfeng/playground/datastore"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -43,7 +44,16 @@ func seed() error {
 	}
 	db.SetMaxOpenConns(1)
 	store := datastore.New(db)
-	if numInserted, err := store.BatchInsertRecordings(recordings...); err != nil {
+
+	logrus.Infof("inserting %d practice recordings", len(data.Recordings))
+	if numInserted, err := store.BatchInsertRecordings(data.Recordings...); err != nil {
+		return fmt.Errorf("failed to perform batch insert %w", err)
+	} else {
+		logrus.Infof("successfully seeded database with %d records", numInserted)
+	}
+
+	logrus.Infof("inserting %d monthly summaries", len(data.Summaries))
+	if numInserted, err := store.BatchInsertMonthlySummaries(data.Summaries...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
 	} else {
 		logrus.Infof("successfully seeded database with %d records", numInserted)

@@ -36,3 +36,16 @@ type RecordingListJSONResponse struct {
 	Count   int             `json:"count"`
 	Results []RecordingJSON `json:"results"`
 }
+
+type SummaryJSON struct {
+	Year     int64  `json:"year"`
+	Month    string `json:"month"`
+	Title    string `json:"title"`
+	Subtitle string `json:"subtitle"`
+	Body     string `json:"body"`
+}
+
+type SummaryListJSONResponse struct {
+	Count   int           `json:"count"`
+	Results []SummaryJSON `json:"results"`
+}

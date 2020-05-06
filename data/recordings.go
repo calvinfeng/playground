@@ -1,8 +1,8 @@
-package cmd
+package data
 
 import "github.com/calvinfeng/playground/datastore"
 
-var recordings = []*datastore.PracticeRecording{
+var Recordings = []*datastore.PracticeRecording{
 	{
 		Year:             2019,
 		Month:            9,
