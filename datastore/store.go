@@ -16,10 +16,18 @@ type store struct {
 	db *sqlx.DB
 }
 
+func (s *store) SelectMonthlySummaries(...SQLFilter) ([]*MonthlySummary, error) {
+	panic("implement me")
+}
+
+func (s *store) BatchInsertMonthlySummaries(...*MonthlySummary) (int64, error) {
+	panic("implement me")
+}
+
 func (s *store) SelectRecordings(filters ...SQLFilter) ([]*PracticeRecording, error) {
 	query := squirrel.Select("*").
 		From((PracticeRecording{}).Table()).
-		OrderBy("recorded_year DESC, recorded_month DESC, recorded_day DESC")
+		OrderBy("year DESC, month DESC, day DESC")
 
 	eqCondition := squirrel.Eq{}
 	for _, f := range filters {
@@ -50,13 +58,13 @@ func (s *store) SelectRecordings(filters ...SQLFilter) ([]*PracticeRecording, er
 
 func (s *store) BatchInsertRecordings(recordings ...*PracticeRecording) (int64, error) {
 	query := squirrel.Insert((PracticeRecording{}).Table()).
-		Columns("recorded_year", "recorded_month", "recorded_day", "is_progress_report", "youtube_video_id", "video_orientation", "title")
+		Columns("year", "month", "day", "is_progress_report", "youtube_video_id", "video_orientation", "title")
 
 	for _, recording := range recordings {
 		query = query.Values(
-			recording.RecordedYear,
-			recording.RecordedMonth,
-			recording.RecordedDay,
+			recording.Year,
+			recording.Month,
+			recording.Day,
 			recording.IsProgressReport,
 			recording.YouTubeVideoID,
 			recording.VideoOrientation,

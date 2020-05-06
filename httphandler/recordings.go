@@ -19,14 +19,14 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 		resp.Count = len(recordings)
 		resp.Results = make([]RecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
-			month, ok := monthNames[recording.RecordedMonth]
+			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
 			resp.Results = append(resp.Results, RecordingJSON{
-				Year:           recording.RecordedYear,
+				Year:           recording.Year,
 				Month:          month,
-				Day:            recording.RecordedDay,
+				Day:            recording.Day,
 				YouTubeVideoID: recording.YouTubeVideoID,
 				Title:          recording.Title,
 				Orientation:    recording.VideoOrientation,
@@ -50,14 +50,14 @@ func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 		resp.Count = len(recordings)
 		resp.Results = make([]RecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
-			month, ok := monthNames[recording.RecordedMonth]
+			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
 			resp.Results = append(resp.Results, RecordingJSON{
-				Year:           recording.RecordedYear,
+				Year:           recording.Year,
 				Month:          month,
-				Day:            recording.RecordedDay,
+				Day:            recording.Day,
 				Title:          recording.Title,
 				Orientation:    recording.VideoOrientation,
 				YouTubeVideoID: recording.YouTubeVideoID,
@@ -72,11 +72,11 @@ func buildFiltersFromContext(c echo.Context) []datastore.SQLFilter {
 	filters := make([]datastore.SQLFilter, 0)
 
 	if c.QueryParam("year") != "" {
-		filters = append(filters, datastore.ByRecordedYear(c.QueryParam("year")))
+		filters = append(filters, datastore.ByYear(c.QueryParam("year")))
 	}
 
 	if c.QueryParam("month") != "" {
-		filters = append(filters, datastore.ByRecordedMonth(c.QueryParam("month")))
+		filters = append(filters, datastore.ByMonth(c.QueryParam("month")))
 	}
 
 	return filters

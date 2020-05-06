@@ -2,15 +2,15 @@ package datastore
 
 import "github.com/Masterminds/squirrel"
 
-func ByRecordedYear(year string) SQLFilter {
+func ByYear(year string) SQLFilter {
 	return func(eq squirrel.Eq) {
-		eq["recorded_year"] = year
+		eq["year"] = year
 	}
 }
 
-func ByRecordedMonth(month string) SQLFilter {
+func ByMonth(month string) SQLFilter {
 	return func(eq squirrel.Eq) {
-		eq["recorded_month"] = month
+		eq["month"] = month
 	}
 }
 

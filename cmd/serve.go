@@ -32,7 +32,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		Root:   "playgroundui/build/",
 		Browse: true,
 	}))
-	
+
 	// 	e.Static("/", "./playgroundui/build/")
 	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
