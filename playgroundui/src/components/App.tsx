@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 import {
   BrowserRouter,
   Route,
   Switch,
   useLocation,
   useHistory
-} from "react-router-dom";
+} from "react-router-dom"
 import { MenuRounded } from '@material-ui/icons'
 import {
   Typography,
@@ -17,7 +17,8 @@ import {
 } from '@material-ui/core'
 import Timeline from './Timeline'
 import About from './About'
-import './App.scss';
+import PracticeTimeProgress from './widgets/PracticeTimeProgress'
+import './App.scss'
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -53,6 +54,7 @@ function App() {
           <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
         </Toolbar>
       </AppBar>
+      <PracticeTimeProgress />
       <p>You are running this application in {process.env.NODE_ENV}, with sever URL {process.env.REACT_APP_API_URL}</p>
       <Switch>
         <Route path="/" exact component={Timeline} />

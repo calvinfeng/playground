@@ -2,10 +2,14 @@ package httphandler
 
 import (
 	"github.com/calvinfeng/playground/datastore"
+	"time"
 )
 
 type Config struct {
-	Store datastore.Store
+	Store          datastore.Store
+	TrelloAPIKey   string
+	TrelloAPIToken string
+	TrelloBoardID  string
 }
 
 var monthNames = map[int64]string{
@@ -48,4 +52,27 @@ type SummaryJSON struct {
 type SummaryListJSONResponse struct {
 	Count   int           `json:"count"`
 	Results []SummaryJSON `json:"results"`
+}
+
+type PracticeTimeJSONResponse struct {
+	TotalMinutes int64   `json:"total_minutes"`
+	TotalHours   float64 `json:"total_hours"`
+}
+
+type TrelloLabel struct {
+	ID       string `json:"id"`
+	BoardID  string `json:"idBoard"`
+	Name     string `json:"name"`
+	Color    string `json:"color"`
+	Duration time.Duration
+}
+
+type TrelloCard struct {
+	ID         string   `json:"id"`
+	Name       string   `json:"name"`
+	ShortID    int64    `json:"idShort"`
+	BoardID    string   `json:"idBoard"`
+	ListID     string   `json:"idList"`
+	LabelIDs   []string `json:"idLabels"`
+	IsTemplate bool     `json:"isTemplate"`
 }
