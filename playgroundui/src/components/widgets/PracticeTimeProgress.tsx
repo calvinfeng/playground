@@ -36,11 +36,11 @@ export default class PracticeTimeProgress extends React.Component<Props, State> 
   }
 
   render() {
-    const val = this.state.hours / 1000
+    const val = this.state.hours / 500
     return (
       <div className="PracticeTimeProgress">
-        <Tooltip title={`${this.state.minutes} / 60000 minutes on deliberate practice`}>
-          <LinearProgress variant="determinate" value={val} />
+        <Tooltip title={`${this.state.minutes} / 30000 minutes on deliberate practice for 2020`}>
+          <LinearProgress variant="determinate" value={val*100} />
         </Tooltip>
       </div>
     )
