@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"net/http"
+	"os"
 )
 
 func serveRunE(_ *cobra.Command, _ []string) error {
@@ -37,6 +38,12 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/practicetime/", httphandler.PracticeTimeHandler(httphandler.Config{
+		Store:          nil,
+		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
+		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
+		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
+	}))
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")
 }

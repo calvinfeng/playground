@@ -26,7 +26,7 @@ type Props = {
   paragraph: string
 }
 
-export default  class PracticeRecordingElement extends React.Component<Props, State> {
+export default class PracticeRecordingElement extends React.Component<Props, State> {
   private http: AxiosInstance
 
   constructor(props: Props) {
