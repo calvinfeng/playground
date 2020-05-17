@@ -4,10 +4,11 @@ import "github.com/calvinfeng/playground/datastore"
 
 var Summaries = []*datastore.MonthlySummary{
 	{
-		Year:  2019,
-		Month: 10,
-		Title: "First Month",
-		Body: `This was my first month of recording myself. I worked on couple important bucket list item song,
+		Year:     2019,
+		Month:    10,
+		Title:    "First Month",
+		Subtitle: "Establishing a Routine For Myself",
+		Body: `This is my first month of recording myself. I worked on couple important bucket list-item song,
 		Wonderful Tonight, Now & Forever, and Perfect. Wonderful Tonight has a beautiful lick that gives me an early
 		glimpse into string bending technique. Now & Forever is technically challenging to me on acoustic because all I
 		ever learned was strumming basic chords.`,
@@ -26,7 +27,7 @@ var Summaries = []*datastore.MonthlySummary{
 		Year:     2019,
 		Month:    12,
 		Title:    "Christmas",
-		Subtitle: "Not much happens here",
+		Subtitle: "Holiday Slacking Off",
 		Body: `Well, I received a Les Paul for my birthday! I've been working on Blues lesson from Justin Guitar and
 		general music theory. I continued with my regular practice routines, i.e. scales, barre chords, improvisation,
 		and chord changes.`,
@@ -67,5 +68,14 @@ var Summaries = []*datastore.MonthlySummary{
 		particularly challenging to me because it's the fastest solo I've ever attended to learn. The progress was
 		painfully slow but was extremely rewarding and beneficial to my development. In my relax time, I played a bit of
 		Beyond's solo. It helped me to stay sane.`,
+	},
+	{
+		Year:     2020,
+		Month:    5,
+		Title:    "Beyond",
+		Subtitle: "Collection of My Favorite Childhood Solos",
+		Body: `My objective is quite simple. I want to learn the iconic solos from all of my favorite Beyond songs
+		from childhood. It won't be perfect the first time but at least I should get them under my fingers and then I
+		will resume back to Back in Black solo to perfect it.`,
 	},
 }

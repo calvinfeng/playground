@@ -14,14 +14,15 @@ type Store interface {
 }
 
 type PracticeRecording struct {
-	ID               int64  `db:"id"`
-	Year             int64  `db:"year"`
-	Month            int64  `db:"month"`
-	Day              int64  `db:"day"`
-	IsProgressReport int64  `db:"is_progress_report"`
-	VideoOrientation string `db:"video_orientation"`
-	YouTubeVideoID   string `db:"youtube_video_id"`
-	Title            string `db:"title"`
+	ID                        int64  `db:"id"`
+	Year                      int64  `db:"year"`
+	Month                     int64  `db:"month"`
+	Day                       int64  `db:"day"`
+	IsProgressReport          int64  `db:"is_progress_report"`
+	ProgressReportTargetMonth int64  `db:"progress_report_target_month"`
+	VideoOrientation          string `db:"video_orientation"`
+	YouTubeVideoID            string `db:"youtube_video_id"`
+	Title                     string `db:"title"`
 }
 
 func (PracticeRecording) Table() string {

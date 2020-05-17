@@ -9,8 +9,8 @@ import MusicNoteIcon from '@material-ui/icons/MusicNote'
 import './ProgressReportElement.scss'
 
 type Props = {
-  index: number
-  date: string
+  year: number
+  month: number
 }
 
 type State = {
@@ -34,12 +34,15 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
   componentDidMount() {
     // TODO: Implement query on server side
-    this.http.get('/api/recordings/progress_reports/').then((resp: AxiosResponse) => {
-      if (resp.data.results.length > 0 && resp.data.results.length > this.props.index) {
-        // Invert it
-        const i = resp.data.results.length - this.props.index - 1
+    this.http.get('/api/recordings/progress_reports/', {
+      params: {
+        year: this.props.year,
+        target_month: this.props.month
+      }
+    }).then((resp: AxiosResponse) => {
+      if (resp.data.results.length > 0) {
         this.setState({
-          video: resp.data.results[i]
+          video: resp.data.results[0]
         })
       }
     })
@@ -62,9 +65,14 @@ export default class ProgressReportElement extends React.Component<Props, State>
   }
 
   render() {
+    let date = `${this.props.year}`
+    if (this.state.video !== null) {
+      date = `${this.state.video.month}, ${this.props.year}`
+    }
+
     return (
       <VerticalTimelineElement
-        date={this.props.date}
+        date={date}
         contentArrowStyle={contentArrowStyle}
         contentStyle={contentStyle}
         iconStyle={iconStyle}

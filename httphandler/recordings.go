@@ -10,7 +10,10 @@ import (
 
 func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		recordings, err := cfg.Store.SelectRecordings(datastore.ByMonthlyProgressRecordings())
+		filters := buildFiltersFromContext(c)
+		filters = append(filters, datastore.ByMonthlyProgressRecordings())
+
+		recordings, err := cfg.Store.SelectRecordings(filters...)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
@@ -77,6 +80,10 @@ func buildFiltersFromContext(c echo.Context) []datastore.SQLFilter {
 
 	if c.QueryParam("month") != "" {
 		filters = append(filters, datastore.ByMonth(c.QueryParam("month")))
+	}
+
+	if c.QueryParam("target_month") != "" {
+		filters = append(filters, datastore.ByTargetMonth(c.QueryParam("target_month")))
 	}
 
 	return filters

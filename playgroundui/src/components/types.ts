@@ -11,3 +11,11 @@ export type VideoJSON = {
     orientation: Orientation
     youtube_video_id: string
 }
+
+export type MonthlySummaryJSON = {
+    year: number
+    month: string
+    title: string
+    subtitle: string
+    body: string
+}

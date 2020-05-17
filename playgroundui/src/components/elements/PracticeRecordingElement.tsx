@@ -11,19 +11,18 @@ import {
   Typography
 } from '@material-ui/core'
 
-import { VideoJSON, Orientation } from '../types'
+import { VideoJSON, Orientation, MonthlySummaryJSON } from '../types'
 import { contentStyle, contentArrowStyle, iconStyle } from '../config' 
 import './PracticeRecordingElement.scss'
 
 type State = {
   videos: VideoJSON[]
+  summary: MonthlySummaryJSON | null
 }
 
 type Props = {
   year: number
   month: number
-  title: string
-  paragraph: string
 }
 
 export default class PracticeRecordingElement extends React.Component<Props, State> {
@@ -33,6 +32,7 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
     super(props)
     this.state = {
       videos: [],
+      summary: null 
     }
     this.http = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
@@ -52,6 +52,19 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
         videos: resp.data.results
       })
     })
+
+    this.http.get('/api/summaries/', {
+      params: {
+        year: this.props.year,
+        month: this.props.month
+      }
+    }).then((resp: AxiosResponse) => {
+      if (resp.data.results.length > 0) {
+        this.setState({
+          summary: resp.data.results[0]
+        })
+      }
+    })
   }
 
   render() {
@@ -60,6 +73,20 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
       date = `${this.state.videos[0].month}, ${this.props.year}`
     }
   
+    let textContainer = (
+      <div className="text-container"></div>
+    )
+    
+    if (this.state.summary !== null) {
+      textContainer = (
+        <div className="text-container">
+          <Typography variant="h6">{this.state.summary.title}</Typography>
+          <Typography variant="subtitle1">{this.state.summary.subtitle}</Typography>
+          <Typography variant="body2">{this.state.summary.body}</Typography>
+        </div>
+      )
+    }
+
     return (
       <VerticalTimelineElement
         date={date}
@@ -75,16 +102,12 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
               return <VideoPopover video={video} />
             })}
           </div>
-          <div className="text-container">
-            <Typography variant="h6">{this.props.title}</Typography>
-            <Typography variant="body2">{this.props.paragraph}</Typography>
-          </div>
+          {textContainer}
         </div>
       </VerticalTimelineElement>
     )
   }
 }
-
 
 type VideoPopoverProps = {
   video: VideoJSON

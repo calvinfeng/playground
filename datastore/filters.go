@@ -25,3 +25,9 @@ func ByMonthlyProgressRecordings() SQLFilter {
 		eq["is_progress_report"] = 1
 	}
 }
+
+func ByTargetMonth(month string) SQLFilter {
+	return func(eq squirrel.Eq) {
+		eq["progress_report_target_month"] = month
+	}
+}

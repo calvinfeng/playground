@@ -4,6 +4,7 @@ CREATE TABLE practice_recordings (
     month INTEGER NOT NULL,
     day INTEGER NOT NULL,
     is_progress_report INT2 NOT NULL,
+    progress_report_target_month INTEGER NOT NULL,
     youtube_video_id VARCHAR(255) NOT NULL,
     video_orientation VARCHAR(255) NOT NULL,
     title TEXT

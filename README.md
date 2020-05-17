@@ -30,6 +30,10 @@ Test it locally
 eb local run --port 8080
 ```
 
+### Deploy Environment
+
+However, 
+
 Create an environment if not exist
 
 ```bash
