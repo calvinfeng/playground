@@ -73,7 +73,7 @@ var Summaries = []*datastore.MonthlySummary{
 		Year:     2020,
 		Month:    5,
 		Title:    "Beyond",
-		Subtitle: "Collection of My Favorite Childhood Solos",
+		Subtitle: "Collection of My Childhood Favorite Solos",
 		Body: `My objective is quite simple. I want to learn the iconic solos from all of my favorite Beyond songs
 		from childhood. It won't be perfect the first time but at least I should get them under my fingers and then I
 		will resume back to Back in Black solo to perfect it.`,
