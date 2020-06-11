@@ -17,6 +17,7 @@ import {
 } from '@material-ui/core'
 import Timeline from './Timeline'
 import About from './About'
+import Fretboard from './Fretboard'
 import PracticeTimeProgress from './widgets/PracticeTimeProgress'
 import './App.scss'
 
@@ -54,6 +55,7 @@ function App() {
             anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
             <TimelineMenuItem />
             <AboutMenuItem />
+            <FretboardMenuItem />
           </Menu>
           <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
         </Toolbar>
@@ -62,6 +64,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={Timeline} />
         <Route path="/about" exact component={About} />
+        <Route path="/fretboard" exact component={Fretboard} />
       </Switch>
       </BrowserRouter>
     </div>
@@ -71,6 +74,7 @@ function App() {
 enum Path {
   Timeline = "/",
   About = "/about",
+  Fretboard = "/fretboard",
 }
 
 function TimelineMenuItem() {
@@ -99,6 +103,21 @@ function AboutMenuItem() {
   return (
     <MenuItem onClick={handleClick} disabled={location.pathname === Path.About}>
       About
+    </MenuItem>
+  );
+}
+
+function FretboardMenuItem() {
+  const history = useHistory()
+  const location = useLocation()
+
+  function handleClick() {
+    history.push(Path.Fretboard);
+  }
+
+  return (
+    <MenuItem onClick={handleClick} disabled={location.pathname === Path.Fretboard}>
+      Fretboard
     </MenuItem>
   );
 }
