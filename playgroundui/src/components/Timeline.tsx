@@ -33,9 +33,11 @@ export default function Timeline(props: Props) {
           I was first exposed to guitar when I was around 16. As a teenager, I was lacking the
           discipline to stay focused and practice rigoriously. I took guitar lessons for a year.
           I didn't really pay much attention to music theory or maintain a practice routine. Perhaps
-          this is one of those things I wish I could have done better. It was the middle of 2019,
-          I discovered Justin Sandercoe's online guitar course. The lessons are so well
-          structured, it motivated me to pick up guitar seriously once again.
+          this is one of those things I wish I could have done better. It was in the middle of 2019,
+          I discovered Justin Sandercoe's online guitar course. The lessons were so well
+          structured, it motivated me to pick up guitar seriously once again. And I figured, if I
+          were to have a wedding any time soon, it is the best time now to pick up my guitar and
+          form a band with my friends so we can perform on weddng day!
         </Typography>
         <Typography variant="body2" paragraph={true}>
           Ever since August, 2019 I've been practicing with a rigorious schedule. I practiced

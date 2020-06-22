@@ -78,4 +78,14 @@ var Summaries = []*datastore.MonthlySummary{
 		from childhood. It won't be perfect the first time but at least I should get them under my fingers and then I
 		will resume back to Back in Black solo to perfect it.`,
 	},
+	{
+		Year:     2020,
+		Month:    6,
+		Title:    "More Beyond",
+		Subtitle: "Collection of My Childhood Favorite Solos",
+		Body: `I guess one month was not enough for me to learn all the favorite solos. I am continuing the effort
+		this month to perfect the performance of each solo. I also just recently bought a new American made Fender
+		Stratocaster. I am adapting my fingers around the neck. In terms of speed, Stratocaster neck is noticeably faster 
+		than Les Paul neck due to the longer scale length.`,
+	},
 }
