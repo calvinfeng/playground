@@ -50,7 +50,7 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
   get content() {
     if (this.state.video === null) {
-      return <div></div>
+      return <p>No progress report recorded for this month</p>
     }
 
     return (
@@ -67,12 +67,13 @@ export default class ProgressReportElement extends React.Component<Props, State>
   render() {
     let date = `${this.props.year}`
     if (this.state.video !== null) {
-      date = `${this.state.video.month}, ${this.props.year}`
+      date = `${this.props.month}, ${this.props.year}`
     }
-
+    // No date for progress report due to inconsistent recording schedule for each progres
+    // report.
     return (
       <VerticalTimelineElement
-        date={date}
+        // date={date}
         contentArrowStyle={contentArrowStyle}
         contentStyle={contentStyle}
         iconStyle={iconStyle}
