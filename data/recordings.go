@@ -410,4 +410,20 @@ var PracticeRecordings = []*datastore.PracticeRecording{
 		VideoOrientation: Landscape,
 		Title:            "Practice Recording 海阔天空 Outro Solo",
 	},
+	{
+		Year:             2020,
+		Month:            6,
+		Day:              24,
+		YouTubeVideoID:   "S8HQUmVQVAw",
+		VideoOrientation: Landscape,
+		Title:            "Practice Recording 海阔天空 Outro Solo",
+	},
+	{
+		Year:             2020,
+		Month:            6,
+		Day:              27,
+		YouTubeVideoID:   "Yt-4TD6ztcQ",
+		VideoOrientation: Landscape,
+		Title:            "Practice Recording 海阔天空 Outro Solo",
+	},
 }
