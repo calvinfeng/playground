@@ -3,26 +3,76 @@ package data
 import "github.com/calvinfeng/playground/datastore"
 
 const Landscape = "landscape"
+
 const Portrait = "portrait"
 
-var Recordings = []*datastore.PracticeRecording{
+var ProgressRecordings = []*datastore.ProgressRecording{
 	{
-		Year:                      2019,
-		Month:                     9,
-		Day:                       24,
-		YouTubeVideoID:            "tjxsubPb_3A",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 001",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 9,
+		Year:             2019,
+		Month:            9,
+		YouTubeVideoID:   "tjxsubPb_3A",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 001 Wonderful Tonight",
 	},
+	{
+		Year:             2019,
+		Month:            11,
+		YouTubeVideoID:   "XDyRzfTAsBI",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 002 Wonderful Tonight",
+	},
+	{
+		Year:             2019,
+		Month:            11,
+		YouTubeVideoID:   "u2TNvnlBhy0",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 003 Wonderful Tonight",
+	},
+	{
+		Year:             2020,
+		Month:            1,
+		YouTubeVideoID:   "H_qs9Mpl2ek",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 004 Now and Forever",
+	},
+	{
+		Year:             2020,
+		Month:            2,
+		YouTubeVideoID:   "WdLsPuKwA1E",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 005 21 Guns (w/ Steve)",
+	},
+	{
+		Year:             2020,
+		Month:            3,
+		YouTubeVideoID:   "EYWBd7iS2A0",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 006 Yesterday",
+	},
+	{
+		Year:             2020,
+		Month:            4,
+		YouTubeVideoID:   "pup3LIMZANM",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 007 Back in Black",
+	},
+	{
+		Year:             2020,
+		Month:            5,
+		YouTubeVideoID:   "SBCj8ooMesg",
+		VideoOrientation: Landscape,
+		Title:            "Monthly Progress Recording 008 灰色轨迹",
+	},
+}
+
+var PracticeRecordings = []*datastore.PracticeRecording{
 	{
 		Year:             2019,
 		Month:            10,
 		Day:              4,
 		YouTubeVideoID:   "U4-0h6go0RA",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2019,
@@ -30,7 +80,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              7,
 		YouTubeVideoID:   "fu_npFZMHkc",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2019,
@@ -38,7 +88,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              23,
 		YouTubeVideoID:   "OeN2GGssoJ4",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Perfect",
+		Title:            "Practice Recording Perfect",
 	},
 	{
 		Year:             2019,
@@ -46,7 +96,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              26,
 		YouTubeVideoID:   "_mQIFluFuv8",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Now & Forever",
+		Title:            "Practice Recording Now & Forever",
 	},
 	{
 		Year:             2019,
@@ -54,7 +104,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              7,
 		YouTubeVideoID:   "AGhYB0QryhU",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - 21 Guns",
+		Title:            "Practice Recording 21 Guns",
 	},
 	{
 		Year:             2019,
@@ -62,7 +112,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              9,
 		YouTubeVideoID:   "SWWCfI0Qavc",
 		VideoOrientation: Landscape,
-		Title:            "Fetch Band Session - 21 Guns",
+		Title:            "Fetch Band Session 21 Guns",
 	},
 	{
 		Year:             2019,
@@ -70,17 +120,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              9,
 		YouTubeVideoID:   "-_nJNU8sXOc",
 		VideoOrientation: Landscape,
-		Title:            "Fetch Band Session - 海闊天空",
-	},
-	{
-		Year:                      2019,
-		Month:                     11,
-		Day:                       11,
-		YouTubeVideoID:            "XDyRzfTAsBI",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 002",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 10,
+		Title:            "Fetch Band Session 海闊天空",
 	},
 	{
 		Year:             2019,
@@ -88,7 +128,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              17,
 		YouTubeVideoID:   "w9VWkEnjH8o",
 		VideoOrientation: Portrait,
-		Title:            "Fetch Band Session - Wonderful Tonight",
+		Title:            "Fetch Band Session Wonderful Tonight",
 	},
 	{
 		Year:             2019,
@@ -96,7 +136,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              17,
 		YouTubeVideoID:   "0-2C1Z9Qwqg",
 		VideoOrientation: Portrait,
-		Title:            "Fetch Band Session - 21 Guns",
+		Title:            "Fetch Band Session 21 Guns",
 	},
 	{
 		Year:             2019,
@@ -104,7 +144,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              20,
 		YouTubeVideoID:   "rcOqJuiFrQM",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2019,
@@ -112,17 +152,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              26,
 		YouTubeVideoID:   "J3sxA_JeyBo",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - 21 Guns Solo",
-	},
-	{
-		Year:                      2019,
-		Month:                     11,
-		Day:                       27,
-		YouTubeVideoID:            "u2TNvnlBhy0",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 003",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 11,
+		Title:            "Practice Recording 21 Guns Solo",
 	},
 	{
 		Year:             2019,
@@ -130,17 +160,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              29,
 		YouTubeVideoID:   "emjmvfMPtqs",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Perfect Solo",
-	},
-	{
-		Year:                      2020,
-		Month:                     1,
-		Day:                       1,
-		YouTubeVideoID:            "H_qs9Mpl2ek",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 004",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 1,
+		Title:            "Practice Recording Perfect Solo",
 	},
 	{
 		Year:             2020,
@@ -148,7 +168,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              4,
 		YouTubeVideoID:   "tLh_cBTHLOY",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2020,
@@ -156,7 +176,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              5,
 		YouTubeVideoID:   "4W1_zKsl7wE",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Now & Forever",
+		Title:            "Practice Recording Now & Forever",
 	},
 	{
 		Year:             2020,
@@ -164,7 +184,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              8,
 		YouTubeVideoID:   "qmrl3do41lo",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Perfect",
+		Title:            "Practice Recording Perfect",
 	},
 	{
 		Year:             2020,
@@ -172,7 +192,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              25,
 		YouTubeVideoID:   "XZ2zg1Nww5U",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - 21 Guns Take 1",
+		Title:            "Practice Recording 21 Guns Take 1",
 	},
 	{
 		Year:             2020,
@@ -180,7 +200,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              26,
 		YouTubeVideoID:   "FKmWPsknfuc",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - 21 Guns Take 2",
+		Title:            "Practice Recording 21 Guns Take 2",
 	},
 	{
 		Year:             2020,
@@ -188,17 +208,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              2,
 		YouTubeVideoID:   "tfJ4ou280js",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Perfect",
-	},
-	{
-		Year:                      2020,
-		Month:                     2,
-		Day:                       9,
-		YouTubeVideoID:            "WdLsPuKwA1E",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 005 - 21 Guns (w/ Steve)",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 2,
+		Title:            "Practice Recording Perfect",
 	},
 	{
 		Year:             2020,
@@ -206,7 +216,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              14,
 		YouTubeVideoID:   "Nkoxd0XPgyk",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2020,
@@ -214,7 +224,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              15,
 		YouTubeVideoID:   "a0tmaY6MabQ",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Wonderful Tonight",
+		Title:            "Practice Recording Wonderful Tonight",
 	},
 	{
 		Year:             2020,
@@ -222,7 +232,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              24,
 		YouTubeVideoID:   "Jn9K7wxdAeA",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - 21 Guns Take 3",
+		Title:            "Practice Recording 21 Guns Take 3",
 	},
 	{
 		Year:             2020,
@@ -230,7 +240,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              24,
 		YouTubeVideoID:   "fkttcMBj5BM",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Yesterday",
+		Title:            "Practice Recording Yesterday",
 	},
 	{
 		Year:             2020,
@@ -238,7 +248,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              29,
 		YouTubeVideoID:   "uJYoKvneN88",
 		VideoOrientation: Landscape,
-		Title:            "Fetch Band Session - Back in Black 1st Attempt",
+		Title:            "Fetch Band Session Back in Black 1st Attempt",
 	},
 	{
 		Year:             2020,
@@ -246,7 +256,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              6,
 		YouTubeVideoID:   "Dogm9asWlRY",
 		VideoOrientation: Landscape,
-		Title:            "Fetch Band Session - Back in Black 2nd Attempt",
+		Title:            "Fetch Band Session Back in Black 2nd Attempt",
 	},
 	{
 		Year:             2020,
@@ -254,7 +264,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              14,
 		YouTubeVideoID:   "3zEoEEIkUAw",
 		VideoOrientation: Landscape,
-		Title:            "Fetch Band Session - Back in Black 3rd Attempt at 95 BPM",
+		Title:            "Fetch Band Session Back in Black 3rd Attempt at 95 BPM",
 	},
 	{
 		Year:             2020,
@@ -262,17 +272,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              14,
 		YouTubeVideoID:   "IXeOGHn9hSQ",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Back in Black",
-	},
-	{
-		Year:                      2020,
-		Month:                     3,
-		Day:                       21,
-		YouTubeVideoID:            "EYWBd7iS2A0",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 006 - Yesterday",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 3,
+		Title:            "Practice Recording Back in Black",
 	},
 	{
 		Year:             2020,
@@ -280,7 +280,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              24,
 		YouTubeVideoID:   "MkGWwgaejE4",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Back in Black",
+		Title:            "Practice Recording Back in Black",
 	},
 	{
 		Year:             2020,
@@ -288,7 +288,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              30,
 		YouTubeVideoID:   "7DUoqQkeXG0",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Back in Black",
+		Title:            "Practice Recording Back in Black",
 	},
 	{
 		Year:             2020,
@@ -296,7 +296,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              9,
 		YouTubeVideoID:   "ifYsuZX9sOQ",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Back in Black Solo 70% Speed",
+		Title:            "Practice Recording Back in Black Solo 70% Speed",
 	},
 	{
 		Year:             2020,
@@ -304,7 +304,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              10,
 		YouTubeVideoID:   "DKDFRyKTXIU",
 		VideoOrientation: Portrait,
-		Title:            "Practice Recording - Back in Black Solo 80% Speed",
+		Title:            "Practice Recording Back in Black Solo 80% Speed",
 	},
 	{
 		Year:             2020,
@@ -312,7 +312,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              15,
 		YouTubeVideoID:   "8TvQOgy0C-Y",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - 不再犹豫",
+		Title:            "Practice Recording 不再犹豫",
 	},
 	{
 		Year:             2020,
@@ -320,17 +320,7 @@ var Recordings = []*datastore.PracticeRecording{
 		Day:              20,
 		YouTubeVideoID:   "esnvUHSC8-Y",
 		VideoOrientation: Landscape,
-		Title:            "Practice Recording - Back in Black Solo 100% Speed",
-	},
-	{
-		Year:                      2020,
-		Month:                     4,
-		Day:                       26,
-		YouTubeVideoID:            "pup3LIMZANM",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 007 - Back in Black",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 4,
+		Title:            "Practice Recording Back in Black Solo 100% Speed",
 	},
 	{
 		Year:             2020,
@@ -379,16 +369,6 @@ var Recordings = []*datastore.PracticeRecording{
 		YouTubeVideoID:   "GReiOQ3S-Dk",
 		VideoOrientation: Landscape,
 		Title:            "Practice Recording 不再犹豫 110 BPM 80% Speed",
-	},
-	{
-		Year:                      2020,
-		Month:                     5,
-		Day:                       30,
-		YouTubeVideoID:            "SBCj8ooMesg",
-		VideoOrientation:          Landscape,
-		Title:                     "Monthly Progress Recording 008",
-		IsProgressReport:          1,
-		ProgressReportTargetMonth: 5,
 	},
 	{
 		Year:             2020,

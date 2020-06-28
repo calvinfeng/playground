@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/calvinfeng/playground/data"
 	"github.com/calvinfeng/playground/datastore"
 	"github.com/golang-migrate/migrate/v4"
@@ -11,7 +13,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var databaseFilePath = fmt.Sprintf("./%s.db", datastore.DatabaseName)
@@ -45,13 +46,6 @@ func seed() error {
 	db.SetMaxOpenConns(1)
 	store := datastore.New(db)
 
-	logrus.Infof("inserting %d practice recordings", len(data.Recordings))
-	if numInserted, err := store.BatchInsertRecordings(data.Recordings...); err != nil {
-		return fmt.Errorf("failed to perform batch insert %w", err)
-	} else {
-		logrus.Infof("successfully seeded database with %d records", numInserted)
-	}
-
 	logrus.Infof("inserting %d monthly summaries", len(data.Summaries))
 	if numInserted, err := store.BatchInsertMonthlySummaries(data.Summaries...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
@@ -59,24 +53,38 @@ func seed() error {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
 	}
 
-	recordings, err := store.SelectRecordings(datastore.ByPracticeRecordings())
+	logrus.Infof("inserting %d practice recordings", len(data.PracticeRecordings))
+	if numInserted, err := store.BatchInsertPracticeRecordings(data.PracticeRecordings...); err != nil {
+		return fmt.Errorf("failed to perform batch insert %w", err)
+	} else {
+		logrus.Infof("successfully seeded database with %d records", numInserted)
+	}
+
+	practices, err := store.SelectPracticeRecordings()
 	if err != nil {
 		return err
 	}
 
-	for _, recording := range recordings {
-		fmt.Printf("Practice Recording %03d %d-%02d-%02d on %s\n",
+	for _, recording := range practices {
+		fmt.Printf("Practice Recording %03d %d-%02d-%02d %s\n",
 			recording.ID, recording.Year, recording.Month, recording.Day, recording.YouTubeVideoID)
 	}
 
-	recordings, err = store.SelectRecordings(datastore.ByMonthlyProgressRecordings())
+	logrus.Infof("inserting %d progress recordings", len(data.ProgressRecordings))
+	if numInserted, err := store.BatchInsertProgressRecordings(data.ProgressRecordings...); err != nil {
+		return fmt.Errorf("failed to perform batch insert %w", err)
+	} else {
+		logrus.Infof("successfully seeded database with %d records", numInserted)
+	}
+
+	progresses, err := store.SelectProgressRecordings()
 	if err != nil {
 		return err
 	}
 
-	for _, recording := range recordings {
-		fmt.Printf("Monthly Progress Recording %03d %d-%02d-%02d on %s\n",
-			recording.ID, recording.Year, recording.Month, recording.Day, recording.YouTubeVideoID)
+	for _, recording := range progresses {
+		fmt.Printf("Monthly Progress Recording %03d %d-%02d %s\n",
+			recording.ID, recording.Year, recording.Month, recording.YouTubeVideoID)
 	}
 
 	return nil

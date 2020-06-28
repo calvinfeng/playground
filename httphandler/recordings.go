@@ -8,28 +8,26 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
+func ProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		filters := buildFiltersFromContext(c)
-		filters = append(filters, datastore.ByMonthlyProgressRecordings())
 
-		recordings, err := cfg.Store.SelectRecordings(filters...)
+		recordings, err := cfg.Store.SelectProgressRecordings(filters...)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
 
-		resp := new(RecordingListJSONResponse)
+		resp := new(PracticeRecordingListJSONResponse)
 		resp.Count = len(recordings)
-		resp.Results = make([]RecordingJSON, 0, len(recordings))
+		resp.Results = make([]PracticeRecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
 			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
-			resp.Results = append(resp.Results, RecordingJSON{
+			resp.Results = append(resp.Results, PracticeRecordingJSON{
 				Year:           recording.Year,
 				Month:          month,
-				Day:            recording.Day,
 				YouTubeVideoID: recording.YouTubeVideoID,
 				Title:          recording.Title,
 				Orientation:    recording.VideoOrientation,
@@ -43,24 +41,23 @@ func MonthlyProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		filters := buildFiltersFromContext(c)
-		filters = append(filters, datastore.ByPracticeRecordings())
-		recordings, err := cfg.Store.SelectRecordings(filters...)
+
+		recordings, err := cfg.Store.SelectPracticeRecordings(filters...)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
 
-		resp := new(RecordingListJSONResponse)
+		resp := new(ProgressRecordingListJSONResponse)
 		resp.Count = len(recordings)
-		resp.Results = make([]RecordingJSON, 0, len(recordings))
+		resp.Results = make([]ProgressRecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
 			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
-			resp.Results = append(resp.Results, RecordingJSON{
+			resp.Results = append(resp.Results, ProgressRecordingJSON{
 				Year:           recording.Year,
 				Month:          month,
-				Day:            recording.Day,
 				Title:          recording.Title,
 				Orientation:    recording.VideoOrientation,
 				YouTubeVideoID: recording.YouTubeVideoID,
@@ -80,10 +77,6 @@ func buildFiltersFromContext(c echo.Context) []datastore.SQLFilter {
 
 	if c.QueryParam("month") != "" {
 		filters = append(filters, datastore.ByMonth(c.QueryParam("month")))
-	}
-
-	if c.QueryParam("target_month") != "" {
-		filters = append(filters, datastore.ByTargetMonth(c.QueryParam("target_month")))
 	}
 
 	return filters

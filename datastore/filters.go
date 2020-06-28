@@ -13,21 +13,3 @@ func ByMonth(month string) SQLFilter {
 		eq["month"] = month
 	}
 }
-
-func ByPracticeRecordings() SQLFilter {
-	return func(eq squirrel.Eq) {
-		eq["is_progress_report"] = 0
-	}
-}
-
-func ByMonthlyProgressRecordings() SQLFilter {
-	return func(eq squirrel.Eq) {
-		eq["is_progress_report"] = 1
-	}
-}
-
-func ByTargetMonth(month string) SQLFilter {
-	return func(eq squirrel.Eq) {
-		eq["progress_report_target_month"] = month
-	}
-}

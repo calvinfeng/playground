@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/calvinfeng/playground/datastore"
 	"github.com/calvinfeng/playground/httphandler"
 	"github.com/jmoiron/sqlx"
@@ -8,8 +11,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"net/http"
-	"os"
 )
 
 func serveRunE(_ *cobra.Command, _ []string) error {
@@ -35,10 +36,10 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	}))
 
 	// 	e.Static("/", "./playgroundui/build/")
-	e.GET("/api/recordings/practices/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/recordings/progress_reports/", httphandler.MonthlyProgressRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/progress/recordings/", httphandler.ProgressRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/practicetime/", httphandler.PracticeTimeHandler(httphandler.Config{
+	e.GET("/api/practice/recordings/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/practice/time/", httphandler.PracticeTimeHandler(httphandler.Config{
 		Store:          nil,
 		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),

@@ -1,8 +1,9 @@
 package httphandler
 
 import (
-	"github.com/calvinfeng/playground/datastore"
 	"time"
+
+	"github.com/calvinfeng/playground/datastore"
 )
 
 type Config struct {
@@ -27,7 +28,12 @@ var monthNames = map[int64]string{
 	12: "December",
 }
 
-type RecordingJSON struct {
+type PracticeRecordingListJSONResponse struct {
+	Count   int                     `json:"count"`
+	Results []PracticeRecordingJSON `json:"results"`
+}
+
+type PracticeRecordingJSON struct {
 	Year           int64  `json:"year"`
 	Month          string `json:"month"`
 	Day            int64  `json:"day"`
@@ -36,9 +42,17 @@ type RecordingJSON struct {
 	YouTubeVideoID string `json:"youtube_video_id"`
 }
 
-type RecordingListJSONResponse struct {
-	Count   int             `json:"count"`
-	Results []RecordingJSON `json:"results"`
+type ProgressRecordingListJSONResponse struct {
+	Count   int                     `json:"count"`
+	Results []ProgressRecordingJSON `json:"results"`
+}
+
+type ProgressRecordingJSON struct {
+	Year           int64  `json:"year"`
+	Month          string `json:"month"`
+	Title          string `json:"title,omitempty"`
+	Orientation    string `json:"orientation"`
+	YouTubeVideoID string `json:"youtube_video_id"`
 }
 
 type SummaryJSON struct {
