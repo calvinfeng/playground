@@ -13,3 +13,9 @@ func ByMonth(month string) SQLFilter {
 		eq["month"] = month
 	}
 }
+
+func ByID(id string) SQLFilter {
+	return func(eq squirrel.Eq) {
+		eq["id"] = id
+	}
+}

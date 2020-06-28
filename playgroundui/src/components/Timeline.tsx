@@ -51,23 +51,22 @@ export default function Timeline(props: Props) {
     </Card>
     <VerticalTimeline animate={true}>
       <PracticeRecordingElement year={2020} month={6} />
-      <ProgressReportElement year={2020} month={5} />
+      <ProgressReportElement id={8} />
       <PracticeRecordingElement year={2020} month={5} />
-      <ProgressReportElement year={2020} month={4} />
+      <ProgressReportElement id={7} />
       <PracticeRecordingElement year={2020} month={4} />
-      <ProgressReportElement year={2020} month={3} />
+      <ProgressReportElement id={6} />
       <PracticeRecordingElement year={2020} month={3} />
-      <ProgressReportElement year={2020} month={2} />
       <PracticeRecordingElement year={2020} month={2} />
-      <ProgressReportElement year={2020} month={1} />
+      <ProgressReportElement id={5} />
       <PracticeRecordingElement year={2020} month={1} />
-      <ProgressReportElement year={2019} month={12} />
+      <ProgressReportElement id={4} />
       <PracticeRecordingElement year={2019} month={12} />
-      <ProgressReportElement year={2019} month={11} />
+      <ProgressReportElement id={3} />
+      <ProgressReportElement id={2} />
       <PracticeRecordingElement year={2019} month={11} />
-      <ProgressReportElement year={2019} month={10} />
+      <ProgressReportElement id={1} />
       <PracticeRecordingElement year={2019} month={10} />
-      <ProgressReportElement year={2019} month={9} />
       <TextElement
         date="September, 2019"
         title={"The Journey Begins"}

@@ -9,8 +9,7 @@ import MusicNoteIcon from '@material-ui/icons/MusicNote'
 import './ProgressReportElement.scss'
 
 type Props = {
-  year: number
-  month: number
+  id: number
 }
 
 type State = {
@@ -34,10 +33,9 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
   componentDidMount() {
     // TODO: Implement query on server side
-    this.http.get('/api/recordings/progress_reports/', {
+    this.http.get('/api/progress/recordings/', {
       params: {
-        year: this.props.year,
-        target_month: this.props.month
+        id: this.props.id,
       }
     }).then((resp: AxiosResponse) => {
       if (resp.data.results.length > 0) {
@@ -50,7 +48,7 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
   get content() {
     if (this.state.video === null) {
-      return <p>No progress report recorded for this month</p>
+      return <p>no progress video found</p>
     }
 
     return (
@@ -65,15 +63,15 @@ export default class ProgressReportElement extends React.Component<Props, State>
   }
 
   render() {
-    let date = `${this.props.year}`
+    let date;
     if (this.state.video !== null) {
-      date = `${this.props.month}, ${this.props.year}`
+      date = `${this.state.video.month}, ${this.state.video.year}`
     }
     // No date for progress report due to inconsistent recording schedule for each progres
     // report.
     return (
       <VerticalTimelineElement
-        // date={date}
+        date={date}
         contentArrowStyle={contentArrowStyle}
         contentStyle={contentStyle}
         iconStyle={iconStyle}

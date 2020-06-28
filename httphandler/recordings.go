@@ -79,5 +79,9 @@ func buildFiltersFromContext(c echo.Context) []datastore.SQLFilter {
 		filters = append(filters, datastore.ByMonth(c.QueryParam("month")))
 	}
 
+	if c.QueryParam("id") != "" {
+		filters = append(filters, datastore.ByID(c.QueryParam("id")))
+	}
+
 	return filters
 }

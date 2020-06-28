@@ -9,7 +9,7 @@ const Portrait = "portrait"
 var ProgressRecordings = []*datastore.ProgressRecording{
 	{
 		Year:             2019,
-		Month:            9,
+		Month:            10,
 		YouTubeVideoID:   "tjxsubPb_3A",
 		VideoOrientation: Landscape,
 		Title:            "Monthly Progress Recording 001 Wonderful Tonight",
