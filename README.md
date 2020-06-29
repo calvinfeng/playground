@@ -32,8 +32,6 @@ eb local run --port 8080
 
 ### Deploy Environment
 
-However, 
-
 Create an environment if not exist
 
 ```bash
@@ -44,4 +42,12 @@ Otherwise,
 
 ```bash
 eb deploy playground-server-env
+```
+
+### Regular Deployment
+
+Since environment name is already inside the `.elasticbeanstalk` folder, I can just do
+
+```bash
+eb deploy
 ```
