@@ -2,6 +2,8 @@ package data
 
 import "github.com/calvinfeng/playground/datastore"
 
+// Summaries is the list of summary for each month. They capture the goals and struggles of my skill
+// development.
 var Summaries = []*datastore.MonthlySummary{
 	{
 		Year:     2019,
@@ -87,5 +89,16 @@ var Summaries = []*datastore.MonthlySummary{
 		this month to perfect the performance of each solo. I also just recently bought a new American made Fender
 		Stratocaster. I am adapting my fingers around the neck. In terms of speed, Stratocaster neck is noticeably faster 
 		than Les Paul neck due to the longer scale length.`,
+	},
+	{
+		Year:     2020,
+		Month:    7,
+		Title:    "Final Countdown",
+		Subtitle: "The SpongeBob Solo and Microwave Commercial",
+		Body: `After working through Beyond's solos, I have the confidence to tackle my next favorite solo from the band 
+		Europe. This is the song we used to sing in AP Calculus before the class starts. I always thought this is 
+		the example of shredding. However, now I look at it. I think it's more of an introduction to shredding. It is a 
+		great opportunity to introduce myself to sweep picking. Final Countdown solo has a mini sweep pick across 2 strings. 
+		I am comfortable with 16th note on 120BPM and this is approximately the normal speed for Final Countdown.`,
 	},
 }
