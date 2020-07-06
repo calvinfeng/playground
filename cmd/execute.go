@@ -30,6 +30,11 @@ func Execute() {
 			Short: "serve application to clients",
 			RunE:  serveRunE,
 		},
+		&cobra.Command{
+			Use:   "experiment",
+			Short: "experiment some basic backend logic",
+			RunE:  experimentRunE,
+		},
 	)
 
 	if err := root.Execute(); err != nil {
