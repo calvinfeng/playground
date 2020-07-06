@@ -31,16 +31,16 @@ type ContentDetails struct {
 }
 
 type YouTubePlaylistItemAPIResponse struct {
-	Kind  string                `json:"kind"`
-	ETag  string                `json:"etag"`
-	NextPageToken string `json:"nextPageToken"`
-	Items []YouTubePlaylistItem `json:"items"`
+	Kind          string                `json:"kind"`
+	ETag          string                `json:"etag"`
+	NextPageToken string                `json:"nextPageToken"`
+	Items         []YouTubePlaylistItem `json:"items"`
 }
 
 type YouTubePlaylistItem struct {
-	ID      string  `json:"id"`
-	ETag    string  `json:"etag"`
-	Snippet Snippet `json:"snippet"`
+	ID             string         `json:"id"`
+	ETag           string         `json:"etag"`
+	Snippet        Snippet        `json:"snippet"`
 	ContentDetails ContentDetails `json:"contentDetails"`
 }
 
