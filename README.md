@@ -1,10 +1,8 @@
 # My Playground
 
-I am trying to put this on Elastic Beanstalk but I am too cheap to pay for RDS. So I will use SQLite!
-
-## TODO
-
-- Add title to each recording, use it for the buttons
+This is a progress tracker for my guitar playing. I am also using it as an AWS infrastructure playground to experiment
+with deployment. My initial phase is to use the simplest technology to ensure deployment is successful and then
+gradually introduce new component depending on my needs.
 
 ## Docker
 
