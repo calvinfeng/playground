@@ -32,14 +32,18 @@ func (s *service) PlaylistItems(playlistID string) ([]PlaylistItem, error) {
 	q.Set("key", s.apiKey)
 	u.RawQuery = q.Encode()
 
-	var nextPageToken string
 	items := make([]PlaylistItem, 0)
+
+	var nextPageToken string
+	var err error
+	var paginatedItems []PlaylistItem
 	for {
 		if nextPageToken != "" {
 			q := u.Query()
 			q.Set("pageToken", nextPageToken)
+			u.RawQuery = q.Encode()
 		}
-		paginatedItems, nextPageToken, err := getPlaylistItems(u)
+		paginatedItems, nextPageToken, err = getPlaylistItems(u.String())
 		if err != nil {
 			return nil, err
 		}
