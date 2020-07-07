@@ -89,6 +89,7 @@ function App() {
         <section className="right-container">
           <Toolbar>
             <GoogleLogin
+              disabled={true}
               clientId={clientID}
               buttonText={"Login with Google"}
               onSuccess={handleGoogleResponse}

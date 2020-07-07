@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/calvinfeng/playground/youtubeapi"
 	"os"
+	"strings"
 
 	"github.com/calvinfeng/playground/data"
 	"github.com/calvinfeng/playground/datastore"
@@ -53,8 +55,17 @@ func seed() error {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
 	}
 
-	logrus.Infof("inserting %d practice recordings", len(data.PracticeRecordings))
-	if numInserted, err := store.BatchInsertPracticeRecordings(data.PracticeRecordings...); err != nil {
+	srv := youtubeapi.New(youtubeapi.Config{
+		APIKey: os.Getenv("GOOGLE_API_KEY"),
+	})
+
+	practiceRecordings, err := loadPracticeRecordings(srv)
+	if err != nil {
+		return fmt.Errorf("failed to load practice recordings from YouTube %w", err)
+	}
+
+	logrus.Infof("inserting %d practice recordings", len(practiceRecordings))
+	if numInserted, err := store.BatchInsertPracticeRecordings(practiceRecordings...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
 	} else {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
@@ -70,8 +81,13 @@ func seed() error {
 			recording.ID, recording.Year, recording.Month, recording.Day, recording.YouTubeVideoID)
 	}
 
-	logrus.Infof("inserting %d progress recordings", len(data.ProgressRecordings))
-	if numInserted, err := store.BatchInsertProgressRecordings(data.ProgressRecordings...); err != nil {
+	progressRecordings, err := loadProgressRecordings(srv)
+	if err != nil {
+		return fmt.Errorf("failed to load progress recordings from YouTube %w", err)
+	}
+
+	logrus.Infof("inserting %d progress recordings", len(progressRecordings))
+	if numInserted, err := store.BatchInsertProgressRecordings(progressRecordings...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
 	} else {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
@@ -98,4 +114,58 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+const progressRecordingPlaylistID = "PLvb0sLP6w4rL8s3iDlfdOdA3_X2QNmMoB"
+
+func loadProgressRecordings(srv youtubeapi.Service) ([]*datastore.ProgressRecording, error) {
+	items, err := srv.PlaylistItems(progressRecordingPlaylistID)
+	if err != nil {
+		return nil, err
+	}
+
+	recordings := make([]*datastore.ProgressRecording, 0, len(items))
+	for _, item := range items {
+		recording := &datastore.ProgressRecording{
+			ID:               item.Snippet.Position,
+			Year:             int64(item.ContentDetails.Published.Year()),
+			Month:            int64(item.ContentDetails.Published.Month()),
+			VideoOrientation: data.Landscape,
+			YouTubeVideoID:   item.ContentDetails.VideoID,
+			Title:            item.Snippet.Title,
+		}
+		// Optionally save thumbnail URL in the future
+		if strings.Contains(recording.Title, "AR 9:16") {
+			recording.VideoOrientation = data.Portrait
+		}
+		recordings = append(recordings, recording)
+	}
+	return recordings, nil
+}
+
+const practiceRecordingPlaylistID = "PLvb0sLP6w4rIq7kS4-D4zDcbFPNZOSUhW"
+
+func loadPracticeRecordings(srv youtubeapi.Service) ([]*datastore.PracticeRecording, error) {
+	items, err := srv.PlaylistItems(practiceRecordingPlaylistID)
+	if err != nil {
+		return nil, err
+	}
+
+	recordings := make([]*datastore.PracticeRecording, 0, len(items))
+	for _, item := range items {
+		recording := &datastore.PracticeRecording{
+			Year:             int64(item.ContentDetails.Published.Year()),
+			Month:            int64(item.ContentDetails.Published.Month()),
+			Day:              int64(item.ContentDetails.Published.Day()),
+			VideoOrientation: data.Landscape,
+			YouTubeVideoID:   item.ContentDetails.VideoID,
+			Title:            item.Snippet.Title,
+		}
+		// Optionally save thumbnail URL in the future
+		if strings.Contains(recording.Title, "AR 9:16") {
+			recording.VideoOrientation = data.Portrait
+		}
+		recordings = append(recordings, recording)
+	}
+	return recordings, nil
 }

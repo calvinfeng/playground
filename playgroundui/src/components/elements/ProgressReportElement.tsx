@@ -76,7 +76,6 @@ export default class ProgressReportElement extends React.Component<Props, State>
         contentStyle={contentStyle}
         iconStyle={iconStyle}
         icon={<MusicNoteIcon />}>
-      <Typography variant="h6">Monthly Progress Recording</Typography>
       {this.content}
       </VerticalTimelineElement>
     )
