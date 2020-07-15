@@ -11,6 +11,7 @@ import {
   Tooltip
 } from '@material-ui/core'
 import './About.scss'
+import ReactPlayer from 'react-player';
 
 enum Equations {
   BlochEqn = "\\psi(\\vec{r}) = u(r)e^{i k \\cdot \\vec{r}}",
@@ -93,34 +94,65 @@ export default function About() {
     </section>
   )
 
+  const meisnerDemo = (
+    <section className="meissner-demo">
+      <Card className="card">
+        <CardContent>
+          <ReactPlayer 
+            url={'https://www.youtube.com/watch?v=Bia4vV4CS5o'}
+            width={480}
+            height={270}
+            controls={true} />
+        </CardContent>
+      </Card>
+    </section>
+  )
+  
+  const guitarShopping = (
+    <Card className="medium-card">
+      <CardHeader
+        title="Outside of Work"
+        subheader="I enjoy shopping for guitars besides playing them." />
+      <CardMedia
+        image={process.env.PUBLIC_URL + '/img/guitarshop.png'}
+        title="At Guitar Center"
+        className="media" />
+    </Card>
+  )
+  
+  const mountainDriving = (
+    <Card className="medium-card">
+      <CardHeader
+        title="Outside of Work"
+        subheader="I enjoy driving with my friends on the weekends." />
+      <Tooltip title="They are not in the picture. But trust me, they were there.">
+        <CardMedia
+          image={process.env.PUBLIC_URL + '/img/boxster.jpg'}
+          title="Mountain Driving"
+          className="media" />
+      </Tooltip>
+    </Card>
+  )
+
+  const guitarPlaying = (
+    <Card className="medium-card">
+    <CardHeader
+      title="Outside of Work"
+      subheader="It should be obvious now that I enjoy playing them" />
+    <CardMedia
+      image={process.env.PUBLIC_URL + '/img/playing.jpg'}
+      title="Playing Guitar"
+      className="media" />
+    </Card>
+  )
+
   const activities = (
     <section className="activities">
       <Grid container className="column" direction="column">
         <Grid container className="row" direction="row" spacing={1} justify="center" >
-          <Grid item>
-            <Card className="medium-card">
-              <CardHeader
-                title="My Other Facets of Life"
-                subheader="I enjoy shopping for guitars besides playing them." />
-              <CardMedia
-                image={process.env.PUBLIC_URL + '/img/guitarshop.png'}
-                title="At Guitar Center"
-                className="media" />
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card className="medium-card">
-              <CardHeader
-                title="My Other Facets of Life"
-                subheader="I enjoy driving with my friends on the weekends." />
-              <Tooltip title="They are not in the picture. But trust me, they were there.">
-                <CardMedia
-                  image={process.env.PUBLIC_URL + '/img/boxster.jpg'}
-                  title="Driving"
-                  className="media" />
-              </Tooltip>
-            </Card>
-          </Grid>
+          <Grid item>{guitarShopping}</Grid>
+          {/* <Grid item>{guitarPlaying}</Grid> */}
+          <Grid item>{mountainDriving}</Grid>
         </Grid>
       </Grid>
     </section>
@@ -131,6 +163,7 @@ export default function About() {
       {bio}
       {quote1}
       {background}
+      {meisnerDemo}
       {quote2}
       {activities}
       {quote3}
