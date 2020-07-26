@@ -50,7 +50,9 @@ export default function Timeline(props: Props) {
       </CardContent>
     </Card>
     <VerticalTimeline animate={true}>
+      <ProgressReportElement id={10} />
       <PracticeRecordingElement year={2020} month={7} />
+      <ProgressReportElement id={9} />
       <PracticeRecordingElement year={2020} month={6} />
       <ProgressReportElement id={8} />
       <PracticeRecordingElement year={2020} month={5} />
