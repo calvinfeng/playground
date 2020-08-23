@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package api;
+option go_package = "api";
+
+import "google/protobuf/timestamp.proto";
+
+message Label { 
+    string id = 1 [json_name="id"];
+    string parent_id = 2 [json_name="parent_id"];
+    repeated Label children = 3 [json_name="children"];
+    string name = 4 [json_name="name"];
+}
+
+message PracticeLogEntry {
+    string id = 1 [json_name="id"];
+    string user_id = 2 [json_name="user_id"];
+    repeated string labels = 3 [json_name="labels"];
+    int32 duration = 4 [json_name="duration"];
+    google.protobuf.Timestamp date = 5 [json_name="date"];
+    string message = 6 [json_name="message"];
+}
