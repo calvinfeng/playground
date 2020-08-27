@@ -1,26 +1,74 @@
 import React from 'react'
 import './Fretboard.scss'
+import {
+  Grid,
+  Button,
+  Typography
+} from '@material-ui/core'
 
 type Props = {}
 
-export default function Timeline(props: Props) {
-  const [root, setRoot] = React.useState<string>('c')
-  
-  const generateClickHandler = (key: string) => () => {
-    setRoot(key)
+const NumFrets = 15
+const Notes = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B']
+
+
+function getNote(i: number): string {
+  if (i < 0) {
+    i = i % 12 + 12
+  } else if (i > 11) {
+    i %= 12
+  }
+  return Notes[i]
+}
+
+export default function Fretboard(props: Props) {
+  // const [root, setRoot] = React.useState<string>('c')
+  const rows: JSX.Element[] = []
+
+  const openFretNotes: number[] = [4, 11, 7, 2, 9, 4]
+  for (let j = 0; j <= 5; j++) {
+    const row: JSX.Element[] = [
+      <Grid item>
+        <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
+          {getNote(openFretNotes[j])}
+        </Button>
+      </Grid>
+    ]
+
+    for (let i = 1; i <= NumFrets; i++) {
+      row.push(
+        <Grid item>
+          <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
+            {getNote(openFretNotes[j] + i)}
+          </Button>
+        </Grid>
+      )
+    }
+
+    rows.push(
+      <Grid
+        direction="row"
+        justify="flex-start"
+        alignItems="baseline"
+        container
+        spacing={0}>
+        {row}
+      </Grid>
+    )
   }
 
-  const buttons = ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map((key: string) => {
-    return <button onClick={generateClickHandler(key.toLowerCase())}>{`${key} Major`}</button>
-  })
-
   return (
-    <div className='Fretboard'>
-    {buttons}
-    <iframe
-      src={`https://fretmap.app/scale-major/root-${root}/hand-right`}
-      width="100%"
-      height="600" />
-    </div>
+    <section className="Fretboard">
+      <Typography variant="h1">Interactive Fretboard</Typography>
+      <Grid
+        direction="row"
+        justify="flex-start"
+        alignItems="baseline"
+        container
+        spacing={0}>
+        {rows}
+      </Grid>
+      <Typography variant="body1">Feature is under construction</Typography>
+    </section>
   )
 }

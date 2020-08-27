@@ -81,7 +81,7 @@ function App() {
               anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
               <TimelineMenuItem />
               <AboutMenuItem />
-              {/* <FretboardMenuItem /> */}
+              <FretboardMenuItem />
             </Menu>
             <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
           </Toolbar>
@@ -101,7 +101,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={Timeline} />
         <Route path="/about" exact component={About} />
-        {/* <Route path="/fretboard" exact component={Fretboard} /> */}
+        <Route path="/fretboard" exact component={Fretboard} />
       </Switch>
       </BrowserRouter>
     </div>
