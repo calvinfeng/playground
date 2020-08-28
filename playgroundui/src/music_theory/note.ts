@@ -1,5 +1,5 @@
 
-export enum NaturalNote {
+export enum NoteName {
   C = "C",
   D = "D",
   E = "E",
@@ -15,103 +15,100 @@ export enum Accidental {
   Flat = "b"
 }
 
-const chromaticOrder: (NaturalNote|null)[]= [
-  NaturalNote.C,
-  null,
-  NaturalNote.D,
-  null,
-  NaturalNote.E,
-  NaturalNote.F,
-  null,
-  NaturalNote.G,
-  null,
-  NaturalNote.A,
-  null,
-  NaturalNote.B
-]
-
-const naturalOrder: NaturalNote[] = [
-  NaturalNote.C,
-  NaturalNote.D,
-  NaturalNote.E,
-  NaturalNote.F,
-  NaturalNote.G,
-  NaturalNote.A,
-  NaturalNote.B
-]
-
-function nextNaturalNote(note: NaturalNote): NaturalNote {
-  for (let i = 0; i < naturalOrder.length; i++) {
-    if (note === naturalOrder[i]) {
-      if (i + 1 >= naturalOrder.length) {
-        return naturalOrder[i + 1 - naturalOrder.length]
-      }
-      return naturalOrder[i+1]
-    }
-  }
-  throw "natural note not found"
+type NoteConfig = {
+  NoteName: NoteName
+  Accidental: Accidental
 }
 
-function chromaticIndexOf(note: NaturalNote, accidental: Accidental): number {
-  for (let i = 0; i < chromaticOrder.length; i++) {
-    if (chromaticOrder[i] !== null && chromaticOrder[i] === note) {
-      switch (accidental) {
-        case Accidental.Natural:
-          return i
-        case Accidental.Flat:
-          if (i - 1 < 0) {
-            return i + 12
-          }
-          return i - 1
-        case Accidental.Sharp:
-          if (i + 1 >= chromaticOrder.length) {
-            return i + 1 - chromaticOrder.length
-          }
-          return i + 1
+// Chromatic order needs to factor in enharmonic notes.
+const chromaticNoteOrder: NoteConfig[][] = [
+  [
+    { NoteName: NoteName.C, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.C, Accidental: Accidental.Sharp }, 
+    { NoteName: NoteName.D, Accidental: Accidental.Flat }
+  ],
+  [
+    { NoteName: NoteName.D, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.D, Accidental: Accidental.Sharp }, 
+    { NoteName: NoteName.E, Accidental: Accidental.Flat }
+  ],
+  [
+    { NoteName: NoteName.E, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.F, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.F, Accidental: Accidental.Sharp }, 
+    { NoteName: NoteName.G, Accidental: Accidental.Flat }
+  ],
+  [
+    { NoteName: NoteName.G, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.G, Accidental: Accidental.Sharp }, 
+    { NoteName: NoteName.A, Accidental: Accidental.Flat }
+  ],
+  [
+    { NoteName: NoteName.A, Accidental: Accidental.Natural }
+  ],
+  [
+    { NoteName: NoteName.A, Accidental: Accidental.Sharp }, 
+    { NoteName: NoteName.B, Accidental: Accidental.Flat }
+  ],
+  [
+    { NoteName: NoteName.B, Accidental: Accidental.Natural }
+  ],
+]
+
+function chromaticIndexOf(note: Note): number {
+  for (let i = 0; i < chromaticNoteOrder.length; i++) {
+    for (let j = 0; j < chromaticNoteOrder[i].length; j++) {
+      if (note.has(chromaticNoteOrder[i][j])) {
+        return i
       }
     }
   }
-  return -1
+  throw "note not found, not part of chromatic scale"
 }
 
 export class Note {
-  private note: NaturalNote
+  private name: NoteName
   private accidental: Accidental
+  private chromaticIndex: number
 
-  constructor(note: NaturalNote, accidental: Accidental) {
-    this.note = note
+  constructor(name: NoteName, accidental: Accidental) {
+    this.name = name
     this.accidental = accidental  
+    this.chromaticIndex = chromaticIndexOf(this)
   }
 
-  wholeUp(): Note{
-    const i = chromaticIndexOf(this.note, this.accidental)
-    const nextNote = nextNaturalNote(this.note)
-    const j = chromaticIndexOf(nextNote, Accidental.Natural)
-    let delta = j - i
-    if (delta < 0) {
-      delta += chromaticOrder.length
+  public toString(): string {
+    if (this.accidental === Accidental.Natural) {
+      return this.name
     }
-    if (delta === 1) {
-      // Basically + 1
-      return new Note(nextNote, Accidental.Sharp)
-    } else if (delta === 2) {
-      // Basically doing nothing
-      return new Note(nextNote, Accidental.Natural)
-    } else {
-      // Basically - 1
-      return new Note(nextNote, Accidental.Flat)
-    }
+    return this.name + this.accidental
   }
 
-  halfUp(): Note {
-    const i = chromaticIndexOf(this.note, this.accidental)
-    const nextNote = nextNaturalNote(this.note)
-    const j = chromaticIndexOf(nextNote, Accidental.Natural)
-    const delta = j - i
-    if (delta === 1) {
-      return new Note(nextNote, Accidental.Natural)
-    } else {
-      return new Note(nextNote, Accidental.Flat)
+  has(other: NoteConfig): boolean {
+    return this.name == other.NoteName && this.accidental == other.Accidental
+  }
+
+  step(s: number): Note[] {
+    let i = this.chromaticIndex + s
+    if (i >= chromaticNoteOrder.length) {
+      i -= chromaticNoteOrder.length
+    } else if (i < 0) {
+      i += chromaticNoteOrder.length
     }
+    
+    return chromaticNoteOrder[i].map(
+      (config: NoteConfig) => new Note(config.NoteName, config.Accidental)
+    )
   }
 }
+
