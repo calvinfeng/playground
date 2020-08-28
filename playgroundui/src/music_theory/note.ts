@@ -101,11 +101,15 @@ export class Note {
   step(s: number): Note[] {
     let i = this.chromaticIndex + s
     if (i >= chromaticNoteOrder.length) {
-      i -= chromaticNoteOrder.length
+      i %= chromaticNoteOrder.length
     } else if (i < 0) {
+      i %= chromaticNoteOrder.length
       i += chromaticNoteOrder.length
     }
     
+    if (chromaticNoteOrder[i] === undefined) {
+      console.log("broken", i)
+    }
     return chromaticNoteOrder[i].map(
       (config: NoteConfig) => new Note(config.NoteName, config.Accidental)
     )

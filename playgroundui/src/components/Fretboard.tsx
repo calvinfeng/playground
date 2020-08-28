@@ -3,44 +3,47 @@ import './Fretboard.scss'
 import {
   Grid,
   Button,
-  Typography
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@material-ui/core'
 import { Note, NoteName, Accidental } from '../music_theory/note'
 
 type Props = {}
 
 const NumFrets = 15
-const Notes = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B']
-
-
-function getNote(i: number): string {
-  if (i < 0) {
-    i = i % 12 + 12
-  } else if (i > 11) {
-    i %= 12
-  }
-  return Notes[i]
-}
 
 export default function Fretboard(props: Props) {
-  // const [root, setRoot] = React.useState<string>('c')
+  const [root, setRoot] = React.useState<NoteName>(NoteName.C)
+
   const rows: JSX.Element[] = []
 
-  const openFretNotes: number[] = [4, 11, 7, 2, 9, 4]
+  const openFretNotes: Note[] = [
+    new Note(NoteName.E, Accidental.Natural),
+    new Note(NoteName.B, Accidental.Natural),
+    new Note(NoteName.G, Accidental.Natural),
+    new Note(NoteName.D, Accidental.Natural),
+    new Note(NoteName.A, Accidental.Natural),
+    new Note(NoteName.E, Accidental.Natural)
+  ]
+
   for (let j = 0; j <= 5; j++) {
     const row: JSX.Element[] = [
       <Grid item>
         <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
-          {getNote(openFretNotes[j])}
+          {`${openFretNotes[j]}`}
         </Button>
       </Grid>
     ]
 
     for (let i = 1; i <= NumFrets; i++) {
+      const notes = openFretNotes[j].step(i)
       row.push(
         <Grid item>
           <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
-            {getNote(openFretNotes[j] + i)}
+            {notes.map((note) => `${note}`).join(',')}
           </Button>
         </Grid>
       )
@@ -58,11 +61,8 @@ export default function Fretboard(props: Props) {
     )
   }
 
-  let root = new Note(NoteName.E, Accidental.Natural)
-  console.log(`${root}`)
-  for (let i = 1; i <= 12; i++) {
-    let nextNotes = root.step(i)
-    console.log(`${nextNotes}`)
+  const handleSelectRootNote = () => {
+
   }
 
   return (
@@ -77,6 +77,18 @@ export default function Fretboard(props: Props) {
         {rows}
       </Grid>
       <Typography variant="body1">Feature is under construction</Typography>
+      <FormControl className="fretboard-select">
+        <InputLabel id="root-select-label">Root</InputLabel>
+        <Select
+          labelId="root-select-label"
+          id="root-select"
+          value={root}
+          onChange={handleSelectRootNote}>
+          <MenuItem value={NoteName.C}>{NoteName.C}</MenuItem>
+          <MenuItem value={NoteName.D}>{NoteName.D}</MenuItem>
+          <MenuItem value={NoteName.E}>{NoteName.E}</MenuItem>
+        </Select>
+      </FormControl>
     </section>
   )
 }
