@@ -124,6 +124,10 @@ func loadProgressRecordings(srv youtubeapi.Service) ([]*datastore.ProgressRecord
 		return nil, err
 	}
 
+	if len(items) == 0 {
+		return nil, fmt.Errorf("YouTube API has returned 0 items for playlist %s", progressRecordingPlaylistID)
+	}
+	
 	recordings := make([]*datastore.ProgressRecording, 0, len(items))
 	for _, item := range items {
 		recording := &datastore.ProgressRecording{
@@ -149,6 +153,10 @@ func loadPracticeRecordings(srv youtubeapi.Service) ([]*datastore.PracticeRecord
 	items, err := srv.PlaylistItems(practiceRecordingPlaylistID)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(items) == 0 {
+		return nil, fmt.Errorf("YouTube API has returned 0 items for playlist %s", practiceRecordingPlaylistID)
 	}
 
 	recordings := make([]*datastore.PracticeRecording, 0, len(items))
