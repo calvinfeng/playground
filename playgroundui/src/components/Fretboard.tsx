@@ -5,6 +5,7 @@ import {
   Button,
   Typography
 } from '@material-ui/core'
+import { Note, NaturalNote, Accidental } from '../music_theory/note'
 
 type Props = {}
 
@@ -56,6 +57,16 @@ export default function Fretboard(props: Props) {
       </Grid>
     )
   }
+
+  const A = new Note(NaturalNote.A, Accidental.Natural)
+  console.log(A.wholeUp())
+  console.log(A.wholeUp().wholeUp())
+  console.log(A.wholeUp().wholeUp().halfUp())
+  console.log(A.wholeUp().wholeUp().halfUp().wholeUp())
+  console.log(A.wholeUp().wholeUp().halfUp().wholeUp().wholeUp())
+  console.log(A.wholeUp().wholeUp().halfUp().wholeUp().wholeUp().wholeUp())
+  console.log(A.wholeUp().wholeUp().halfUp().wholeUp().wholeUp().wholeUp().halfUp())
+  console.log(A.wholeUp().wholeUp().halfUp().wholeUp().wholeUp().wholeUp().halfUp().wholeUp())
 
   return (
     <section className="Fretboard">
