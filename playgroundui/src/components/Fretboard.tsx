@@ -17,6 +17,7 @@ const NumFrets = 15
 
 export default function Fretboard(props: Props) {
   const [root, setRoot] = React.useState<NoteName>(NoteName.C)
+  const [rootAccidental, setRootAccidental] = React.useState<Accidental>(Accidental.Natural)
 
   const rows: JSX.Element[] = []
 
@@ -61,14 +62,20 @@ export default function Fretboard(props: Props) {
     )
   }
 
-  const handleSelectRootNote = () => {
-
+  const handleSelectRootNote = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setRoot(event.target.value as NoteName)
   }
 
+  const handleSelectRootNoteAccidental = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setRootAccidental(event.target.value as Accidental)
+  }
+
+  console.log(rootAccidental)
   return (
     <section className="Fretboard">
       <Typography variant="h1">Interactive Fretboard</Typography>
       <Grid
+        className="fretboard-grid"
         direction="row"
         justify="flex-start"
         alignItems="baseline"
@@ -77,18 +84,36 @@ export default function Fretboard(props: Props) {
         {rows}
       </Grid>
       <Typography variant="body1">Feature is under construction</Typography>
-      <FormControl className="fretboard-select">
-        <InputLabel id="root-select-label">Root</InputLabel>
-        <Select
-          labelId="root-select-label"
-          id="root-select"
-          value={root}
-          onChange={handleSelectRootNote}>
-          <MenuItem value={NoteName.C}>{NoteName.C}</MenuItem>
-          <MenuItem value={NoteName.D}>{NoteName.D}</MenuItem>
-          <MenuItem value={NoteName.E}>{NoteName.E}</MenuItem>
-        </Select>
-      </FormControl>
+      <section className="scale-selector">
+        <FormControl className="form-control">
+          <InputLabel id="root-select-label">Root</InputLabel>
+          <Select
+            labelId="root-select-label"
+            id="root-select"
+            value={root}
+            onChange={handleSelectRootNote}>
+            {
+              Object.keys(NoteName).map((noteName: string): JSX.Element => (
+                <MenuItem value={noteName}>{noteName}</MenuItem>
+              ))
+            }
+          </Select>
+        </FormControl>
+        <FormControl className="form-control">
+          <InputLabel id="root-accidental-select-label">Root Accidental</InputLabel>
+          <Select
+            labelId="root-accidental-select-label"
+            id="root-accidental-select"
+            value={rootAccidental}
+            onChange={handleSelectRootNoteAccidental}>
+            {
+              Object.keys(Accidental).map((key: string): JSX.Element => (
+                <MenuItem value={key}>{key}</MenuItem>
+              ))
+            }
+          </Select>
+        </FormControl>
+      </section>
     </section>
   )
 }

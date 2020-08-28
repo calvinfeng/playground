@@ -10,9 +10,9 @@ export enum NoteName {
 }
 
 export enum Accidental {
-  Natural = "",
-  Sharp = "#",
-  Flat = "b"
+  Natural = "Natural",
+  Sharp = "Sharp",
+  Flat = "Flat"
 }
 
 type NoteConfig = {
@@ -88,14 +88,18 @@ export class Note {
   }
 
   public toString(): string {
-    if (this.accidental === Accidental.Natural) {
-      return this.name
+    switch (this.accidental) {
+      case Accidental.Natural:
+        return this.name
+      case Accidental.Sharp:
+        return `${this.name}#`
+      case Accidental.Flat:
+        return `${this.name}b`
     }
-    return this.name + this.accidental
   }
 
   has(other: NoteConfig): boolean {
-    return this.name == other.NoteName && this.accidental == other.Accidental
+    return this.name === other.NoteName && this.accidental === other.Accidental
   }
 
   step(s: number): Note[] {
