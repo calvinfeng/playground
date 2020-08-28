@@ -1,0 +1,8 @@
+.PracticeLog {
+  display: flex;
+  flex-direction: column;
+  .log-entries {
+    display: flex;
+    flex-direction: row;
+  }
+}

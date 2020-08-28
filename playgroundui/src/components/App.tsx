@@ -23,6 +23,7 @@ import {
 import Timeline from './Timeline'
 import About from './About'
 import Fretboard from './Fretboard'
+import PracticeLog from './PracticeLog'
 import PracticeTimeProgress from './widgets/PracticeTimeProgress'
 import './App.scss'
 
@@ -61,7 +62,10 @@ function App() {
   }
 
   const environmentIndicator = (
-    <p>You are running this application in {process.env.NODE_ENV}, with sever URL {process.env.REACT_APP_API_URL}</p>
+    <p>
+      You are running this application in {process.env.NODE_ENV}, 
+      with sever URL {process.env.REACT_APP_API_URL}
+    </p>
   )
 
   return (
@@ -82,6 +86,7 @@ function App() {
               <TimelineMenuItem />
               <AboutMenuItem />
               <FretboardMenuItem />
+              <PracticeLogMenuItem />
             </Menu>
             <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
           </Toolbar>
@@ -102,6 +107,7 @@ function App() {
         <Route path="/" exact component={Timeline} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
+        <Route path="/practicelog" exact component={PracticeLog} />
       </Switch>
       </BrowserRouter>
     </div>
@@ -112,6 +118,7 @@ enum Path {
   Timeline = "/",
   About = "/about",
   Fretboard = "/fretboard",
+  PracticeLog = "/practicelog"
 }
 
 function TimelineMenuItem() {
@@ -155,6 +162,21 @@ function FretboardMenuItem() {
   return (
     <MenuItem onClick={handleClick} disabled={location.pathname === Path.Fretboard}>
       Fretboard
+    </MenuItem>
+  );
+}
+
+function PracticeLogMenuItem() {
+  const history = useHistory()
+  const location = useLocation()
+
+  function handleClick() {
+    history.push(Path.PracticeLog);
+  }
+
+  return (
+    <MenuItem onClick={handleClick} disabled={location.pathname === Path.PracticeLog}>
+      Practice Log
     </MenuItem>
   );
 }
