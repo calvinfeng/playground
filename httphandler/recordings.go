@@ -17,20 +17,21 @@ func ProgressRecordingListHandler(cfg Config) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
 
-		resp := new(PracticeRecordingListJSONResponse)
+		resp := new(ProgressRecordingListJSONResponse)
 		resp.Count = len(recordings)
-		resp.Results = make([]PracticeRecordingJSON, 0, len(recordings))
+		resp.Results = make([]ProgressRecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
 			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
-			resp.Results = append(resp.Results, PracticeRecordingJSON{
+			resp.Results = append(resp.Results, ProgressRecordingJSON{
 				Year:           recording.Year,
 				Month:          month,
 				YouTubeVideoID: recording.YouTubeVideoID,
 				Title:          recording.Title,
 				Orientation:    recording.VideoOrientation,
+				Description:    recording.Description,
 			})
 		}
 
@@ -47,15 +48,15 @@ func PracticeRecordingListHandler(cfg Config) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("server failed to query database %w", err))
 		}
 
-		resp := new(ProgressRecordingListJSONResponse)
+		resp := new(PracticeRecordingListJSONResponse)
 		resp.Count = len(recordings)
-		resp.Results = make([]ProgressRecordingJSON, 0, len(recordings))
+		resp.Results = make([]PracticeRecordingJSON, 0, len(recordings))
 		for _, recording := range recordings {
 			month, ok := monthNames[recording.Month]
 			if !ok {
 				continue
 			}
-			resp.Results = append(resp.Results, ProgressRecordingJSON{
+			resp.Results = append(resp.Results, PracticeRecordingJSON{
 				Year:           recording.Year,
 				Month:          month,
 				Title:          recording.Title,

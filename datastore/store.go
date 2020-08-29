@@ -141,7 +141,7 @@ func (s *store) BatchInsertPracticeRecordings(recordings ...*PracticeRecording) 
 
 func (s *store) BatchInsertProgressRecordings(recordings ...*ProgressRecording) (int64, error) {
 	query := squirrel.Insert((ProgressRecording{}).Table()).
-		Columns("year", "month", "youtube_video_id", "video_orientation", "title")
+		Columns("year", "month", "youtube_video_id", "video_orientation", "title", "description")
 
 	for _, recording := range recordings {
 		query = query.Values(
@@ -149,7 +149,8 @@ func (s *store) BatchInsertProgressRecordings(recordings ...*ProgressRecording) 
 			recording.Month,
 			recording.YouTubeVideoID,
 			recording.VideoOrientation,
-			recording.Title)
+			recording.Title,
+			recording.Description)
 	}
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()

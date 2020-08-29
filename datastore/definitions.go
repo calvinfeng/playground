@@ -22,6 +22,7 @@ type ProgressRecording struct {
 	VideoOrientation string `db:"video_orientation"`
 	YouTubeVideoID   string `db:"youtube_video_id"`
 	Title            string `db:"title"`
+	Description      string `db:"description"`
 }
 
 func (ProgressRecording) Table() string {

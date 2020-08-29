@@ -53,6 +53,7 @@ type ProgressRecordingJSON struct {
 	Title          string `json:"title,omitempty"`
 	Orientation    string `json:"orientation"`
 	YouTubeVideoID string `json:"youtube_video_id"`
+	Description    string `json:"description"`
 }
 
 type SummaryJSON struct {

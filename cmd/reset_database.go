@@ -137,6 +137,7 @@ func loadProgressRecordings(srv youtubeapi.Service) ([]*datastore.ProgressRecord
 			VideoOrientation: data.Landscape,
 			YouTubeVideoID:   item.ContentDetails.VideoID,
 			Title:            item.Snippet.Title,
+			Description:      item.Snippet.Description,
 		}
 		// Optionally save thumbnail URL in the future
 		if strings.Contains(recording.Title, "AR 9:16") {

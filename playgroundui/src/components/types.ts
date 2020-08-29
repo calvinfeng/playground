@@ -8,6 +8,7 @@ export type VideoJSON = {
   month: string
   day: number
   title: string
+  description: string
   orientation: Orientation
   youtube_video_id: string
 }

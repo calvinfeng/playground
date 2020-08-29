@@ -101,4 +101,14 @@ var Summaries = []*datastore.MonthlySummary{
 		great opportunity to introduce myself to sweep picking. The Final Countdown solo has a mini sweep pick across 2 strings. 
 		This is not going to be easy but I am dead set on this goal.`,
 	},
+	{
+		Year:     2020,
+		Month:    8,
+		Title:    "The Final Countdown",
+		Subtitle: "Consistent and Persistent",
+		Body: `One month was simply not enough for me to develop the finger strength and dexterity for this song. I am
+		continuing my practice, pushing from 100 beats per minute to the original tempo at 118 beats per minute. 
+        Honestly, it's been getting quite repetitive. However, I cannot give up. I just need to have patience and go the
+		distance.`,
+	},
 }
