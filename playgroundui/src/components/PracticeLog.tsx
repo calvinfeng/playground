@@ -24,6 +24,7 @@ import {
 } from '@material-ui/icons'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import LogEntryInput from './elements/LogEntryInput'
 
 type Props = {
 
@@ -126,6 +127,9 @@ export default class PracticeLog extends React.Component<Props, State> {
             </Table>
           </TableContainer>
         </div>
+        <LogEntryInput
+          editLog={this.state.logEntries[0]}
+          labels={[]} />
       </section>
     )
   }
