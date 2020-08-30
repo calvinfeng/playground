@@ -32,63 +32,73 @@ type Props = {
 
 type State = {
   logEntries: LogEntryJSON[]
+  logLabels: LogLabelJSON[]
 }
 
+const mockLogEntries: LogEntryJSON[] = [
+  {
+    id: "1234-1234-1234-1234",
+    duration: 30,
+    date: new Date(),
+    labels: [
+      {
+        id: "abcd-abcd-abcd-abcd",
+        parent_id: null,
+        name: "Song",
+        children: []
+      },
+      {
+        id: "bcde-bcde-bcde-bcde",
+        parent_id: "abcd-abcd-abcd-abcd",
+        name: "Now & Forever",
+        children: []
+      }
+    ],
+    message: "100 BPM at 93% Speed"
+  }
+]
+
+const mockLabels: LogLabelJSON[] = [
+  {
+    id: "abcd-abcd-abcd-abcd",
+    parent_id: null,
+    name: "Song",
+    children: ["bcde-bcde-bcde-bcde", "gcde-gcde-gcde-gcde"]
+  },
+  {
+    id: "bcde-bcde-bcde-bcde",
+    parent_id: "abcd-abcd-abcd-abcd",
+    name: "Now & Forever",
+    children: []
+  },
+  {
+    id: "gcde-gcde-gcde-gcde",
+    parent_id: "abcd-abcd-abcd-abcd",
+    name: "The Final Countdown",
+    children: []
+  }
+]
+
+// TODO: Data will be fetched from API
 export default class PracticeLog extends React.Component<Props, State> {
-  // TODO: Data will be fetched from API
   constructor(props) {
     super(props)
     this.state = {
-      logEntries: [
-        {
-          id: "1234-1234-1234-1234",
-          duration: 30,
-          date: new Date(),
-          labels: [
-            {
-              id: "abcd-abcd-abcd-abcd",
-              parent_id: null,
-              name: "Song",
-              children: []
-            },
-            {
-              id: "bcde-bcde-bcde-bcde",
-              parent_id: "abcd-abcd-abcd-abcd",
-              name: "Now & Forever",
-              children: []
-            }
-          ],
-          message: "100 BPM at 93% Speed"
-        }
-      ]
+      logEntries: mockLogEntries,
+      logLabels: mockLabels
     }
   }
-
-  handleDelete = () => {}
-
-  handleDateChange = () => {}
 
   render() {
     const tableRows: JSX.Element[] = []
     this.state.logEntries.forEach((log: LogEntryJSON) => {
+      const style = {
+        "margin": "0.1rem"
+      }
       const labels: JSX.Element[] = log.labels.map((label: LogLabelJSON) => (
-        <Chip label={label.name} icon={<MusicNote />} color="primary" onDelete={this.handleDelete} />
+        <Chip style={style} label={label.name} icon={<MusicNote />} color="primary" />
       ))
       
-      // TODO: Show this date picker in edit mode
-      const date: JSX.Element = (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            label="Date"
-            value={log.date}
-            onChange={this.handleDateChange} />
-        </MuiPickersUtilsProvider>
-      )
-
       tableRows.push(
         <TableRow>
           <TableCell>{log.date.toDateString()}</TableCell>
@@ -128,8 +138,8 @@ export default class PracticeLog extends React.Component<Props, State> {
           </TableContainer>
         </div>
         <LogEntryInput
-          editLog={this.state.logEntries[0]}
-          labels={[]} />
+          editLogEntry={this.state.logEntries[0]}
+          logLabels={this.state.logLabels} />
       </section>
     )
   }

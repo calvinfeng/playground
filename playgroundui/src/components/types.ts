@@ -24,7 +24,7 @@ export type MonthlySummaryJSON = {
 export type LogLabelJSON = {
   id: string
   parent_id: string | null
-  children: LogLabelJSON[]
+  children: string[]
   name: string
 } 
 

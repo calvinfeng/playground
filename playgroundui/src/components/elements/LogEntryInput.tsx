@@ -15,7 +15,13 @@ import {
   Typography,
   Button,
   Slider,
-  TextField
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  Paper,
+  IconButton
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import SaveIcon from '@material-ui/icons/Save'
@@ -23,11 +29,10 @@ import {
   MusicNote
 } from '@material-ui/icons'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
-import { isThisSecond } from 'date-fns/esm'
 
 type Props = {
-  editLog: LogEntryJSON | null
-  labels: LogLabelJSON[]
+  editLogEntry: LogEntryJSON | null
+  logLabels: LogLabelJSON[]
   // Need a function to reload the labels for every successful POST or DELETE.
   // Same for log entries. The next logical step is using Redux but later...
 }
@@ -44,29 +49,33 @@ type State = {
   inputFieldLabels: LogLabelJSON[]
   inputFieldDuration: number
   inputFieldMessage: string
+  selectorFieldLabelID: string | null
 }
 
+// TODO: Refactor inline style into SCSS.
 export default class LogEntryInput extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    if (props.editLog === null) {
+    if (props.editLogEntry === null) {
       this.state = {
         mode: Mode.Add,
         inputFieldLogID: "",
         inputFieldDate: new Date(),
         inputFieldLabels: [],
         inputFieldDuration: 0,
-        inputFieldMessage: ""
+        inputFieldMessage: "",
+        selectorFieldLabelID: null
       }
     } else {
       this.state = {
         mode: Mode.Edit,
-        inputFieldLogID: props.editLog.id,
-        inputFieldDate: props.editLog.date,
-        inputFieldDuration: props.editLog.duration,
-        inputFieldLabels: props.editLog.labels,
-        inputFieldMessage: props.editLog.message
+        inputFieldLogID: props.editLogEntry.id,
+        inputFieldDate: props.editLogEntry.date,
+        inputFieldDuration: props.editLogEntry.duration,
+        inputFieldLabels: props.editLogEntry.labels,
+        inputFieldMessage: props.editLogEntry.message,
+        selectorFieldLabelID: null
       }
     }
   }
@@ -85,14 +94,46 @@ export default class LogEntryInput extends React.Component<Props, State> {
     })
   }
 
-  handleMessageChange = () => {
-
+  handleMessageChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      inputFieldMessage: ev.target.value
+    })
   }
 
-  handleDurationChange = (_, value) => {
+  handleDurationChange = (_: React.ChangeEvent<{}>, value: unknown) => {
     this.setState({
-      inputFieldDuration: value
+      inputFieldDuration: value as number
     })
+  }
+
+  handleSelectorFieldLabelChange = (ev: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    this.setState({
+      selectorFieldLabelID: ev.target.value as string
+    })
+  }
+
+  handleLabelAdd = () => {
+    if (this.state.selectorFieldLabelID === null) {
+      return
+    }
+
+    const found = this.state.inputFieldLabels.find(
+      (label: LogLabelJSON) => label.id === this.state.selectorFieldLabelID
+    )
+
+    if (found) {
+      return
+    }
+
+    const labelToAdd = this.props.logLabels.find(
+      (label: LogLabelJSON) => label.id === this.state.selectorFieldLabelID
+    )
+
+    if (labelToAdd) {
+      this.setState({
+        inputFieldLabels: [...this.state.inputFieldLabels, labelToAdd]
+      })
+    } 
   }
 
   get header() {
@@ -120,28 +161,64 @@ export default class LogEntryInput extends React.Component<Props, State> {
   }
 
   get editPanelLabels() {
+    if (this.props.logLabels.length === 0) {
+      return <div></div>
+    }
     const style = {
       "margin": "0.1rem"
     }
     const chips = this.state.inputFieldLabels.map((label: LogLabelJSON) => {
       return (
-        <Chip 
-          style={style}
-          label={label.name}
-          icon={<MusicNote />}
-          color="primary"
-          onDelete={this.newHandlerRemoveLabel(label.id)} />
+        <Grid item>
+          <Chip 
+            style={style}
+            label={label.name}
+            icon={<MusicNote />}
+            color="primary"
+            onDelete={this.newHandlerRemoveLabel(label.id)} />
+        </Grid>
       )
     })
+
+    const addLabelForm = (
+      <FormControl style={{width: "200px"}}>
+      <InputLabel id="label-selector-label">Label</InputLabel>
+      <Select
+        labelId="label-selector-label"
+        id="label-selector"
+        value={this.state.selectorFieldLabelID}
+        onChange={this.handleSelectorFieldLabelChange}>
+          {this.props.logLabels.map((label: LogLabelJSON) => {
+            return <MenuItem value={label.id}>
+              {label.name}
+            </MenuItem>
+          })}
+        </Select>
+      </FormControl>
+    )
+
+    const addLabelButton = (
+      <IconButton style={{marginLeft: "0.5rem"}}
+        onClick={this.handleLabelAdd}>
+        <AddIcon/>
+      </IconButton>
+    )
+
     return (
-      <Grid
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-        container
-        spacing={2}>
-        <Grid item>{chips}</Grid>
-      </Grid>
+      <section>
+        <Grid
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+          container
+          spacing={0}>
+          {chips}
+        </Grid>
+        <div style={{ display: "flex", width: "100%", marginTop: "1rem", justifyContent: "flex-end" }}>
+          {addLabelForm}
+          {addLabelButton}
+        </div>
+      </section>
     )
   }
 
@@ -175,7 +252,6 @@ export default class LogEntryInput extends React.Component<Props, State> {
     }
     return <TextField
       style={style}
-      id="standard-full-width"
       label="Log Message"
       value={this.state.inputFieldMessage}
       onChange={this.handleMessageChange}
@@ -192,8 +268,20 @@ export default class LogEntryInput extends React.Component<Props, State> {
     switch (this.state.mode) {
       case Mode.Edit:
         return <div>
-          <Button style={style} variant="contained" color="primary" startIcon={<SaveIcon />}>Save</Button>
-          <Button style={style} variant="contained" color="secondary">Cancel</Button>
+          <Button
+            style={style}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={() => console.log(this.state)}>
+            Save
+          </Button>
+          <Button
+            style={style}
+            variant="contained"
+            color="secondary">
+            Cancel
+          </Button>
         </div>
       case Mode.Add:
         return <Button style={style} variant="contained" color="primary" startIcon={<AddIcon />}>
@@ -204,14 +292,14 @@ export default class LogEntryInput extends React.Component<Props, State> {
 
   render() {    
     return (
-      <section className="LogEntryInput">
+      <Paper className="LogEntryInput">
         {this.header}
         {this.editPanelDate}
         {this.editPanelDuration}
         {this.editPanelLabels}
         {this.editPanelMessage}
         {this.submission}
-      </section>
+      </Paper>
     )
   }
 }
