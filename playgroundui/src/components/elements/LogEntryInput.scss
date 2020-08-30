@@ -4,4 +4,30 @@
   margin-top: 1rem;
   align-content: flex-start;
   padding: 1rem;
+
+  .edit-panel-date {
+    display: inherit;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .edit-panel-duration {
+    display: inherit;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .edit-panel-labels {
+    display: inherit;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .edit-panel-message {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
 }

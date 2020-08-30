@@ -14,11 +14,8 @@ import {
   TableCell,
   TableRow,
   Paper,
-  Button,
   IconButton
 } from '@material-ui/core'
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
-import DateFnsUtils from '@date-io/date-fns'
 import {
   MusicNote
 } from '@material-ui/icons'
@@ -33,6 +30,7 @@ type Props = {
 type State = {
   logEntries: LogEntryJSON[]
   logLabels: LogLabelJSON[]
+  editLogEntry: LogEntryJSON | null
 }
 
 const mockLogEntries: LogEntryJSON[] = [
@@ -63,7 +61,7 @@ const mockLabels: LogLabelJSON[] = [
     id: "abcd-abcd-abcd-abcd",
     parent_id: null,
     name: "Song",
-    children: ["bcde-bcde-bcde-bcde", "gcde-gcde-gcde-gcde"]
+    children: ["bcde-bcde-bcde-bcde", "gcde-gcde-gcde-gcde", "fcde-fcde-fcde-fcde", "hcde-hcde-hcde-hcde"]
   },
   {
     id: "bcde-bcde-bcde-bcde",
@@ -76,6 +74,18 @@ const mockLabels: LogLabelJSON[] = [
     parent_id: "abcd-abcd-abcd-abcd",
     name: "The Final Countdown",
     children: []
+  },
+  {
+    id: "fcde-fcde-fcde-fcde",
+    parent_id: "abcd-abcd-abcd-abcd",
+    name: "Layla",
+    children: []
+  },
+  {
+    id: "hcde-hcde-hcde-hcde",
+    parent_id: "abcd-abcd-abcd-abcd",
+    name: "Game of Thrones",
+    children: []
   }
 ]
 
@@ -85,8 +95,21 @@ export default class PracticeLog extends React.Component<Props, State> {
     super(props)
     this.state = {
       logEntries: mockLogEntries,
-      logLabels: mockLabels
+      logLabels: mockLabels,
+      editLogEntry: null
     }
+  }
+
+  newHandlerLogEntryEdit = (log: LogEntryJSON) => () => {
+    this.setState({
+      editLogEntry: log
+    })
+  }
+
+  handleLogEntryEditClear = () => {
+    this.setState({
+      editLogEntry: null
+    })
   }
 
   render() {
@@ -106,7 +129,10 @@ export default class PracticeLog extends React.Component<Props, State> {
           <TableCell>{log.duration}</TableCell>
           <TableCell>{log.message}</TableCell>
           <TableCell>
-          <IconButton color="primary" component="span">
+          <IconButton
+            color="primary"
+            component="span"
+            onClick={this.newHandlerLogEntryEdit(log)}>
             <EditIcon />
           </IconButton>
           <IconButton color="secondary" component="span">
@@ -118,27 +144,28 @@ export default class PracticeLog extends React.Component<Props, State> {
     })
     return (
       <section className="PracticeLog">
-        <Typography variant="h3">Practice Log</Typography>
-        <div className="log-entries">
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Labels</TableCell>
-                  <TableCell>Duration (in minutes)</TableCell>
-                  <TableCell>Message</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tableRows}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+        <Typography style={{ marginTop: "0.5rem" }} variant="h4">
+          Practice Log
+        </Typography>
+        <TableContainer style={{ marginTop: "1rem" }}component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Labels</TableCell>
+                <TableCell>Duration (in minutes)</TableCell>
+                <TableCell>Message</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableRows}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <LogEntryInput
-          editLogEntry={this.state.logEntries[0]}
+          clearEditLogEntry={this.handleLogEntryEditClear}
+          editLogEntry={this.state.editLogEntry}
           logLabels={this.state.logLabels} />
       </section>
     )

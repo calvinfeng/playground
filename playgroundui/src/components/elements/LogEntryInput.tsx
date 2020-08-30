@@ -20,8 +20,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  Paper,
-  IconButton
+  Paper
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import SaveIcon from '@material-ui/icons/Save'
@@ -31,6 +30,7 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 
 type Props = {
+  clearEditLogEntry: () => void
   editLogEntry: LogEntryJSON | null
   logLabels: LogLabelJSON[]
   // Need a function to reload the labels for every successful POST or DELETE.
@@ -52,21 +52,22 @@ type State = {
   selectorFieldLabelID: string | null
 }
 
-// TODO: Refactor inline style into SCSS.
+const defaultState: State = {
+  mode: Mode.Add,
+  inputFieldLogID: "",
+  inputFieldDate: new Date(),
+  inputFieldLabels: [],
+  inputFieldDuration: 0,
+  inputFieldMessage: "",
+  selectorFieldLabelID: null
+}
+
 export default class LogEntryInput extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
     if (props.editLogEntry === null) {
-      this.state = {
-        mode: Mode.Add,
-        inputFieldLogID: "",
-        inputFieldDate: new Date(),
-        inputFieldLabels: [],
-        inputFieldDuration: 0,
-        inputFieldMessage: "",
-        selectorFieldLabelID: null
-      }
+      this.state = defaultState
     } else {
       this.state = {
         mode: Mode.Edit,
@@ -77,6 +78,27 @@ export default class LogEntryInput extends React.Component<Props, State> {
         inputFieldMessage: props.editLogEntry.message,
         selectorFieldLabelID: null
       }
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.editLogEntry === null) {
+      if (this.state.inputFieldLogID !== null) {
+        this.setState(defaultState)
+      }
+      return
+    }
+
+    if (this.state.inputFieldLogID !== nextProps.editLogEntry.id) {
+      this.setState({
+        mode: Mode.Edit,
+        inputFieldLogID: nextProps.editLogEntry.id,
+        inputFieldDate: nextProps.editLogEntry.date,
+        inputFieldDuration: nextProps.editLogEntry.duration,
+        inputFieldLabels: nextProps.editLogEntry.labels,
+        inputFieldMessage: nextProps.editLogEntry.message,
+        selectorFieldLabelID: null
+      })
     }
   }
 
@@ -139,24 +161,26 @@ export default class LogEntryInput extends React.Component<Props, State> {
   get header() {
     switch (this.state.mode) {
       case Mode.Edit:
-        return <Typography variant="h5">Editing Log Entry {this.state.inputFieldLogID}</Typography>
+        return <Typography variant="h5">Edit Log Entry {this.state.inputFieldLogID}</Typography>
       case Mode.Add:
-        return <Typography variant="h5">New Log Entry</Typography>
+        return <Typography variant="h5">Add Log Entry</Typography>
     }
   }
 
   get editPanelDate() {
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          label="Date"
-          value={this.state.inputFieldDate}
-          onChange={this.handleDateChange} />
-      </MuiPickersUtilsProvider>
+      <section className="edit-panel-date">
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            label="Date"
+            value={this.state.inputFieldDate}
+            onChange={this.handleDateChange} />
+        </MuiPickersUtilsProvider>
+      </section>
     )
   }
 
@@ -164,14 +188,12 @@ export default class LogEntryInput extends React.Component<Props, State> {
     if (this.props.logLabels.length === 0) {
       return <div></div>
     }
-    const style = {
-      "margin": "0.1rem"
-    }
+
     const chips = this.state.inputFieldLabels.map((label: LogLabelJSON) => {
       return (
         <Grid item>
           <Chip 
-            style={style}
+            style={{ margin: "0.1rem" }}
             label={label.name}
             icon={<MusicNote />}
             color="primary"
@@ -180,32 +202,8 @@ export default class LogEntryInput extends React.Component<Props, State> {
       )
     })
 
-    const addLabelForm = (
-      <FormControl style={{width: "200px"}}>
-      <InputLabel id="label-selector-label">Label</InputLabel>
-      <Select
-        labelId="label-selector-label"
-        id="label-selector"
-        value={this.state.selectorFieldLabelID}
-        onChange={this.handleSelectorFieldLabelChange}>
-          {this.props.logLabels.map((label: LogLabelJSON) => {
-            return <MenuItem value={label.id}>
-              {label.name}
-            </MenuItem>
-          })}
-        </Select>
-      </FormControl>
-    )
-
-    const addLabelButton = (
-      <IconButton style={{marginLeft: "0.5rem"}}
-        onClick={this.handleLabelAdd}>
-        <AddIcon/>
-      </IconButton>
-    )
-
     return (
-      <section>
+      <section className="edit-panel-labels">
         <Grid
           direction="row"
           justify="flex-start"
@@ -214,80 +212,124 @@ export default class LogEntryInput extends React.Component<Props, State> {
           spacing={0}>
           {chips}
         </Grid>
-        <div style={{ display: "flex", width: "100%", marginTop: "1rem", justifyContent: "flex-end" }}>
-          {addLabelForm}
-          {addLabelButton}
-        </div>
+        <Grid
+          direction="row"
+          justify="flex-end"
+          alignItems="flex-end"
+          container
+          spacing={0}>
+          <Grid item>
+          <FormControl style={{width: "200px"}}>
+            <InputLabel id="label-selector-label">Label</InputLabel>
+              <Select
+                labelId="label-selector-label"
+                id="label-selector"
+                value={this.state.selectorFieldLabelID}
+                onChange={this.handleSelectorFieldLabelChange}>
+                  {this.props.logLabels.map((label: LogLabelJSON) => {
+                    return <MenuItem value={label.id}>
+                      {label.name}
+                    </MenuItem>
+                  })}
+              </Select>
+          </FormControl>  
+          </Grid>
+          <Grid item>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{marginLeft: "0.5rem"}}
+              onClick={this.handleLabelAdd}
+              startIcon={<AddIcon/>}>
+              Add Label
+            </Button>
+          </Grid>
+        </Grid>
       </section>
     )
   }
 
   get editPanelDuration() {
-    const style = {
-      marginTop: "1rem",
-      marginBottom: "1rem"
-    }
     return (
-      <div style={style}>
+      <section className="edit-panel-duration">
         <Typography id="discrete-minute-slider" gutterBottom>
           Duration: {this.state.inputFieldDuration} minutes
         </Typography>
         <Slider
-          defaultValue={this.state.inputFieldDuration}
+          defaultValue={0}
+          value={this.state.inputFieldDuration}
           onChange={this.handleDurationChange}
           aria-labelledby="discrete-minute-slider"
           valueLabelDisplay="auto"
           step={5}
           marks={true}
           min={0}
-          max={60} />
-      </div>
+          max={120} />
+      </section>
     )
   }
 
   get editPanelMessage() {
-    const style = {
-      marginTop: "1rem",
-      marginBottom: "1rem"
-    }
-    return <TextField
-      style={style}
-      label="Log Message"
-      value={this.state.inputFieldMessage}
-      onChange={this.handleMessageChange}
-      fullWidth
-      InputLabelProps={{
-        shrink: true,
-      }}/>
+    return (
+      <section className="edit-panel-message">
+        <TextField
+          label="Log Message"
+          value={this.state.inputFieldMessage}
+          onChange={this.handleMessageChange}
+          fullWidth
+          InputLabelProps={{ shrink: true }} />
+      </section>
+    )
   }
 
   get submission() {
-    const style = {
-      "margin": "0.1rem"
-    }
+    const buttonStyle = { margin: "0.1rem" }
+    let buttonGridItems: JSX.Element[]
     switch (this.state.mode) {
       case Mode.Edit:
-        return <div>
-          <Button
-            style={style}
-            variant="contained"
-            color="primary"
-            startIcon={<SaveIcon />}
-            onClick={() => console.log(this.state)}>
-            Save
-          </Button>
-          <Button
-            style={style}
-            variant="contained"
-            color="secondary">
-            Cancel
-          </Button>
-        </div>
+        buttonGridItems = [
+          <Grid item>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              startIcon={<SaveIcon />}
+              onClick={() => console.log(this.state)}>
+              Save
+            </Button>
+          </Grid>,
+          <Grid item>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="secondary"
+              onClick={this.props.clearEditLogEntry}>
+              Cancel
+            </Button>
+          </Grid>
+        ]
+        break
       case Mode.Add:
-        return <Button style={style} variant="contained" color="primary" startIcon={<AddIcon />}>
-          Add
-        </Button>
+        buttonGridItems = [
+          <Grid item>
+            <Button style={buttonStyle} variant="contained" color="primary" startIcon={<AddIcon />}>
+              Add
+            </Button>
+          </Grid>
+        ]
+        break
     }
+
+    return (
+      <Grid
+        direction="row"
+        justify="flex-end"
+        alignItems="flex-end"
+        container
+        spacing={0}>
+        {buttonGridItems}
+      </Grid>
+    )
   }
 
   render() {    
