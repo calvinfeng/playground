@@ -1,5 +1,5 @@
 import React from 'react'
-import './LogEntryInput.scss'
+import './LogEntryManagement.scss'
 import DateFnsUtils from '@date-io/date-fns'
 import {
   LogEntryJSON,
@@ -62,7 +62,7 @@ const defaultState: State = {
   selectorFieldLabelID: null
 }
 
-export default class LogEntryInput extends React.Component<Props, State> {
+export default class LogEntryManagement extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -334,7 +334,7 @@ export default class LogEntryInput extends React.Component<Props, State> {
 
   render() {    
     return (
-      <Paper className="LogEntryInput">
+      <Paper className="LogEntryManagement">
         {this.header}
         {this.editPanelDate}
         {this.editPanelDuration}
