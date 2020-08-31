@@ -84,9 +84,9 @@ function App() {
               anchorEl={anchorEl}
               anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
               <TimelineMenuItem />
+              <PracticeLogMenuItem />
               <AboutMenuItem />
               <FretboardMenuItem />
-              <PracticeLogMenuItem />
             </Menu>
             <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
           </Toolbar>
@@ -105,9 +105,9 @@ function App() {
       <PracticeTimeProgress />
       <Switch>
         <Route path="/" exact component={Timeline} />
+        <Route path="/practicelog" exact component={PracticeLog} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
-        <Route path="/practicelog" exact component={PracticeLog} />
       </Switch>
       </BrowserRouter>
     </div>

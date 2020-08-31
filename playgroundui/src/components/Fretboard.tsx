@@ -20,7 +20,8 @@ enum Interval {
   Minor = "Minor",
   Diminished = "Diminished",
   Unison = "Unison",
-  Perfect = "Perfect"
+  Perfect = "Perfect",
+  Disabled = "Disabled"
 }
 
 const intervalSemitoneMapping: Map<Interval, number>[] = [
@@ -42,41 +43,57 @@ const openFretNotes: Note[] = [
   new Note(NoteName.E, Accidental.Natural)
 ]
 
-// TODO: Refactor this later, but now use repetitions.
+// TODO: Refactor this later, since most scales use only up to 7 notes. It's unlikely I need to
+// deal with scalability issues.
 export default function Fretboard(props: Props) {
   const [root, setRoot] = React.useState<NoteName>(NoteName.C)
   const [rootAccidental, setRootAccidental] = React.useState<Accidental>(Accidental.Natural)
-  const [degree2nd, setDegree2nd] = React.useState<number>(intervalSemitoneMapping[1].get(Interval.Major) as number)
-  const [degree3rd, setDegree3rd] = React.useState<number>(intervalSemitoneMapping[2].get(Interval.Major) as number)
-  const [degree4th, setDegree4th] = React.useState<number>(intervalSemitoneMapping[3].get(Interval.Perfect) as number)
-  const [degree5th, setDegree5th] = React.useState<number>(intervalSemitoneMapping[4].get(Interval.Perfect) as number)
-  const [degree6th, setDegree6th] = React.useState<number>(intervalSemitoneMapping[5].get(Interval.Major) as number)
-  const [degree7th, setDegree7th] = React.useState<number>(intervalSemitoneMapping[6].get(Interval.Major) as number)
+  const [degree2nd, setDegree2nd] = React.useState<Interval>(Interval.Major)
+  const [degree3rd, setDegree3rd] = React.useState<Interval>(Interval.Major)
+  const [degree4th, setDegree4th] = React.useState<Interval>(Interval.Perfect)
+  const [degree5th, setDegree5th] = React.useState<Interval>(Interval.Perfect)
+  const [degree6th, setDegree6th] = React.useState<Interval>(Interval.Major)
+  const [degree7th, setDegree7th] = React.useState<Interval>(Interval.Major)
 
   // Those degree should accept null values.
   const rootNote: Note = new Note(root, rootAccidental)
-  console.log(rootNote.step(degree2nd))
-  console.log(rootNote.step(degree3rd))
-  console.log(rootNote.step(degree4th))
-  console.log(rootNote.step(degree5th))
-  console.log(rootNote.step(degree6th))
-  console.log(rootNote.step(degree7th))
+  const scaleSet = new Map<string, Note>()
   
+  const degrees = [Interval.Unison, degree2nd, degree3rd, degree4th, degree5th, degree6th, degree7th]
+  degrees.forEach((interval: Interval, i: number) => {
+    const steps = intervalSemitoneMapping[i].get(interval)
+    if (steps !== undefined) {
+      rootNote.step(steps).forEach((note: Note) => {
+        scaleSet.set(note.toString(), note)
+      })
+    }
+  })
+
   const rows: JSX.Element[] = []
   for (let j = 0; j <= 5; j++) {
+    
+    let openFretNoteStyle = {height: 35, width: 70, margin: 1}
+    if (scaleSet.has(openFretNotes[j].toString())) {
+      openFretNoteStyle["background"] = "#c4f5d1"
+    }
     const row: JSX.Element[] = [
       <Grid item>
-        <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
+        <Button variant="contained" color="default" style={openFretNoteStyle}>
           {`${openFretNotes[j]}`}
         </Button>
       </Grid>
     ]
 
     for (let i = 1; i <= NumFrets; i++) {
+      let noteStyle = {height: 35, width: 70, margin: 1}
       const notes = openFretNotes[j].step(i)
+      if (scaleSet.has(notes[0].toString())) {
+        noteStyle["background"] = "#c4f5d1"
+      }
+
       row.push(
         <Grid item>
-          <Button variant="contained" color="default" style={{height: 35, width: 70, margin: 1}}>
+          <Button variant="contained" color="default" style={noteStyle}>
             {notes.map((note) => `${note}`).join(',')}
           </Button>
         </Grid>
@@ -99,10 +116,6 @@ export default function Fretboard(props: Props) {
     setRoot(event.target.value as NoteName)
   }
 
-  const handleSelectRootNoteAccidental = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setRootAccidental(event.target.value as Accidental)
-  }
-
   const selectRootForm: JSX.Element = (
     <FormControl className="form-control">
       <InputLabel id="root-select-label">Root</InputLabel>
@@ -119,6 +132,10 @@ export default function Fretboard(props: Props) {
       </Select>
     </FormControl>
   )
+
+  const handleSelectRootNoteAccidental = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setRootAccidental(event.target.value as Accidental)
+  }
 
   const selectAccidentalForm: JSX.Element = (
     <FormControl>
@@ -137,91 +154,118 @@ export default function Fretboard(props: Props) {
     </FormControl>
   )
 
+  const handleSelectDegree2nd = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree2nd(event.target.value as Interval)
+  }
   const select2ndDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-2-select-label">2nd</InputLabel>
       <Select
         labelId="degree-2-select-label"
         id="degree-2-select"
-        value={"Major"}
-        onChange={() => {}}>
+        value={degree2nd}
+        onChange={handleSelectDegree2nd}>
         <MenuItem value="Major">Major</MenuItem>
         <MenuItem value="Minor">Minor</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
+  const handleSelectDegree3rd = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree3rd(event.target.value as Interval)
+  }
   const select3rdDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-3-select-label">3rd</InputLabel>
       <Select
         labelId="degree-3-select-label"
         id="degree-3-select"
-        value={"Major"}
-        onChange={() => {}}>
+        value={degree3rd}
+        onChange={handleSelectDegree3rd}>
         <MenuItem value="Major">Major</MenuItem>
         <MenuItem value="Minor">Minor</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
+  const handleSelectDegree4th = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree4th(event.target.value as Interval)
+  }
   const select4thDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-4-select-label">4th</InputLabel>
       <Select
         labelId="degree-4-select-label"
         id="degree-4-select"
-        value={"Perfect"}
-        onChange={() => {}}>
+        value={degree4th}
+        onChange={handleSelectDegree4th}>
         <MenuItem value="Perfect">Perfect</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
+  const handleSelectDegree5th = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree5th(event.target.value as Interval)
+  }
   const select5thDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-5-select-label">5th</InputLabel>
       <Select
         labelId="degree-5-select-label"
         id="degree-5-select"
-        value={"Perfect"}
-        onChange={() => {}}>
+        value={degree5th}
+        onChange={handleSelectDegree5th}>
         <MenuItem value="Perfect">Perfect</MenuItem>
         <MenuItem value="Diminished">Diminished</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
+  const handleSelectDegree6th = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree6th(event.target.value as Interval)
+  }
   const select6thDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-6-select-label">6th</InputLabel>
       <Select
         labelId="degree-6-select-label"
         id="degree-6-select"
-        value={"Major"}
-        onChange={() => {}}>
+        value={degree6th}
+        onChange={handleSelectDegree6th}>
         <MenuItem value="Major">Major</MenuItem>
         <MenuItem value="Minor">Minor</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
+  const handleSelectDegree7th = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setDegree7th(event.target.value as Interval)
+  }
   const select7thDegreeForm: JSX.Element = (
     <FormControl>
       <InputLabel id="degree-7-select-label">7th</InputLabel>
       <Select
         labelId="degree-7-select-label"
         id="degree-7-select"
-        value={"Major"}
-        onChange={() => {}}>
+        value={degree7th}
+        onChange={handleSelectDegree7th}>
         <MenuItem value="Major">Major</MenuItem>
         <MenuItem value="Minor">Minor</MenuItem>
+        <MenuItem value={Interval.Disabled}>{Interval.Disabled}</MenuItem>
       </Select>
     </FormControl>
   )
 
   return (
     <section className="Fretboard">
+      <Typography>
+        This is still under active development
+      </Typography>
       <section className="fretboard">
         <Grid
           className="fretboard-grid"

@@ -53,7 +53,7 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
     return (
       <div className="ProgressReportElement">
-        <Typography className="title" variant="h6">Monthly Progress Recording</Typography>
+        <Typography className="title" variant="h6">Monthly Progress Recording {this.props.id}</Typography>
         <ReactPlayer 
           url={`https://www.youtube.com/watch?v=${this.state.video.youtube_video_id}`}
           width={"100%"}
