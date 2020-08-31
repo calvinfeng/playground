@@ -41,14 +41,14 @@ const mockLogEntries: LogEntryJSON[] = [
     date: new Date(),
     labels: [
       {
-        id: "abcd-abcd-abcd-abcd",
+        id: "0000-0000-0000-1000",
         parent_id: null,
         name: "Song",
         children: []
       },
       {
-        id: "bcde-bcde-bcde-bcde",
-        parent_id: "abcd-abcd-abcd-abcd",
+        id: "0000-0000-0000-1001",
+        parent_id: "0000-0000-0000-1000",
         name: "Now & Forever",
         children: []
       }
@@ -59,35 +59,59 @@ const mockLogEntries: LogEntryJSON[] = [
 
 const mockLabels: LogLabelJSON[] = [
   {
-    id: "abcd-abcd-abcd-abcd",
+    id: "0000-0000-0000-1000",
     parent_id: null,
     name: "Song",
-    children: ["bcde-bcde-bcde-bcde", "gcde-gcde-gcde-gcde", "fcde-fcde-fcde-fcde", "hcde-hcde-hcde-hcde"]
+    children: ["0000-0000-0000-1001", "0000-0000-0000-1002", "0000-0000-0000-1003", "0000-0000-0000-1004"]
   },
   {
-    id: "bcde-bcde-bcde-bcde",
-    parent_id: "abcd-abcd-abcd-abcd",
+    id: "0000-0000-0000-1001",
+    parent_id: "0000-0000-0000-1000",
     name: "Now & Forever",
     children: []
   },
   {
-    id: "gcde-gcde-gcde-gcde",
-    parent_id: "abcd-abcd-abcd-abcd",
+    id: "0000-0000-0000-1002",
+    parent_id: "0000-0000-0000-1000",
     name: "The Final Countdown",
     children: []
   },
   {
-    id: "fcde-fcde-fcde-fcde",
-    parent_id: "abcd-abcd-abcd-abcd",
+    id: "0000-0000-0000-1003",
+    parent_id: "0000-0000-0000-1000",
     name: "Layla",
     children: []
   },
   {
-    id: "hcde-hcde-hcde-hcde",
-    parent_id: "abcd-abcd-abcd-abcd",
+    id: "0000-0000-0000-1004",
+    parent_id: "0000-0000-0000-1000",
     name: "Game of Thrones",
     children: []
-  }
+  },
+  {
+    id: "0000-0000-0000-2000",
+    parent_id: null,
+    name: "Scales",
+    children: ["0000-0000-0000-2001", "0000-0000-0000-2002"]
+  },
+  {
+    id: "0000-0000-0000-2001",
+    parent_id: "0000-0000-0000-2000",
+    name: "Major Scale",
+    children: []
+  },
+  {
+    id: "0000-0000-0000-2002",
+    parent_id: "0000-0000-0000-2000",
+    name: "Minor Scale",
+    children: []
+  },
+  {
+    id: "0000-0000-0000-3000",
+    parent_id: null,
+    name: "Finger Gym",
+    children: []
+  },
 ]
 
 // TODO: Data will be fetched from API
@@ -145,9 +169,6 @@ export default class PracticeLog extends React.Component<Props, State> {
     })
     return (
       <section className="PracticeLog">
-        <Typography style={{ marginTop: "0.5rem" }} variant="h4">
-          Practice Log
-        </Typography>
         <TableContainer style={{ marginTop: "1rem" }}component={Paper}>
           <Table>
             <TableHead>

@@ -17,6 +17,7 @@ import DoneIcon from '@material-ui/icons/Done'
 
 type State = {
   selectedLabel: LogLabelJSON | null
+  selectedSubLabel: LogLabelJSON | null
 }
 
 type Props = {
@@ -27,7 +28,8 @@ export default class LabelManagement extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      selectedLabel: null
+      selectedLabel: null,
+      selectedSubLabel: null
     }
   }
 
@@ -37,34 +39,30 @@ export default class LabelManagement extends React.Component<Props, State> {
     })
   }
 
+  newHandlerSelectSubLabel = (label: LogLabelJSON | null) => () => {
+    this.setState({
+      selectedSubLabel: label
+    })
+  }
+
   get panelParentLabels() {
     const items: JSX.Element[] = this.props.logLabels.filter((label: LogLabelJSON) => {
       return label.parent_id === null
     }).map((label: LogLabelJSON) => {
-      let chip: JSX.Element
+      let style = { margin: "0.1rem" }
+      let handler = this.newHandlerSelectLabel(label)
       if (this.state.selectedLabel !== null && this.state.selectedLabel.id === label.id) {
-        chip = (
-          <Chip
-            style={{ margin: "0.1rem", background: "green" }}
-            label={label.name}
-            icon={<MusicNote />}
-            deleteIcon={<DoneIcon />}
-            onDelete={this.newHandlerSelectLabel(null)}
-            color="primary" />
-        )
-      } else {
-        chip = (
-          <Chip
-            onClick={this.newHandlerSelectLabel(label)}
-            style={{ margin: "0.1rem" }}
-            label={label.name}
-            icon={<MusicNote />}
-            color="primary" />
-        )
+        style["background"] = "green"
+        handler = this.newHandlerSelectLabel(null)
       }
       return (
         <Grid item>
-          {chip}
+          <Chip
+            onClick={handler}
+            style={style}
+            label={label.name}
+            icon={<MusicNote />}
+            color="primary" />
         </Grid>
       )
     })
@@ -84,33 +82,28 @@ export default class LabelManagement extends React.Component<Props, State> {
 
   get panelChildLabels() {
     const items: JSX.Element[] = this.props.logLabels.filter((label: LogLabelJSON) => {
-      return label.parent_id !== null
-    }).map((label: LogLabelJSON) => {
-      let chip: JSX.Element
-      if (this.state.selectedLabel !== null && this.state.selectedLabel.id === label.id) {
-        chip = (
-          <Chip
-            style={{ margin: "0.1rem", background: "green" }}
-            label={label.name}
-            icon={<MusicNote />}
-            deleteIcon={<DoneIcon />}
-            onDelete={this.newHandlerSelectLabel(null)}
-            color="primary" />
-        )
-      } else {
-        chip = (
-          <Chip
-            onClick={this.newHandlerSelectLabel(label)}
-            style={{ margin: "0.1rem" }}
-            label={label.name}
-            icon={<MusicNote />}
-            color="primary" />
-        )
+      if (this.state.selectedLabel === null) {
+        return false
+      }
+      return label.parent_id === this.state.selectedLabel.id
+    }).map((label: LogLabelJSON) => {      
+      let style = { margin: "0.1rem" }
+      let handler = this.newHandlerSelectSubLabel(label)
+      if (this.state.selectedLabel !== null && 
+        this.state.selectedSubLabel !== null &&
+        this.state.selectedSubLabel.id === label.id) {
+        style["background"] = "green"
+        handler = this.newHandlerSelectSubLabel(null)
       }
 
       return (
         <Grid item>
-          {chip}
+          <Chip
+            onClick={handler}
+            style={style}
+            label={label.name}
+            icon={<MusicNote />}
+            color="primary" />
         </Grid>
       )
     })
@@ -129,18 +122,57 @@ export default class LabelManagement extends React.Component<Props, State> {
   }
 
   get panelEditLabel() {
-    const items: JSX.Element[] = [
-      <Typography>Seleced Label</Typography>,
-      <TextField
-        label="Label Name"
-        value={""}
-        onChange={() => {}}
-        fullWidth
-        InputLabelProps={{ shrink: true }} />,
-      <Button variant="contained">Add</Button>,
-      <Button variant="contained">Delete</Button>
-    ]
-
+    let gridItems: JSX.Element[]
+    // 3 possible cases:
+    //   - parent & child selected
+    //   - parent selected
+    //   - none selected
+    if (this.state.selectedLabel !== null && this.state.selectedSubLabel !== null) {
+      gridItems = [
+        <Grid item>
+        <Typography variant="subtitle1">
+          Selected Sub Label: {this.state.selectedSubLabel.name}
+        </Typography>
+        </Grid>,
+        <Grid item>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
+        </Grid>
+      ]
+    } else if (this.state.selectedLabel !== null && this.state.selectedSubLabel === null) {
+      gridItems = [
+        <Grid item>
+          <Typography variant="subtitle1">
+            Selected Label: {this.state.selectedLabel.name}
+          </Typography>
+        </Grid>,
+        <Grid item>
+          <TextField
+            label="New Sub Label Name"
+            value={""}
+            onChange={() => {}}
+          fullWidth
+          InputLabelProps={{ shrink: true }} />
+        </Grid>,
+        <Grid item>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="primary">Add Child</Button>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
+        </Grid>
+      ]
+    } else {
+      gridItems = [
+        <Grid item>
+          <TextField
+            label="New Label Name"
+            value={""}
+            onChange={() => {}}
+          fullWidth
+          InputLabelProps={{ shrink: true }} />
+        </Grid>,
+        <Grid item>
+          <Button style={{margin: "0.1rem"}}  variant="contained" color="primary">Add</Button>
+        </Grid>
+      ]
+    }
     return (
       <Grid
         style={{ width: "30%", margin: "0.5rem" }}
@@ -149,7 +181,7 @@ export default class LabelManagement extends React.Component<Props, State> {
         alignItems="flex-start"
         container
         spacing={1}>
-        {items}
+        {gridItems}
       </Grid>
     )
   }
