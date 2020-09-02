@@ -1,13 +1,14 @@
 package cmd
 
 import (
+	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-func experimentRunE(_ *cobra.Command, _ []string) error {
+func showPlaylistItems() error {
 	srv := youtubeapi.New(youtubeapi.Config{
 		APIKey: os.Getenv("GOOGLE_API_KEY"),
 	})
@@ -21,6 +22,34 @@ func experimentRunE(_ *cobra.Command, _ []string) error {
 
 	for _, item := range items {
 		logrus.Infof("%s %s is uploaded on %s", item.ContentDetails.VideoID, item.Snippet.Title, item.ContentDetails.Published)
+	}
+	return nil
+}
+
+func experimentRunE(_ *cobra.Command, _ []string) error {
+	srv := trelloapi.New(trelloapi.Config{
+		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
+		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
+	})
+
+	labels, err := srv.TrelloLabelsByBoard("woq8deqm")
+	if err != nil {
+		return err
+	}
+
+	cards, err := srv.TrelloCardsByBoard("woq8deqm")
+	if err != nil {
+		return err
+	}
+
+	for _, card := range cards {
+		labelNames := make([]string, 0, len(card.LabelIDs))
+		for _, labelID := range card.LabelIDs {
+			if val, ok := labels[labelID]; ok {
+				labelNames = append(labelNames, val.Name)
+			}
+		}
+		logrus.Infof("%s %s %s with labels %s", card.ID, card.Name, card.Description, labelNames)
 	}
 
 	return nil
