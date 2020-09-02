@@ -1,4 +1,3 @@
-
 export enum NoteName {
   C = "C",
   D = "D",

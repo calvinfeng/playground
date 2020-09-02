@@ -9,30 +9,20 @@ import {
   Select,
   MenuItem
 } from '@material-ui/core'
+import { Interval, IntervalSemitoneMapping } from '../music_theory/scale'
 import { Note, NoteName, Accidental } from '../music_theory/note'
-
-type Props = {}
 
 const NumFrets = 15
 
-enum Interval {
-  Major = "Major",
-  Minor = "Minor",
-  Diminished = "Diminished",
-  Unison = "Unison",
-  Perfect = "Perfect",
-  Disabled = "Disabled"
-}
-
-const intervalSemitoneMapping: Map<Interval, number>[] = [
-  new Map<Interval, number>([[Interval.Unison, 0]]),
-  new Map<Interval, number>([[Interval.Minor, 1], [Interval.Major, 2]]),
-  new Map<Interval, number>([[Interval.Minor, 3], [Interval.Major, 4]]),
-  new Map<Interval, number>([[Interval.Perfect, 5]]),
-  new Map<Interval, number>([[Interval.Diminished, 6], [Interval.Perfect, 7]]),
-  new Map<Interval, number>([[Interval.Minor, 8], [Interval.Major, 9]]),
-  new Map<Interval, number>([[Interval.Minor, 10], [Interval.Major, 11]]),
-]
+const allowedAccidentalsByNote = new Map<NoteName, Accidental[]>([
+  [NoteName.C, [Accidental.Natural, Accidental.Sharp]],
+  [NoteName.D, [Accidental.Flat, Accidental.Natural, Accidental.Sharp]],
+  [NoteName.E, [Accidental.Flat, Accidental.Natural]],
+  [NoteName.F, [Accidental.Natural, Accidental.Sharp]],
+  [NoteName.G, [Accidental.Flat, Accidental.Natural, Accidental.Sharp]],
+  [NoteName.A, [Accidental.Flat, Accidental.Natural, Accidental.Sharp]],
+  [NoteName.B, [Accidental.Flat, Accidental.Natural]]
+])
 
 const openFretNotes: Note[] = [
   new Note(NoteName.E, Accidental.Natural),
@@ -42,6 +32,98 @@ const openFretNotes: Note[] = [
   new Note(NoteName.A, Accidental.Natural),
   new Note(NoteName.E, Accidental.Natural)
 ]
+
+type Props = {}
+type State = {
+  root: NoteName
+  rootAccidental: Accidental
+  degrees: Map<number, Interval>
+}
+
+// TODO: Convert the component into class.
+class FretboardV2 extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      root: NoteName.C,
+      rootAccidental: Accidental.Natural,
+      degrees: new Map<number, Interval>([
+        [1, Interval.Unison],
+        [2, Interval.Major],
+        [3, Interval.Major],
+        [4, Interval.Perfect],
+        [5, Interval.Perfect],
+        [6, Interval.Major],
+        [7, Interval.Major]])
+    }
+  }
+
+  generateFretboardGrid(scale: Map<string, Note>) {
+    const rows: JSX.Element[] = []
+    for (let j = 0; j <= 5; j++) {
+      
+      let openFretNoteStyle = {height: 35, width: 70, margin: 1}
+      if (scale.has(openFretNotes[j].toString())) {
+        openFretNoteStyle["background"] = "#c4f5d1"
+      }
+      const row: JSX.Element[] = [
+        <Grid item>
+          <Button variant="contained" color="default" style={openFretNoteStyle}>
+            {`${openFretNotes[j]}`}
+          </Button>
+        </Grid>
+      ]
+  
+      for (let i = 1; i <= NumFrets; i++) {
+        let noteStyle = {height: 35, width: 70, margin: 1}
+        const notes = openFretNotes[j].step(i)
+        if (scale.has(notes[0].toString())) {
+          noteStyle["background"] = "#c4f5d1"
+        }
+  
+        row.push(
+          <Grid item>
+            <Button variant="contained" color="default" style={noteStyle}>
+              {notes.map((note) => `${note}`).join(',')}
+            </Button>
+          </Grid>
+        )
+      }
+  
+      rows.push(
+        <Grid container direction="row" justify="flex-start" alignItems="baseline" spacing={0}>
+          {row}
+        </Grid>
+      )
+    }
+    return (
+      <Grid
+        container
+        className="fretboard-grid"
+        direction="row"
+        justify="flex-start"
+        alignItems="baseline"
+        spacing={0}>
+        {rows}
+      </Grid>
+    )
+  }
+
+  render() {
+    const root: Note = new Note(this.state.root, this.state.rootAccidental)
+    const scale = new Map<string, Note>()
+    this.state.degrees.forEach((interval: Interval, key: number) => {
+      const steps = IntervalSemitoneMapping[key].get(interval)
+      if (steps !== undefined) {
+        root.step(steps).forEach((note: Note) => {
+          scale.set(note.toString(), note)
+        })
+      }
+    })
+
+    return this.generateFretboardGrid(scale)
+  }
+}
 
 // TODO: Refactor this later, since most scales use only up to 7 notes. It's unlikely I need to
 // deal with scalability issues.
@@ -61,7 +143,7 @@ export default function Fretboard(props: Props) {
   
   const degrees = [Interval.Unison, degree2nd, degree3rd, degree4th, degree5th, degree6th, degree7th]
   degrees.forEach((interval: Interval, i: number) => {
-    const steps = intervalSemitoneMapping[i].get(interval)
+    const steps = IntervalSemitoneMapping[i].get(interval)
     if (steps !== undefined) {
       rootNote.step(steps).forEach((note: Note) => {
         scaleSet.set(note.toString(), note)
@@ -113,7 +195,42 @@ export default function Fretboard(props: Props) {
   }
 
   const handleSelectRootNote = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setRoot(event.target.value as NoteName)
+    switch (event.target.value as NoteName) {
+      case NoteName.B:
+        if (rootAccidental === Accidental.Sharp) {
+          setRoot(NoteName.C)
+          setRootAccidental(Accidental.Natural)
+        } else {
+          setRoot(event.target.value as NoteName)
+        }
+        break
+      case NoteName.C:
+        if (rootAccidental === Accidental.Flat) {
+          setRoot(NoteName.B)
+          setRootAccidental(Accidental.Natural)
+        } else {
+          setRoot(event.target.value as NoteName)
+        }
+        break
+      case NoteName.E:
+        if (rootAccidental === Accidental.Sharp) {
+          setRoot(NoteName.F)
+          setRootAccidental(Accidental.Natural)
+        } else {
+          setRoot(event.target.value as NoteName)
+        }
+        break
+      case NoteName.F:
+        if (rootAccidental === Accidental.Flat) {
+          setRoot(NoteName.E)
+          setRootAccidental(Accidental.Natural)
+        } else {
+          setRoot(event.target.value as NoteName)
+        }
+        break
+      default:
+        setRoot(event.target.value as NoteName)
+    }
   }
 
   const selectRootForm: JSX.Element = (
@@ -146,8 +263,8 @@ export default function Fretboard(props: Props) {
         value={rootAccidental}
         onChange={handleSelectRootNoteAccidental}>
         {
-          Object.keys(Accidental).map((key: string): JSX.Element => (
-            <MenuItem value={key}>{key}</MenuItem>
+          (allowedAccidentalsByNote.get(root) as []).map((accidental: Accidental): JSX.Element => (
+            <MenuItem value={accidental}>{accidental}</MenuItem>
           ))
         }
       </Select>
