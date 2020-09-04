@@ -19,21 +19,21 @@ import (
 
 var databaseFilePath = fmt.Sprintf("./%s.db", datastore.DatabaseName)
 
-// Reset the database, apply migrations and then seed it.
-func resetDatabaseRunE(_ *cobra.Command, _ []string) error {
+// Reset the database, apply migrationsV1 and then seed it.
+func resetSQLiteRunE(_ *cobra.Command, _ []string) error {
 	if fileExists(databaseFilePath) {
 		if err := os.Remove(databaseFilePath); err != nil {
 			return err
 		}
 	}
 
-	m, err := migrate.New("file://./migrations", fmt.Sprintf("sqlite3://%s", databaseFilePath))
+	m, err := migrate.New("file://./migrationsV1", fmt.Sprintf("sqlite3://%s", databaseFilePath))
 	if err != nil {
 		return err
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return fmt.Errorf("failed to apply migrations: %w", err)
+		return fmt.Errorf("failed to apply migrationsV1: %w", err)
 	}
 
 	logrus.Infof("successfully reset database %s", databaseFilePath)

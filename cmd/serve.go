@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/lib/pq"
+
 	"github.com/calvinfeng/playground/datastore"
 	"github.com/calvinfeng/playground/httphandler"
 	"github.com/jmoiron/sqlx"
@@ -14,12 +16,18 @@ import (
 )
 
 func serveRunE(_ *cobra.Command, _ []string) error {
-	db, err := sqlx.Open("sqlite3", databaseFilePath)
+	sqlite, err := sqlx.Open("sqlite3", databaseFilePath)
 	if err != nil {
 		return err
 	}
-	db.SetMaxOpenConns(1)
-	store := datastore.New(db)
+	sqlite.SetMaxOpenConns(1)
+	store := datastore.New(sqlite)
+
+	pg, err := sqlx.Open("postgres", databaseAddress())
+	if err != nil {
+		return err
+	}
+	logrus.Infof("pg is up %s", pg)
 
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

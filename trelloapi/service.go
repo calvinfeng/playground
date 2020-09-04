@@ -10,16 +10,16 @@ import (
 
 func New(cfg Config) Service {
 	return &service{
-		host:   "api.trello.com",
-		key: cfg.TrelloAPIKey,
+		host:  "api.trello.com",
+		key:   cfg.TrelloAPIKey,
 		token: cfg.TrelloAPIToken,
 	}
 }
 
 type service struct {
-	host   string
+	host  string
 	token string
-	key string
+	key   string
 }
 
 func (s *service) TrelloLabelsByBoard(boardID string) (map[string]TrelloLabel, error) {
