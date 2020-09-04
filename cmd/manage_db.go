@@ -3,6 +3,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practicelog/logstore"
+	"github.com/jmoiron/sqlx"
+	"time"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -55,5 +59,54 @@ func manageDBRunE(_ *cobra.Command, args []string) error {
 }
 
 func seedFromTrello() error {
+	pg, err := sqlx.Open("postgres", databaseAddress())
+	if err != nil {
+		return err
+	}
+	store := logstore.New(pg)
+
+	labels := []*practicelog.Label{
+		{
+			Name: "Song",
+		},
+		{
+			Name: "Scales",
+		},
+		{
+			Name: "Finger Gym",
+		},
+	}
+
+	if inserted, err := store.BatchInsertLogLabels(labels...); err != nil {
+		return err
+	} else {
+		logrus.Infof("inserted %d labels", inserted)
+	}
+
+	entries := []*practicelog.Entry{
+		{
+			UserID:   "calvin.j.feng@gmail.com",
+			Date:     time.Now(),
+			Duration: 30,
+			Title:    "The Final Countdown 110 BPM",
+			Note:     "it is getting very difficult to cover the last 10% speed",
+			Labels:   []*practicelog.Label{labels[0]},
+		},
+		{
+			UserID:   "calvin.j.feng@gmail.com",
+			Date:     time.Now(),
+			Duration: 30,
+			Title:    "Now & Forever outro section",
+			Note:     "it is difficult to memorize",
+			Labels:   []*practicelog.Label{labels[0]},
+		},
+	}
+
+	if inserted, err := store.BatchInsertLogEntries(entries...); err != nil {
+		return err
+	} else {
+		logrus.Infof("inserted %d entries", inserted)
+	}
+
 	return nil
 }
