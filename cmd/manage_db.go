@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/calvinfeng/playground/practicelog"
 	"github.com/calvinfeng/playground/practicelog/logstore"
-	"github.com/jmoiron/sqlx"
-	"time"
-
+	"github.com/calvinfeng/playground/trelloapi"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jmoiron/sqlx"
+	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/sirupsen/logrus"
@@ -59,54 +59,97 @@ func manageDBRunE(_ *cobra.Command, args []string) error {
 }
 
 func seedFromTrello() error {
+	boardID := "woq8deqm"
+	api := trelloapi.New(trelloapi.Config{
+		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
+		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
+	})
+
 	pg, err := sqlx.Open("postgres", databaseAddress())
 	if err != nil {
 		return err
 	}
+
 	store := logstore.New(pg)
-
-	labels := []*practicelog.Label{
-		{
-			Name: "Song",
-		},
-		{
-			Name: "Scales",
-		},
-		{
-			Name: "Finger Gym",
-		},
+	logLabels := []*practicelog.Label{
+		{Name: "Songs"},
+		{Name: "Scales"},
+		{Name: "Finger Exercises"},
+		{Name: "Acoustic"},
+		{Name: "Blues"},
+		{Name: "Guitar Lessons"},
+		{Name: "Band"},
 	}
-
-	if inserted, err := store.BatchInsertLogLabels(labels...); err != nil {
-		return err
+	if inserted, err := store.BatchInsertLogLabels(logLabels...); err != nil {
+		logrus.WithError(err).Error("failed to batch insert log labels")
 	} else {
-		logrus.Infof("inserted %d labels", inserted)
+		logrus.Infof("inserted %d log labels", inserted)
 	}
 
-	entries := []*practicelog.Entry{
-		{
-			UserID:   "calvin.j.feng@gmail.com",
-			Date:     time.Now(),
-			Duration: 30,
-			Title:    "The Final Countdown 110 BPM",
-			Note:     "it is getting very difficult to cover the last 10% speed",
-			Labels:   []*practicelog.Label{labels[0]},
-		},
-		{
-			UserID:   "calvin.j.feng@gmail.com",
-			Date:     time.Now(),
-			Duration: 30,
-			Title:    "Now & Forever outro section",
-			Note:     "it is difficult to memorize",
-			Labels:   []*practicelog.Label{labels[0]},
-		},
+	subLogLabels := []*practicelog.Label{
+		{Name: "Acoustic Rhythm", ParentID: logLabels[4].ID},
+		{Name: "Barre Chords", ParentID: logLabels[2].ID},
+		{Name: "Chord Change", ParentID: logLabels[2].ID},
 	}
 
-	if inserted, err := store.BatchInsertLogEntries(entries...); err != nil {
-		return err
+	if inserted, err := store.BatchInsertLogLabels(subLogLabels...); err != nil {
+		logrus.WithError(err).Error("failed to batch insert log labels")
 	} else {
-		logrus.Infof("inserted %d entries", inserted)
+		logrus.Infof("inserted %d log labels", inserted)
 	}
+
+	labels, err := api.TrelloLabelsByBoard(boardID)
+	if err != nil {
+		return err
+	}
+
+	labelsByID := make(map[string]trelloapi.TrelloLabel)
+	for _, label := range labels {
+		labelsByID[label.ID] = label
+	}
+
+	cards, err := api.TrelloCardsByBoard(boardID)
+	if err != nil {
+		return err
+	}
+
+	for _, card := range cards {
+		if card.IsTemplate {
+			continue
+		}
+
+		if card.Due == "" {
+			logrus.Warnf("card %s %s does not have due date", card.ID, card.Name)
+		} else {
+			logrus.Infof("card %s due %s", card.ID, card.Due)
+		}
+	}
+
+	//
+	//entries := []*practicelog.Entry{
+	//	{
+	//		UserID:   "calvin.j.feng@gmail.com",
+	//		Date:     time.Now(),
+	//		Duration: 30,
+	//		Title:    "The Final Countdown 110 BPM",
+	//		Note:     "it is getting very difficult to cover the last 10% speed",
+	//		Labels:   []*practicelog.Label{labels[0]},
+	//	},
+	//	{
+	//		UserID:   "calvin.j.feng@gmail.com",
+	//		Date:     time.Now(),
+	//		Duration: 30,
+	//		Title:    "Now & Forever outro section",
+	//		Note:     "it is difficult to memorize",
+	//		Labels:   []*practicelog.Label{labels[0]},
+	//	},
+	//}
+	//
+	//if inserted, err := store.BatchInsertLogEntries(entries...); err != nil {
+	//	return err
+	//} else {
+	//	logrus.Infof("inserted %d entries", inserted)
+	//}
 
 	return nil
 }

@@ -29,4 +29,5 @@ type TrelloCard struct {
 	ListID      string   `json:"idList"`
 	LabelIDs    []string `json:"idLabels"`
 	IsTemplate  bool     `json:"isTemplate"`
+	Due         string   `json:"due"`
 }
