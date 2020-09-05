@@ -10,7 +10,6 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -74,13 +73,13 @@ func seedFromTrello() error {
 
 	store := logstore.New(pg)
 	logLabels := []*practicelog.Label{
-		{Name: "Songs"},
-		{Name: "Scales"},
-		{Name: "Finger Exercises"},
 		{Name: "Acoustic"},
 		{Name: "Blues"},
-		{Name: "Guitar Lessons"},
-		{Name: "Band"},
+		{Name: "Finger Mechanics"},
+		{Name: "Jam Sessions"},
+		{Name: "Music Lessons"},
+		{Name: "Songs"},
+		{Name: "Scales"},
 	}
 	if inserted, err := store.BatchInsertLogLabels(logLabels...); err != nil {
 		logrus.WithError(err).Error("failed to batch insert log labels")
@@ -89,7 +88,7 @@ func seedFromTrello() error {
 	}
 
 	subLogLabels := []*practicelog.Label{
-		{Name: "Acoustic Rhythm", ParentID: logLabels[4].ID},
+		{Name: "Acoustic Rhythm", ParentID: logLabels[0].ID},
 		{Name: "Barre Chords", ParentID: logLabels[2].ID},
 		{Name: "Chord Change", ParentID: logLabels[2].ID},
 	}
@@ -107,6 +106,7 @@ func seedFromTrello() error {
 	}
 
 	for _, logLabel := range logLabels {
+		logrus.Infof("found log label %s", logLabel.Name)
 		logLabelsByName[logLabel.Name] = logLabel
 	}
 
@@ -125,6 +125,7 @@ func seedFromTrello() error {
 		return err
 	}
 
+	entries := make([]*practicelog.Entry, 0, len(cards))
 	for _, card := range cards {
 		if card.IsTemplate {
 			continue
@@ -140,69 +141,54 @@ func seedFromTrello() error {
 				logrus.Fatalf("label %d not found", labelID)
 			}
 
-			if strings.HasSuffix(label.Name, "m") {
-				duration, err := time.ParseDuration(label.Name)
-				if err != nil {
-					logrus.WithError(err).Error("failed to parse label name as duration")
-				}
-				entry.Duration = int32(duration.Minutes())
+			if duration, err := time.ParseDuration(label.Name); err == nil {
+				entry.Duration += int32(duration.Minutes())
 			} else {
 				// Hard coding it is more error proof given the small number.
 				switch label.Name {
 				case "Barre Chords":
-					entry.Labels = append(entry.Labels, logLabelsByName["Barre Chords"])
+					entry.Labels = append(entry.Labels, logLabelsByName["Finger Mechanics"], logLabelsByName["Barre Chords"])
 				case "Chord Change":
-					entry.Labels = append(entry.Labels, logLabelsByName["Chord Change"])
+					entry.Labels = append(entry.Labels, logLabelsByName["Finger Mechanics"], logLabelsByName["Chord Change"])
 				case "Finger Gym":
-					entry.Labels = append(entry.Labels, logLabelsByName["Finger Exercises"])
+					entry.Labels = append(entry.Labels, logLabelsByName["Finger Mechanics"])
 				case "Rhythm":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Acoustic"], logLabelsByName["Acoustic Rhythm"])
 				case "Blues":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Blues"])
 				case "Repertoire":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Songs"])
 				case "Music Jam":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Jam Sessions"])
 				case "Scales":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Scales"])
 				case "Guitar Lessons":
-					entry.Labels = append(entry.Labels, logLabelsByName[""])
+					entry.Labels = append(entry.Labels, logLabelsByName["Music Lessons"])
+				default:
+					logrus.Errorf("found unrecognized label name from Trello", label.Name)
 				}
 			}
 		}
 
-		if card.Due == "" {
-			logrus.Warnf("card %s %s does not have due date", card.ID, card.Name)
-		} else {
-			logrus.Infof("card %s due %s", card.ID, card.Due)
+		date, err := time.Parse(time.RFC3339, card.Due)
+		if err != nil {
+			logrus.WithError(err).Warn("failed to parse due date of card %s %s", card.ID, card.Name)
+			continue
 		}
+
+		entry.Date = date
+		if len(entry.Labels) == 0 {
+			logrus.Warnf("log entry %s %s has no labels", entry.Title, entry.Date)
+		}
+
+		entries = append(entries, entry)
 	}
 
-	//
-	//entries := []*practicelog.Entry{
-	//	{
-	//		UserID:   "calvin.j.feng@gmail.com",
-	//		Date:     time.Now(),
-	//		Duration: 30,
-	//		Title:    "The Final Countdown 110 BPM",
-	//		Note:     "it is getting very difficult to cover the last 10% speed",
-	//		Labels:   []*practicelog.Label{labels[0]},
-	//	},
-	//	{
-	//		UserID:   "calvin.j.feng@gmail.com",
-	//		Date:     time.Now(),
-	//		Duration: 30,
-	//		Title:    "Now & Forever outro section",
-	//		Note:     "it is difficult to memorize",
-	//		Labels:   []*practicelog.Label{labels[0]},
-	//	},
-	//}
-	//
-	//if inserted, err := store.BatchInsertLogEntries(entries...); err != nil {
-	//	return err
-	//} else {
-	//	logrus.Infof("inserted %d entries", inserted)
-	//}
+	if inserted, err := store.BatchInsertLogEntries(entries...); err != nil {
+		return err
+	} else {
+		logrus.Infof("inserted %d entries", inserted)
+	}
 
 	return nil
 }

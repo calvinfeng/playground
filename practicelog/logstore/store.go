@@ -22,7 +22,7 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 }
 
 func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
-	query := squirrel.Select("*")
+	query := squirrel.Select("*").From(PracticeLogLabelTable)
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {

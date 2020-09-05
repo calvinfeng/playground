@@ -1,6 +1,7 @@
 package practicelog
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"time"
 )
@@ -20,6 +21,10 @@ type Label struct {
 	ParentID uuid.UUID `json:"parent_id,omitempty"`
 	Name     string    `json:"name"`
 	Children []*Label  `json:"children,omitempty"`
+}
+
+func (l Label) String() string {
+	return fmt.Sprintf("%s %s", l.ID, l.Name)
 }
 
 type (
