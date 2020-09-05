@@ -22,7 +22,24 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 }
 
 func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
-	panic("implement me")
+	query := squirrel.Select("*")
+
+	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows := make([]*DBPracticeLogLabel, 0)
+	if err = s.db.Select(&rows, statement, args...); err != nil {
+		return nil, err
+	}
+
+	labels := make([]*practicelog.Label, 0)
+	for _, row := range rows {
+		labels = append(labels, row.toModel())
+	}
+
+	return labels, nil
 }
 
 func (s *store) BatchInsertLogLabels(labels ...*practicelog.Label) (int64, error) {

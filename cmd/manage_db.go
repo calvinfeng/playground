@@ -10,6 +10,8 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/sirupsen/logrus"
@@ -98,14 +100,24 @@ func seedFromTrello() error {
 		logrus.Infof("inserted %d log labels", inserted)
 	}
 
-	labels, err := api.TrelloLabelsByBoard(boardID)
+	logLabelsByName := make(map[string]*practicelog.Label)
+	logLabels, err = store.SelectLogLabels()
 	if err != nil {
 		return err
 	}
 
-	labelsByID := make(map[string]trelloapi.TrelloLabel)
-	for _, label := range labels {
-		labelsByID[label.ID] = label
+	for _, logLabel := range logLabels {
+		logLabelsByName[logLabel.Name] = logLabel
+	}
+
+	trelloLabels, err := api.TrelloLabelsByBoard(boardID)
+	if err != nil {
+		return err
+	}
+
+	trelloLabelsByID := make(map[string]trelloapi.TrelloLabel)
+	for _, label := range trelloLabels {
+		trelloLabelsByID[label.ID] = label
 	}
 
 	cards, err := api.TrelloCardsByBoard(boardID)
@@ -116,6 +128,47 @@ func seedFromTrello() error {
 	for _, card := range cards {
 		if card.IsTemplate {
 			continue
+		}
+
+		entry := new(practicelog.Entry)
+		entry.Title = card.Name
+		entry.Note = card.Description
+		entry.Labels = make([]*practicelog.Label, 0)
+		for _, labelID := range card.LabelIDs {
+			label, ok := trelloLabelsByID[labelID]
+			if !ok {
+				logrus.Fatalf("label %d not found", labelID)
+			}
+
+			if strings.HasSuffix(label.Name, "m") {
+				duration, err := time.ParseDuration(label.Name)
+				if err != nil {
+					logrus.WithError(err).Error("failed to parse label name as duration")
+				}
+				entry.Duration = int32(duration.Minutes())
+			} else {
+				// Hard coding it is more error proof given the small number.
+				switch label.Name {
+				case "Barre Chords":
+					entry.Labels = append(entry.Labels, logLabelsByName["Barre Chords"])
+				case "Chord Change":
+					entry.Labels = append(entry.Labels, logLabelsByName["Chord Change"])
+				case "Finger Gym":
+					entry.Labels = append(entry.Labels, logLabelsByName["Finger Exercises"])
+				case "Rhythm":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				case "Blues":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				case "Repertoire":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				case "Music Jam":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				case "Scales":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				case "Guitar Lessons":
+					entry.Labels = append(entry.Labels, logLabelsByName[""])
+				}
+			}
 		}
 
 		if card.Due == "" {
