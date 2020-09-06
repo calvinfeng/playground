@@ -60,6 +60,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
 	e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
+	e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
 
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")

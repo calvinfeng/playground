@@ -10,8 +10,8 @@ CREATE TABLE practice_recordings (
     description TEXT
 );
 
-CREATE INDEX recordings_year_index ON recordings(year);
-CREATE INDEX recordings_month_index ON recordings(month);
+CREATE INDEX recordings_year_index ON practice_recordings(year);
+CREATE INDEX recordings_month_index ON practice_recordings(month);
 
 CREATE TABLE monthly_summaries (
     id UUID PRIMARY KEY,

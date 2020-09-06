@@ -32,6 +32,7 @@ export type LogEntryJSON = {
   id: string
   date: Date
   labels: LogLabelJSON[]
-  message: string
+  title: string
+  note: string
   duration: number
 }

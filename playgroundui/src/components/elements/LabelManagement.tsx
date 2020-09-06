@@ -15,6 +15,9 @@ import {
 } from '@material-ui/icons'
 import DoneIcon from '@material-ui/icons/Done'
 
+
+const nilUUID = '00000000-0000-0000-0000-000000000000'
+
 type State = {
   selectedLabel: LogLabelJSON | null
   selectedSubLabel: LogLabelJSON | null
@@ -47,7 +50,7 @@ export default class LabelManagement extends React.Component<Props, State> {
 
   get panelParentLabels() {
     const items: JSX.Element[] = this.props.logLabels.filter((label: LogLabelJSON) => {
-      return label.parent_id === null
+      return label.parent_id === nilUUID
     }).map((label: LogLabelJSON) => {
       let style = { margin: "0.1rem" }
       let handler = this.newHandlerSelectLabel(label)
@@ -66,7 +69,6 @@ export default class LabelManagement extends React.Component<Props, State> {
         </Grid>
       )
     })
-
     return (
       <Grid
         style={{ width: "30%", margin: "0.5rem" }}

@@ -48,7 +48,7 @@ type State = {
   inputFieldDate: Date | null
   inputFieldLabels: LogLabelJSON[]
   inputFieldDuration: number
-  inputFieldMessage: string
+  inputFieldTitle: string
   selectorFieldLabelID: string | null
 }
 
@@ -58,7 +58,7 @@ const defaultState: State = {
   inputFieldDate: new Date(),
   inputFieldLabels: [],
   inputFieldDuration: 0,
-  inputFieldMessage: "",
+  inputFieldTitle: "",
   selectorFieldLabelID: null
 }
 
@@ -75,7 +75,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         inputFieldDate: props.editLogEntry.date,
         inputFieldDuration: props.editLogEntry.duration,
         inputFieldLabels: props.editLogEntry.labels,
-        inputFieldMessage: props.editLogEntry.message,
+        inputFieldTitle: props.editLogEntry.title,
         selectorFieldLabelID: null
       }
     }
@@ -96,7 +96,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         inputFieldDate: nextProps.editLogEntry.date,
         inputFieldDuration: nextProps.editLogEntry.duration,
         inputFieldLabels: nextProps.editLogEntry.labels,
-        inputFieldMessage: nextProps.editLogEntry.message,
+        inputFieldTitle: nextProps.editLogEntry.title,
         selectorFieldLabelID: null
       })
     }
@@ -118,7 +118,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
 
   handleMessageChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      inputFieldMessage: ev.target.value
+      inputFieldTitle: ev.target.value
     })
   }
 
@@ -274,7 +274,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
       <section className="edit-panel-message">
         <TextField
           label="Log Message"
-          value={this.state.inputFieldMessage}
+          value={this.state.inputFieldTitle}
           onChange={this.handleMessageChange}
           fullWidth
           InputLabelProps={{ shrink: true }} />

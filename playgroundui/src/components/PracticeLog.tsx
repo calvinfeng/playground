@@ -23,6 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import LogEntryManagement from './elements/LogEntryManagement'
 import LabelManagement from './elements/LabelManagement'
+import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 
 type Props = {
 
@@ -34,96 +35,70 @@ type State = {
   editLogEntry: LogEntryJSON | null
 }
 
-const mockLogEntries: LogEntryJSON[] = [
-  {
-    id: "1234-1234-1234-1234",
-    duration: 30,
-    date: new Date(),
-    labels: [
-      {
-        id: "0000-0000-0000-1000",
-        parent_id: null,
-        name: "Song",
-        children: []
-      },
-      {
-        id: "0000-0000-0000-1001",
-        parent_id: "0000-0000-0000-1000",
-        name: "Now & Forever",
-        children: []
-      }
-    ],
-    message: "100 BPM at 93% Speed"
-  }
-]
-
-const mockLabels: LogLabelJSON[] = [
-  {
-    id: "0000-0000-0000-1000",
-    parent_id: null,
-    name: "Song",
-    children: ["0000-0000-0000-1001", "0000-0000-0000-1002", "0000-0000-0000-1003", "0000-0000-0000-1004"]
-  },
-  {
-    id: "0000-0000-0000-1001",
-    parent_id: "0000-0000-0000-1000",
-    name: "Now & Forever",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-1002",
-    parent_id: "0000-0000-0000-1000",
-    name: "The Final Countdown",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-1003",
-    parent_id: "0000-0000-0000-1000",
-    name: "Layla",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-1004",
-    parent_id: "0000-0000-0000-1000",
-    name: "Game of Thrones",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-2000",
-    parent_id: null,
-    name: "Scales",
-    children: ["0000-0000-0000-2001", "0000-0000-0000-2002"]
-  },
-  {
-    id: "0000-0000-0000-2001",
-    parent_id: "0000-0000-0000-2000",
-    name: "Major Scale",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-2002",
-    parent_id: "0000-0000-0000-2000",
-    name: "Minor Scale",
-    children: []
-  },
-  {
-    id: "0000-0000-0000-3000",
-    parent_id: null,
-    name: "Finger Gym",
-    children: []
-  },
-]
-
-// TODO: Data will be fetched from API
 export default class PracticeLog extends React.Component<Props, State> {
+  private http: AxiosInstance
+
   constructor(props) {
     super(props)
     this.state = {
-      logEntries: mockLogEntries,
-      logLabels: mockLabels,
+      logEntries: [],
+      logLabels: [],
       editLogEntry: null
     }
+    this.http = axios.create({
+      baseURL: `${process.env.REACT_APP_API_URL}`,
+      timeout: 1000,
+      headers: {'Authorization': 'Bearer 1234'}
+    });
   }
+
+  componentDidMount() {
+    this.http.get('/api/v2/practice/log/entries/')
+      .then((resp: AxiosResponse) => {
+        // time.Time is parsed as string. The string needs to be converted back into date object.
+        const entries: LogEntryJSON[] = []
+        for (let i = 0; i < resp.data.results.length; i++) {
+          entries.push({
+            id: resp.data.results[i].id,
+            date: new Date(resp.data.results[i].date),
+            labels: resp.data.results[i].labels,
+            title: resp.data.results[i].title,
+            note: resp.data.results[i].note,
+            duration: resp.data.results[i].duration
+          })
+        }
+        this.setState({
+          logEntries: entries
+        })
+      })
+
+    this.http.get('/api/v2/practice/log/labels/')
+      .then((resp: AxiosResponse) => {
+        const labels: LogLabelJSON[] = resp.data.results
+        const childrenIDByParentID = new Map<string, string[]>()
+        labels.forEach((label: LogLabelJSON) => {
+          if (label.parent_id) {
+            let children = childrenIDByParentID.get(label.parent_id)
+            if (!children) {
+              children = []
+            }
+            children.push(label.id)
+            childrenIDByParentID.set(label.parent_id, children)
+          }
+        })
+        labels.forEach((label: LogLabelJSON) => {
+          if (childrenIDByParentID.get(label.id)) {
+            label.children = childrenIDByParentID.get(label.id) as string[]
+          } else {
+            label.children = []
+          }
+        })
+        console.log("got labels", labels)
+        this.setState({
+          logLabels: labels
+        })
+      })
+    }
 
   newHandlerLogEntryEdit = (log: LogEntryJSON) => () => {
     this.setState({
@@ -139,21 +114,28 @@ export default class PracticeLog extends React.Component<Props, State> {
 
   render() {
     const tableRows: JSX.Element[] = []
+    const cellStyle = {
+      "padding": "8px"
+    }
     this.state.logEntries.forEach((log: LogEntryJSON) => {
-      const style = {
-        "margin": "0.1rem"
+      const chipStyle = {
+        "margin": "0.1rem",
       }
-      const labels: JSX.Element[] = log.labels.map((label: LogLabelJSON) => (
-        <Chip style={style} label={label.name} icon={<MusicNote />} color="primary" />
-      ))
+
+      let labels: JSX.Element[] = []
+      if (log.labels) {
+        labels = log.labels.map((label: LogLabelJSON) => (
+          <Chip style={chipStyle} label={label.name} icon={<MusicNote />} color="primary" />
+        ))
+      }
       
       tableRows.push(
         <TableRow>
-          <TableCell>{log.date.toDateString()}</TableCell>
-          <TableCell>{labels}</TableCell>
-          <TableCell>{log.duration}</TableCell>
-          <TableCell>{log.message}</TableCell>
-          <TableCell>
+          <TableCell style={cellStyle}>{log.date.toDateString()}</TableCell>
+          <TableCell style={cellStyle}>{labels}</TableCell>
+          <TableCell style={cellStyle}>{log.duration}</TableCell>
+          <TableCell style={cellStyle}>{log.title}</TableCell>
+          <TableCell style={cellStyle}>
           <IconButton
             color="primary"
             component="span"
@@ -173,11 +155,11 @@ export default class PracticeLog extends React.Component<Props, State> {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Labels</TableCell>
-                <TableCell>Duration (in minutes)</TableCell>
-                <TableCell>Message</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell style={cellStyle}>Date</TableCell>
+                <TableCell style={cellStyle}>Labels</TableCell>
+                <TableCell style={cellStyle}>Duration (in minutes)</TableCell>
+                <TableCell style={cellStyle}>Message</TableCell>
+                <TableCell style={cellStyle}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

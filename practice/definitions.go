@@ -21,7 +21,7 @@ type LogLabel struct {
 	ID       uuid.UUID   `json:"id"`
 	ParentID uuid.UUID   `json:"parent_id,omitempty"`
 	Name     string      `json:"name"`
-	Children []*LogLabel `json:"children,omitempty"`
+	Children []uuid.UUID `json:"children,omitempty"`
 }
 
 func (l LogLabel) String() string {
@@ -31,6 +31,7 @@ func (l LogLabel) String() string {
 type (
 	HTTPService interface {
 		ListPracticeLogEntries(echo.Context) error
+		ListPracticeLogLabels(echo.Context) error
 	}
 
 	LogStore interface {
