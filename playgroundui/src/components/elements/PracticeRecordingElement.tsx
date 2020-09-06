@@ -42,7 +42,7 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
   }
 
   componentDidMount() {
-    this.http.get('/api/practice/recordings/', {
+    this.http.get('/api/v1/practice/recordings/', {
       params: {
         year: this.props.year,
         month: this.props.month
@@ -53,7 +53,7 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
       })
     })
 
-    this.http.get('/api/summaries/', {
+    this.http.get('/api/v1/summaries/', {
       params: {
         year: this.props.year,
         month: this.props.month

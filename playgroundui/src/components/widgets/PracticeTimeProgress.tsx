@@ -22,12 +22,12 @@ export default class PracticeTimeProgress extends React.Component<Props, State> 
     this.http = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
       timeout: 1000,
-      headers: {'Authorization': 'Bearer 1234'}
+      headers: {'Authorization': 'Bearer 1234'} // TODO: Enable authentication in backend
     });
   }
 
   componentDidMount() {
-    this.http.get('/api/practice/time/').then((resp: AxiosResponse) => {
+    this.http.get('/api/v1/practice/time/').then((resp: AxiosResponse) => {
       this.setState({
         hours: resp.data.total_hours,
         minutes: resp.data.total_minutes

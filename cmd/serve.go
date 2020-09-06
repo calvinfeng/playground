@@ -41,6 +41,8 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 
 	e.File("/", "playgroundui/build/index.html")
 	e.File("/about", "playgroundui/build/index.html")
+	e.File("/practicelog", "playgroundui/build/index.html")
+	e.File("/fretboard", "playgroundui/build/index.html")
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:   "playgroundui/build/",
@@ -48,16 +50,16 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	}))
 
 	// 	e.Static("/", "./playgroundui/build/")
-	e.GET("/api/progress/recordings/", httphandler.ProgressRecordingListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/practice/recordings/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/practice/time/", httphandler.PracticeTimeHandler(httphandler.Config{
+	e.GET("/api/v1/progress/recordings/", httphandler.ProgressRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/v1/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/v1/practice/recordings/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/v1/practice/time/", httphandler.PracticeTimeHandler(httphandler.Config{
 		Store:          nil,
 		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
-	e.GET("/api/practice/log/entries/", srv.ListPracticeLogEntries)
+	e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
 
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")

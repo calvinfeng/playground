@@ -33,7 +33,7 @@ export default class ProgressReportElement extends React.Component<Props, State>
 
   componentDidMount() {
     // TODO: Implement query on server side
-    this.http.get('/api/progress/recordings/', {
+    this.http.get('/api/v1/progress/recordings/', {
       params: {
         id: this.props.id,
       }
