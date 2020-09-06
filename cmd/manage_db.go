@@ -3,8 +3,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/calvinfeng/playground/practicelog"
-	"github.com/calvinfeng/playground/practicelog/logstore"
+	"github.com/calvinfeng/playground/practice"
+	"github.com/calvinfeng/playground/practice/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -72,7 +72,7 @@ func seedFromTrello() error {
 	}
 
 	store := logstore.New(pg)
-	logLabels := []*practicelog.Label{
+	logLabels := []*practice.LogLabel{
 		{Name: "Acoustic"},
 		{Name: "Blues"},
 		{Name: "Finger Mechanics"},
@@ -87,7 +87,7 @@ func seedFromTrello() error {
 		logrus.Infof("inserted %d log labels", inserted)
 	}
 
-	subLogLabels := []*practicelog.Label{
+	subLogLabels := []*practice.LogLabel{
 		{Name: "Acoustic Rhythm", ParentID: logLabels[0].ID},
 		{Name: "Barre Chords", ParentID: logLabels[2].ID},
 		{Name: "Chord Change", ParentID: logLabels[2].ID},
@@ -99,7 +99,7 @@ func seedFromTrello() error {
 		logrus.Infof("inserted %d log labels", inserted)
 	}
 
-	logLabelsByName := make(map[string]*practicelog.Label)
+	logLabelsByName := make(map[string]*practice.LogLabel)
 	logLabels, err = store.SelectLogLabels()
 	if err != nil {
 		return err
@@ -125,16 +125,16 @@ func seedFromTrello() error {
 		return err
 	}
 
-	entries := make([]*practicelog.Entry, 0, len(cards))
+	entries := make([]*practice.LogEntry, 0, len(cards))
 	for _, card := range cards {
 		if card.IsTemplate {
 			continue
 		}
 
-		entry := new(practicelog.Entry)
+		entry := new(practice.LogEntry)
 		entry.Title = card.Name
 		entry.Note = card.Description
-		entry.Labels = make([]*practicelog.Label, 0)
+		entry.Labels = make([]*practice.LogLabel, 0)
 		entry.UserID = "calvin.j.feng@gmail.com"
 		for _, labelID := range card.LabelIDs {
 			label, ok := trelloLabelsByID[labelID]

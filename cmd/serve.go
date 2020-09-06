@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"github.com/calvinfeng/playground/practice/httpservice"
+	"github.com/calvinfeng/playground/practice/logstore"
 	"net/http"
 	"os"
 
@@ -29,6 +31,8 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	}
 	logrus.Infof("pg is up %s", pg)
 
+	srv := httpservice.New(logstore.New(pg))
+
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
@@ -53,6 +57,8 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
+	e.GET("/api/practice/log/entries/", srv.ListPracticeLogEntries)
+
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")
 }

@@ -3,13 +3,13 @@ package logstore
 import (
 	"fmt"
 	"github.com/Masterminds/squirrel"
-	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practice"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-func New(db *sqlx.DB) practicelog.Store {
+func New(db *sqlx.DB) practice.LogStore {
 	return &store{db: db}
 }
 
@@ -17,7 +17,7 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
+func (s *store) SelectLogEntries() ([]*practice.LogEntry, error) {
 	query := squirrel.Select("*").From(PracticeLogEntryTable)
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
@@ -30,7 +30,7 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 		return nil, err
 	}
 
-	entries := make([]*practicelog.Entry, 0)
+	entries := make([]*practice.LogEntry, 0)
 	for _, row := range rows {
 		entries = append(entries, row.toModel())
 	}
@@ -52,12 +52,12 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 		return nil, err
 	}
 
-	entryToLabels := make(map[uuid.UUID]map[uuid.UUID]*practicelog.Label)
+	entryToLabels := make(map[uuid.UUID]map[uuid.UUID]*practice.LogLabel)
 	for _, lbl := range labelRows {
 		if _, ok := entryToLabels[lbl.EntryID]; !ok {
-			entryToLabels[lbl.EntryID] = make(map[uuid.UUID]*practicelog.Label)
+			entryToLabels[lbl.EntryID] = make(map[uuid.UUID]*practice.LogLabel)
 		}
-		entryToLabels[lbl.EntryID][lbl.ID] = &practicelog.Label{
+		entryToLabels[lbl.EntryID][lbl.ID] = &practice.LogLabel{
 			ID:       lbl.ID,
 			ParentID: lbl.ParentID,
 			Name:     lbl.Name,
@@ -70,7 +70,7 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 			continue
 		}
 
-		entry.Labels = make([]*practicelog.Label, 0, len(labels))
+		entry.Labels = make([]*practice.LogLabel, 0, len(labels))
 		for _, label := range labels {
 			entry.Labels = append(entry.Labels, label)
 		}
@@ -79,7 +79,7 @@ func (s *store) SelectLogEntries() ([]*practicelog.Entry, error) {
 	return entries, nil
 }
 
-func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
+func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 	query := squirrel.Select("*").From(PracticeLogLabelTable)
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
@@ -92,7 +92,7 @@ func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
 		return nil, err
 	}
 
-	labels := make([]*practicelog.Label, 0)
+	labels := make([]*practice.LogLabel, 0)
 	for _, row := range rows {
 		labels = append(labels, row.toModel())
 	}
@@ -100,7 +100,7 @@ func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
 	return labels, nil
 }
 
-func (s *store) BatchInsertLogLabels(labels ...*practicelog.Label) (int64, error) {
+func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error) {
 	query := squirrel.Insert(PracticeLogLabelTable).
 		Columns("id", "parent_id", "name")
 
@@ -126,7 +126,7 @@ func (s *store) BatchInsertLogLabels(labels ...*practicelog.Label) (int64, error
 	return res.RowsAffected()
 }
 
-func (s *store) BatchInsertLogEntries(entries ...*practicelog.Entry) (int64, error) {
+func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, error) {
 	entryQuery := squirrel.Insert(PracticeLogEntryTable).
 		Columns("id", "user_id", "date", "duration", "title", "note")
 

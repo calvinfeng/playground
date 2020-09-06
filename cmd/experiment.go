@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/calvinfeng/playground/practicelog/logstore"
+	"github.com/calvinfeng/playground/practice/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
 	"github.com/jmoiron/sqlx"

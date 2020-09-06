@@ -1,7 +1,7 @@
 package logstore
 
 import (
-	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practice"
 	"github.com/google/uuid"
 	"time"
 )
@@ -19,7 +19,7 @@ type DBPracticeLogEntry struct {
 	Note     string    `db:"note"`
 }
 
-func (row *DBPracticeLogEntry) fromModel(model *practicelog.Entry) *DBPracticeLogEntry {
+func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLogEntry {
 	row.ID = model.ID
 	row.UserID = model.UserID
 	row.Date = model.Date
@@ -29,8 +29,8 @@ func (row *DBPracticeLogEntry) fromModel(model *practicelog.Entry) *DBPracticeLo
 	return row
 }
 
-func (row *DBPracticeLogEntry) toModel() *practicelog.Entry {
-	model := &practicelog.Entry{
+func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
+	model := &practice.LogEntry{
 		ID:       row.ID,
 		UserID:   row.UserID,
 		Date:     row.Date,
@@ -55,15 +55,15 @@ type DBReadOnlyPracticeLogLabel struct {
 	EntryID  uuid.UUID `db:"entry_id"`
 }
 
-func (row *DBPracticeLogLabel) fromModel(model *practicelog.Label) *DBPracticeLogLabel {
+func (row *DBPracticeLogLabel) fromModel(model *practice.LogLabel) *DBPracticeLogLabel {
 	row.ID = model.ID
 	row.ParentID = model.ParentID
 	row.Name = model.Name
 	return row
 }
 
-func (row *DBPracticeLogLabel) toModel() *practicelog.Label {
-	model := &practicelog.Label{
+func (row *DBPracticeLogLabel) toModel() *practice.LogLabel {
+	model := &practice.LogLabel{
 		ID:       row.ID,
 		ParentID: row.ParentID,
 		Name:     row.Name,

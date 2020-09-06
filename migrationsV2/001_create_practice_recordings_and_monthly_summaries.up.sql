@@ -1,4 +1,4 @@
-CREATE TABLE recordings (
+CREATE TABLE practice_recordings (
     id UUID PRIMARY KEY,
     year INTEGER NOT NULL,
     month INTEGER NOT NULL,
