@@ -135,6 +135,7 @@ func seedFromTrello() error {
 		entry.Title = card.Name
 		entry.Note = card.Description
 		entry.Labels = make([]*practicelog.Label, 0)
+		entry.UserID = "calvin.j.feng@gmail.com"
 		for _, labelID := range card.LabelIDs {
 			label, ok := trelloLabelsByID[labelID]
 			if !ok {
@@ -188,6 +189,15 @@ func seedFromTrello() error {
 		return err
 	} else {
 		logrus.Infof("inserted %d entries", inserted)
+	}
+
+	entries, err = store.SelectLogEntries()
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		logrus.Infof("entry %s %s has labels", entry.ID, entry.Title, entry.Labels)
 	}
 
 	return nil

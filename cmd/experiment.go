@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
+	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -26,7 +28,7 @@ func showPlaylistItems() error {
 	return nil
 }
 
-func experimentRunE(_ *cobra.Command, _ []string) error {
+func showTrelloCards() error {
 	srv := trelloapi.New(trelloapi.Config{
 		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
@@ -51,6 +53,24 @@ func experimentRunE(_ *cobra.Command, _ []string) error {
 		}
 		logrus.Infof("%s %s %s with labels %s", card.ID, card.Name, card.Description, labelNames)
 	}
+	return nil
+}
 
+func experimentRunE(_ *cobra.Command, _ []string) error {
+	pg, err := sqlx.Open("postgres", databaseAddress())
+	if err != nil {
+		return err
+	}
+
+	store := logstore.New(pg)
+
+	entries, err := store.SelectLogEntries()
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		logrus.Infof("entry %s %s has labels", entry.ID, entry.Title, entry.Labels)
+	}
 	return nil
 }

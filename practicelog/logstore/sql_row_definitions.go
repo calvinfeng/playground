@@ -48,6 +48,13 @@ type DBPracticeLogLabel struct {
 	Name     string    `db:"name"`
 }
 
+type DBReadOnlyPracticeLogLabel struct {
+	ID       uuid.UUID `db:"label_id"`
+	ParentID uuid.UUID `db:"parent_id"`
+	Name     string    `db:"name"`
+	EntryID  uuid.UUID `db:"entry_id"`
+}
+
 func (row *DBPracticeLogLabel) fromModel(model *practicelog.Label) *DBPracticeLogLabel {
 	row.ID = model.ID
 	row.ParentID = model.ParentID
