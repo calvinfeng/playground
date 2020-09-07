@@ -17,8 +17,37 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) SelectLogEntries() ([]*practice.LogEntry, error) {
-	query := squirrel.Select("*").From(PracticeLogEntryTable)
+func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
+	query := squirrel.Select("COUNT(*)").From(PracticeLogEntryTable)
+
+	eqCondition := make(squirrel.Eq)
+	for _, f := range filters {
+		f(eqCondition)
+	}
+
+	statement, args, err := query.Where(eqCondition).PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to construct query")
+	}
+	count := make([]int, 0)
+	if err = s.db.Select(&count, statement, args...); err != nil {
+		return 0, err
+	}
+	return count[0], nil
+}
+
+func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFilter) ([]*practice.LogEntry, error) {
+	eqCondition := make(squirrel.Eq)
+	for _, f := range filters {
+		f(eqCondition)
+	}
+
+	query := squirrel.Select("*").
+		From(PracticeLogEntryTable).
+		Limit(limit).
+		Offset(offset).
+		Where(eqCondition).
+		OrderBy("date DESC")
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
@@ -35,12 +64,20 @@ func (s *store) SelectLogEntries() ([]*practice.LogEntry, error) {
 		entries = append(entries, row.toModel())
 	}
 
+	entryIDs := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		entryIDs = append(entryIDs, entry.ID.String())
+	}
+
 	// This join can become expensive eventually.
 	query = squirrel.
 		Select("entry_id", "label_id", "parent_id", "name").
 		From(PracticeLogLabelTable).
 		LeftJoin(
-			fmt.Sprintf("%s ON id = label_id", AssociationPracticeLogEntryLabelTable))
+			fmt.Sprintf("%s ON id = label_id", AssociationPracticeLogEntryLabelTable)).
+		Where(squirrel.Eq{
+			"entry_id": entryIDs,
+		})
 
 	statement, args, err = query.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {

@@ -64,7 +64,7 @@ func experimentRunE(_ *cobra.Command, _ []string) error {
 
 	store := logstore.New(pg)
 
-	entries, err := store.SelectLogEntries()
+	entries, err := store.SelectLogEntries(20, 0)
 	if err != nil {
 		return err
 	}

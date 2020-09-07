@@ -91,6 +91,8 @@ func seedFromTrello() error {
 		{Name: "Acoustic Rhythm", ParentID: logLabels[0].ID},
 		{Name: "Barre Chords", ParentID: logLabels[2].ID},
 		{Name: "Chord Change", ParentID: logLabels[2].ID},
+		{Name: "Now & Forever", ParentID: logLabels[5].ID},
+		{Name: "Final Countdown", ParentID: logLabels[5].ID},
 	}
 
 	if inserted, err := store.BatchInsertLogLabels(subLogLabels...); err != nil {
@@ -145,7 +147,7 @@ func seedFromTrello() error {
 			if duration, err := time.ParseDuration(label.Name); err == nil {
 				entry.Duration += int32(duration.Minutes())
 			} else {
-				// Hard coding it is more error proof given the small number.
+				// Hard coding it is more error proof given the small number of labels.
 				switch label.Name {
 				case "Barre Chords":
 					entry.Labels = append(entry.Labels, logLabelsByName["Finger Mechanics"], logLabelsByName["Barre Chords"])
@@ -165,10 +167,18 @@ func seedFromTrello() error {
 					entry.Labels = append(entry.Labels, logLabelsByName["Scales"])
 				case "Guitar Lessons":
 					entry.Labels = append(entry.Labels, logLabelsByName["Music Lessons"])
+				case "Now & Forever":
+					entry.Labels = append(entry.Labels, logLabelsByName["Now & Forever"])
+				case "Final Countdown":
+					entry.Labels = append(entry.Labels, logLabelsByName["Final Countdown"])
 				default:
 					logrus.Errorf("found unrecognized label name from Trello", label.Name)
 				}
 			}
+		}
+
+		if card.Due == "" {
+			continue
 		}
 
 		date, err := time.Parse(time.RFC3339, card.Due)
@@ -191,7 +201,12 @@ func seedFromTrello() error {
 		logrus.Infof("inserted %d entries", inserted)
 	}
 
-	entries, err = store.SelectLogEntries()
+	count, err := store.CountLogEntries()
+	if err != nil {
+		return err
+	}
+
+	entries, err = store.SelectLogEntries(uint64(count), 0)
 	if err != nil {
 		return err
 	}

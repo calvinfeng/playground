@@ -2,6 +2,7 @@ package practice
 
 import (
 	"fmt"
+	"github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"time"
@@ -34,8 +35,11 @@ type (
 		ListPracticeLogLabels(echo.Context) error
 	}
 
+	SQLFilter func(squirrel.Eq)
+
 	LogStore interface {
-		SelectLogEntries() ([]*LogEntry, error)
+		CountLogEntries(...SQLFilter) (int, error)
+		SelectLogEntries(limit, offset uint64, filters ...SQLFilter) ([]*LogEntry, error)
 		SelectLogLabels() ([]*LogLabel, error)
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
