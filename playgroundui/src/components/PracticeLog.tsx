@@ -14,7 +14,9 @@ import {
   TableCell,
   TableRow,
   Paper,
-  IconButton
+  IconButton,
+  Grid,
+  Button
 } from '@material-ui/core'
 import {
   MusicNote
@@ -33,6 +35,8 @@ type State = {
   logEntries: LogEntryJSON[]
   logLabels: LogLabelJSON[]
   editLogEntry: LogEntryJSON | null
+  pageNum: number
+  hasNextPage: boolean
 }
 
 export default class PracticeLog extends React.Component<Props, State> {
@@ -43,7 +47,9 @@ export default class PracticeLog extends React.Component<Props, State> {
     this.state = {
       logEntries: [],
       logLabels: [],
-      editLogEntry: null
+      editLogEntry: null,
+      pageNum: 1,
+      hasNextPage: false
     }
     this.http = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
@@ -52,25 +58,14 @@ export default class PracticeLog extends React.Component<Props, State> {
     });
   }
 
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (this.state.pageNum !== prevState.pageNum) {
+      this.fetchLogEntriesByPage(this.state.pageNum)
+    }
+  }
+
   componentDidMount() {
-    this.http.get('/api/v2/practice/log/entries/')
-      .then((resp: AxiosResponse) => {
-        // time.Time is parsed as string. The string needs to be converted back into date object.
-        const entries: LogEntryJSON[] = []
-        for (let i = 0; i < resp.data.results.length; i++) {
-          entries.push({
-            id: resp.data.results[i].id,
-            date: new Date(resp.data.results[i].date),
-            labels: resp.data.results[i].labels,
-            title: resp.data.results[i].title,
-            note: resp.data.results[i].note,
-            duration: resp.data.results[i].duration
-          })
-        }
-        this.setState({
-          logEntries: entries
-        })
-      })
+    this.fetchLogEntriesByPage(this.state.pageNum)
 
     this.http.get('/api/v2/practice/log/labels/')
       .then((resp: AxiosResponse) => {
@@ -93,12 +88,37 @@ export default class PracticeLog extends React.Component<Props, State> {
             label.children = []
           }
         })
-        console.log("got labels", labels)
         this.setState({
           logLabels: labels
         })
       })
-    }
+  }
+
+  fetchLogEntriesByPage(page: number) {
+    this.http.get('/api/v2/practice/log/entries/', {
+        params: {
+          "page": page
+        }
+      })
+      .then((resp: AxiosResponse) => {
+        // time.Time is parsed as string. The string needs to be converted back into date object.
+        const entries: LogEntryJSON[] = []
+        for (let i = 0; i < resp.data.results.length; i++) {
+          entries.push({
+            id: resp.data.results[i].id,
+            date: new Date(resp.data.results[i].date),
+            labels: resp.data.results[i].labels,
+            title: resp.data.results[i].title,
+            note: resp.data.results[i].note,
+            duration: resp.data.results[i].duration
+          })
+        }
+        this.setState({
+          logEntries: entries,
+          hasNextPage: resp.data.more
+        })
+      })
+  }
 
   newHandlerLogEntryEdit = (log: LogEntryJSON) => () => {
     this.setState({
@@ -112,15 +132,12 @@ export default class PracticeLog extends React.Component<Props, State> {
     })
   }
 
-  render() {
+  get logEntryTable() {
     const tableRows: JSX.Element[] = []
-    const cellStyle = {
-      "padding": "8px"
-    }
+    const cellStyle = { "padding": "8px" }
+
     this.state.logEntries.forEach((log: LogEntryJSON) => {
-      const chipStyle = {
-        "margin": "0.1rem",
-      }
+      const chipStyle = { "margin": "0.1rem" }
 
       let labels: JSX.Element[] = []
       if (log.labels) {
@@ -128,12 +145,12 @@ export default class PracticeLog extends React.Component<Props, State> {
           <Chip style={chipStyle} label={label.name} icon={<MusicNote />} color="primary" />
         ))
       }
-      
+
       tableRows.push(
         <TableRow>
           <TableCell style={cellStyle}>{log.date.toDateString()}</TableCell>
+          <TableCell style={cellStyle}>{log.duration} minutes</TableCell>
           <TableCell style={cellStyle}>{labels}</TableCell>
-          <TableCell style={cellStyle}>{log.duration}</TableCell>
           <TableCell style={cellStyle}>{log.title}</TableCell>
           <TableCell style={cellStyle}>
           <IconButton
@@ -150,23 +167,74 @@ export default class PracticeLog extends React.Component<Props, State> {
       )
     })
     return (
+      <TableContainer className="log-entry-table" component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={cellStyle}>Date</TableCell>
+            <TableCell style={cellStyle}>Duration</TableCell>
+            <TableCell style={cellStyle}>Labels</TableCell>
+            <TableCell style={cellStyle}>Message</TableCell>
+            <TableCell style={cellStyle}>Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tableRows}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    )
+  }
+
+  get paginationControlPanel() {
+    const handlePrevPage = () => {
+      this.setState({ pageNum: this.state.pageNum - 1 })
+    }
+
+    const handleNextPage = () => {
+      this.setState({ pageNum: this.state.pageNum + 1 })
+    }
+
+    const items: JSX.Element[] = []
+    if (this.state.pageNum > 1) {
+      items.push(
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={handlePrevPage}>Prev</Button>
+        </Grid>
+      )
+    }
+    
+    if (this.state.hasNextPage) {
+      items.push(
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={handleNextPage}>Next</Button>
+        </Grid>
+      )
+    }
+
+    items.push(
+      <Grid item>
+        <Typography>Page {this.state.pageNum} </Typography>
+      </Grid>
+    )
+
+    return (
+      <Grid container
+        direction="row"
+        justify="flex-end"
+        alignItems="baseline"
+        spacing={1}
+        className="pagination-control-panel">
+        {items}
+    </Grid>
+    )
+  }
+
+  render() {
+    return (
       <section className="PracticeLog">
-        <TableContainer style={{ marginTop: "1rem" }}component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={cellStyle}>Date</TableCell>
-                <TableCell style={cellStyle}>Labels</TableCell>
-                <TableCell style={cellStyle}>Duration (in minutes)</TableCell>
-                <TableCell style={cellStyle}>Message</TableCell>
-                <TableCell style={cellStyle}>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tableRows}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {this.logEntryTable}
+        {this.paginationControlPanel}
         <LogEntryManagement
           clearEditLogEntry={this.handleLogEntryEditClear}
           editLogEntry={this.state.editLogEntry}
