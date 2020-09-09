@@ -56,7 +56,7 @@ func showTrelloCards() error {
 	return nil
 }
 
-func experimentRunE(_ *cobra.Command, _ []string) error {
+func storeTesting() error {
 	pg, err := sqlx.Open("postgres", databaseAddress())
 	if err != nil {
 		return err
@@ -72,5 +72,24 @@ func experimentRunE(_ *cobra.Command, _ []string) error {
 	for _, entry := range entries {
 		logrus.Infof("entry %s %s has labels", entry.ID, entry.Title, entry.Labels)
 	}
+	return nil
+}
+
+func experimentRunE(_ *cobra.Command, _ []string) error {
+	srv := trelloapi.New(trelloapi.Config{
+		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
+		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
+	})
+
+	lists, err := srv.TrelloChecklistsByBoard("woq8deqm")
+	if err != nil {
+		return err
+	}
+
+	for _, list := range lists {
+		logrus.Infof("list %s %s has %d items", list.ID, list.Name, len(list.Items))
+	}
+
+	logrus.Infof("total %d lists found", len(lists))
 	return nil
 }

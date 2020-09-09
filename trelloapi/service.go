@@ -83,3 +83,31 @@ func (s *service) TrelloCardsByBoard(boardID string) ([]TrelloCard, error) {
 	}
 	return cards, nil
 }
+
+func (s *service) TrelloChecklistsByBoard(boardID string) ([]TrelloChecklist, error) {
+	addr := &url.URL{
+		Scheme: "https",
+		Host:   s.host,
+		Path:   fmt.Sprintf("/1/boards/%s/checklists", boardID),
+	}
+	q := addr.Query()
+	q.Set("key", s.key)
+	q.Set("token", s.token)
+	addr.RawQuery = q.Encode()
+
+	resp, err := http.Get(addr.String())
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("bad status %d", resp.StatusCode)
+	}
+
+	results := make([]TrelloChecklist, 0)
+	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
