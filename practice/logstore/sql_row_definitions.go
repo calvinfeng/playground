@@ -1,6 +1,7 @@
 package logstore
 
 import (
+	"encoding/json"
 	"github.com/calvinfeng/playground/practice"
 	"github.com/google/uuid"
 	"time"
@@ -11,12 +12,13 @@ const PracticeLogLabelTable = "practice_log_labels"
 const AssociationPracticeLogEntryLabelTable = "association_practice_log_entries_labels"
 
 type DBPracticeLogEntry struct {
-	ID       uuid.UUID `db:"id"`
-	UserID   string    `db:"user_id"`
-	Date     time.Time `db:"date"`
-	Duration int32     `db:"duration"`
-	Title    string    `db:"title"`
-	Note     string    `db:"note"`
+	ID       uuid.UUID       `db:"id"`
+	UserID   string          `db:"user_id"`
+	Date     time.Time       `db:"date"`
+	Duration int32           `db:"duration"`
+	Title    string          `db:"title"`
+	Note     string          `db:"note"`
+	Subtasks json.RawMessage `db:"subtasks"`
 }
 
 func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLogEntry {
@@ -26,6 +28,7 @@ func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLo
 	row.Title = model.Title
 	row.Note = model.Note
 	row.Duration = model.Duration
+	row.Subtasks, _ = json.Marshal(model.Subtasks)
 	return row
 }
 
@@ -38,7 +41,9 @@ func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 		Title:    row.Title,
 		Note:     row.Note,
 		Labels:   nil,
+		Subtasks: make(map[int]*practice.Subtask),
 	}
+	_ = json.Unmarshal(row.Subtasks, &model.Subtasks)
 	return model
 }
 

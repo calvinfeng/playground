@@ -9,13 +9,19 @@ import (
 )
 
 type LogEntry struct {
-	ID       uuid.UUID   `json:"id"`
-	UserID   string      `json:"user_id"`
-	Date     time.Time   `json:"date"`
-	Duration int32       `json:"duration"`
-	Title    string      `json:"title"`
-	Note     string      `json:"note"`
-	Labels   []*LogLabel `json:"labels,omitempty"`
+	ID       uuid.UUID        `json:"id"`
+	UserID   string           `json:"user_id"`
+	Date     time.Time        `json:"date"`
+	Duration int32            `json:"duration"`
+	Title    string           `json:"title"`
+	Note     string           `json:"note"`
+	Subtasks map[int]*Subtask `json:"subtasks,omitempty"`
+	Labels   []*LogLabel      `json:"labels,omitempty"`
+}
+
+type Subtask struct {
+	Name      string `json:"name"`
+	Completed bool   `json:"completed"`
 }
 
 type LogLabel struct {
