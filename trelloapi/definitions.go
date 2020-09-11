@@ -22,15 +22,16 @@ type TrelloLabel struct {
 }
 
 type TrelloCard struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"desc"`
-	ShortID     int64    `json:"idShort"`
-	BoardID     string   `json:"idBoard"`
-	ListID      string   `json:"idList"`
-	LabelIDs    []string `json:"idLabels"`
-	IsTemplate  bool     `json:"isTemplate"`
-	Due         string   `json:"due"`
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Description  string   `json:"desc"`
+	ShortID      int64    `json:"idShort"`
+	BoardID      string   `json:"idBoard"`
+	ListID       string   `json:"idList"`
+	ChecklistIDs []string `json:"idChecklists"`
+	LabelIDs     []string `json:"idLabels"`
+	IsTemplate   bool     `json:"isTemplate"`
+	Due          string   `json:"due"`
 }
 
 type TrelloChecklist struct {

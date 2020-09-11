@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/calvinfeng/playground/practice/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
@@ -88,6 +89,9 @@ func experimentRunE(_ *cobra.Command, _ []string) error {
 
 	for _, list := range lists {
 		logrus.Infof("list %s %s has %d items", list.ID, list.Name, len(list.Items))
+		for _, item := range list.Items {
+			fmt.Println(item.Name, item.State)
+		}
 	}
 
 	logrus.Infof("total %d lists found", len(lists))
