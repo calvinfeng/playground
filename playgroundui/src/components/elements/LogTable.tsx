@@ -9,9 +9,8 @@ import './LogTable.scss'
 
 type Props = {
   logEntries: LogEntryJSON[]
-  handleSetAssignment: (event: React.MouseEvent<HTMLButtonElement>) => void
   handleSetLogEntryEdit: (log: LogEntryJSON) => void
-  handleSetLogEntryView: (log: LogEntryJSON) => void
+  handleSetLogEntryViewAndAnchorEl: (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => void
 }
 
 export default function LogTable(props: Props) {
@@ -23,8 +22,7 @@ export default function LogTable(props: Props) {
   }
 
   const makeHandlerSetLogViewAndAssignment = (log: LogEntryJSON) => (event: React.MouseEvent<HTMLButtonElement>) => {
-    props.handleSetAssignment(event)
-    props.handleSetLogEntryView(log)
+    props.handleSetLogEntryViewAndAnchorEl(event, log)
   }
   
   props.logEntries.forEach((log: LogEntryJSON) => {

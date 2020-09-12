@@ -51,7 +51,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     });
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(_: Props, prevState: State) {
     if (this.state.pageNum !== prevState.pageNum) {
       this.fetchLogEntriesByPage(this.state.pageNum)
     }
@@ -113,9 +113,16 @@ export default class PracticeLog extends React.Component<Props, State> {
       })
   }
 
-  handleSetLogEntryView = (log: LogEntryJSON) => {
+  handleSetLogEntryViewAndAnchorEl = (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => {
     this.setState({
-      viewLogEntry: log
+      viewLogEntry: log,
+      popoverAnchor: event.currentTarget 
+    })
+  }
+
+  handleClearAnchorEl = () => {
+    this.setState({
+      popoverAnchor: null
     })
   }
 
@@ -137,16 +144,6 @@ export default class PracticeLog extends React.Component<Props, State> {
     })
   }
 
-  handleSetAssignment = (event: React.MouseEvent<HTMLButtonElement>) => {
-    this.setState({ popoverAnchor: event.currentTarget })
-  }
-
-  handleClearAssignment = () => {
-    this.setState({
-      popoverAnchor: null
-    })
-  }
- 
   get PaginationControlPanel() {
     const handlePrevPage = () => {
       this.setState({ pageNum: this.state.pageNum - 1 })
@@ -196,13 +193,12 @@ export default class PracticeLog extends React.Component<Props, State> {
     return (
       <section className="PracticeLog">
         <LogEntryAssignment 
-          handleClearAssignment={this.handleClearAssignment}
+          handleClearAssignment={this.handleClearAnchorEl}
           popoverAnchor={this.state.popoverAnchor} 
           viewLogEntry={this.state.viewLogEntry} /> 
         <LogTable
           logEntries={this.state.logEntries} 
-          handleSetAssignment={this.handleSetAssignment}
-          handleSetLogEntryView={this.handleSetLogEntryView}
+          handleSetLogEntryViewAndAnchorEl={this.handleSetLogEntryViewAndAnchorEl}
           handleSetLogEntryEdit={this.handleSetLogEntryEdit} />
         {this.PaginationControlPanel}
         <LogEntryManagement
