@@ -16,15 +16,17 @@ import {
   Paper,
   IconButton,
   Grid,
-  Button
+  Button,
+  Popover
 } from '@material-ui/core'
 import {
   MusicNote
 } from '@material-ui/icons'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import LogEntryManagement from './elements/LogEntryManagement'
-import LabelManagement from './elements/LabelManagement'
+import LogLabelManagement from './elements/LogLabelManagement'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 
 type Props = {
@@ -37,6 +39,7 @@ type State = {
   editLogEntry: LogEntryJSON | null
   pageNum: number
   hasNextPage: boolean
+  popoverAnchor: HTMLButtonElement | null
 }
 
 export default class PracticeLog extends React.Component<Props, State> {
@@ -49,7 +52,8 @@ export default class PracticeLog extends React.Component<Props, State> {
       logLabels: [],
       editLogEntry: null,
       pageNum: 1,
-      hasNextPage: false
+      hasNextPage: false,
+      popoverAnchor: null
     }
     this.http = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
@@ -132,7 +136,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     })
   }
 
-  get logEntryTable() {
+  get LogEntryTable() {
     const tableRows: JSX.Element[] = []
     const cellStyle = { "padding": "8px" }
 
@@ -146,6 +150,12 @@ export default class PracticeLog extends React.Component<Props, State> {
         ))
       }
 
+      const handleClickAssignment = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log('clicking', event.currentTarget)
+        console.log(this)
+        this.setState({ popoverAnchor: event.currentTarget })
+      }
+
       tableRows.push(
         <TableRow>
           <TableCell style={cellStyle}>{log.date.toDateString()}</TableCell>
@@ -153,10 +163,10 @@ export default class PracticeLog extends React.Component<Props, State> {
           <TableCell style={cellStyle}>{labels}</TableCell>
           <TableCell style={cellStyle}>{log.title}</TableCell>
           <TableCell style={cellStyle}>
-          <IconButton
-            color="primary"
-            component="span"
-            onClick={this.newHandlerLogEntryEdit(log)}>
+          <IconButton color="primary" component="span" onClick={handleClickAssignment}>
+            <AssignmentIcon />
+          </IconButton>
+          <IconButton color="primary" component="span" onClick={this.newHandlerLogEntryEdit(log)}>
             <EditIcon />
           </IconButton>
           <IconButton color="secondary" component="span">
@@ -186,7 +196,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     )
   }
 
-  get paginationControlPanel() {
+  get PaginationControlPanel() {
     const handlePrevPage = () => {
       this.setState({ pageNum: this.state.pageNum - 1 })
     }
@@ -230,16 +240,31 @@ export default class PracticeLog extends React.Component<Props, State> {
     )
   }
 
+  get LogEntryAssignment() {
+    return (
+      <Popover
+        id={"assignment-popover"}
+        open={Boolean(this.state.popoverAnchor)}
+        anchorEl={this.state.popoverAnchor}
+        onClose={() => this.setState({ popoverAnchor: null })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Typography>The content of the Popover.</Typography>
+      </Popover>
+    )
+  }
+
   render() {
     return (
       <section className="PracticeLog">
-        {this.logEntryTable}
-        {this.paginationControlPanel}
+        {this.LogEntryAssignment}
+        {this.LogEntryTable}
+        {this.PaginationControlPanel}
         <LogEntryManagement
           clearEditLogEntry={this.handleLogEntryEditClear}
           editLogEntry={this.state.editLogEntry}
           logLabels={this.state.logLabels} />
-        <LabelManagement
+        <LogLabelManagement
           logLabels={this.state.logLabels} />
       </section>
     )

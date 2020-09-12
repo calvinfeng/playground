@@ -1,5 +1,5 @@
 import React from 'react'
-import './LabelManagement.scss'
+import './LogLabelManagement.scss'
 import { LogLabelJSON } from '../types'
 import {
   Grid,
