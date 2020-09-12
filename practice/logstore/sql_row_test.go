@@ -19,17 +19,17 @@ func TestLogEntryConversion(t *testing.T) {
 		Note:     "Example 1234",
 		Assignments: []*practice.Assignment{
 			{
-				Position: 0,
+				Position:  0,
 				Name:      "Do A",
 				Completed: false,
 			},
 			{
-					Position: 1,
+				Position:  1,
 				Name:      "Do B",
 				Completed: false,
 			},
 			{
-						Position: 2,
+				Position:  2,
 				Name:      "Do C",
 				Completed: false,
 			},

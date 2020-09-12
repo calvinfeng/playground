@@ -9,18 +9,18 @@ import (
 )
 
 type LogEntry struct {
-	ID       uuid.UUID        `json:"id"`
-	UserID   string           `json:"user_id"`
-	Date     time.Time        `json:"date"`
-	Duration int32            `json:"duration"`
-	Title    string           `json:"title"`
-	Note     string           `json:"note"`
+	ID          uuid.UUID     `json:"id"`
+	UserID      string        `json:"user_id"`
+	Date        time.Time     `json:"date"`
+	Duration    int32         `json:"duration"`
+	Title       string        `json:"title"`
+	Note        string        `json:"note"`
 	Assignments []*Assignment `json:"assignments,omitempty"`
-	Labels   []*LogLabel            `json:"labels,omitempty"`
+	Labels      []*LogLabel   `json:"labels,omitempty"`
 }
 
 type Assignment struct {
-	Position  int `json:"position"`
+	Position  int    `json:"position"`
 	Name      string `json:"name"`
 	Completed bool   `json:"completed"`
 }

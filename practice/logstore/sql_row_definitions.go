@@ -12,12 +12,12 @@ const PracticeLogLabelTable = "practice_log_labels"
 const AssociationPracticeLogEntryLabelTable = "association_practice_log_entries_labels"
 
 type DBPracticeLogEntry struct {
-	ID       uuid.UUID       `db:"id"`
-	UserID   string          `db:"user_id"`
-	Date     time.Time       `db:"date"`
-	Duration int32           `db:"duration"`
-	Title    string          `db:"title"`
-	Note     string          `db:"note"`
+	ID          uuid.UUID       `db:"id"`
+	UserID      string          `db:"user_id"`
+	Date        time.Time       `db:"date"`
+	Duration    int32           `db:"duration"`
+	Title       string          `db:"title"`
+	Note        string          `db:"note"`
 	Assignments json.RawMessage `db:"assignments"`
 }
 
@@ -34,13 +34,13 @@ func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLo
 
 func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 	model := &practice.LogEntry{
-		ID:       row.ID,
-		UserID:   row.UserID,
-		Date:     row.Date,
-		Duration: row.Duration,
-		Title:    row.Title,
-		Note:     row.Note,
-		Labels:   nil,
+		ID:          row.ID,
+		UserID:      row.UserID,
+		Date:        row.Date,
+		Duration:    row.Duration,
+		Title:       row.Title,
+		Note:        row.Note,
+		Labels:      nil,
 		Assignments: make([]*practice.Assignment, 0),
 	}
 	_ = json.Unmarshal(row.Assignments, &model.Assignments)

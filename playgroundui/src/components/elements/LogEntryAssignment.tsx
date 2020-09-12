@@ -1,7 +1,19 @@
 import React from 'react'
-import { Popover, Typography, ListItem, ListItemIcon, Checkbox, ListItemText } from '@material-ui/core'
+import {
+  Popover,
+  Typography,
+  TableHead,
+  TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  Paper,
+  Checkbox
+} from '@material-ui/core'
 import { LogEntryJSON, LogAssignmentJSON } from '../types'
-import { List } from '@material-ui/icons'
+import { } from '@material-ui/core'
+import './LogEntryAssignment.scss'
 
 type Props = {
   popoverAnchor: HTMLButtonElement | null
@@ -10,31 +22,48 @@ type Props = {
 }
 
 export default function LogEntryAssignment(props: Props) {
-  let content: JSX.Element
-
-  if (props.viewLogEntry === null || !props.viewLogEntry.assignments || props.viewLogEntry.assignments.length === 0) {
-    content = <Typography>No Assignment Found</Typography>
-  } else {
-    content = (
-      <List style={{width: "100%"}}>
-        {
-        props.viewLogEntry.assignments.map((assignment: LogAssignmentJSON) => {
-          const labelId = `assignment-checkbox-label-${assignment.position}`;
-          console.log("HELLLO?", assignment)
-          return (
-            <ListItem key={assignment.position}>
-              <Typography>HELLO?</Typography>
-            </ListItem>
-          )
-        })
-        }
-
-      </List>
-    )
+  let assignments: LogAssignmentJSON[] = []
+  if (props.viewLogEntry !== null && props.viewLogEntry.assignments) {
+    assignments = props.viewLogEntry.assignments
   }
+
+  const handleBoxCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.checked)
+  } 
+
+  const content = (
+    <TableContainer component={Paper} className="table-content">
+      <Table className={"assignment-list-table-view"} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">Item</TableCell>
+            <TableCell align="center">Done</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            assignments.map((assignment: LogAssignmentJSON) => (
+              <TableRow key={`assignment-item-${assignment.position}`}>
+                <TableCell align="left">
+                  {assignment.name}
+                </TableCell>
+                <TableCell align="center">
+                  <Checkbox
+                    onChange={handleBoxCheck}
+                    checked={assignment.completed}
+                    inputProps={{ 'aria-label': 'primary checkbox' }} />
+                </TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
 
   return (
     <Popover
+      className="LogEntryAssignment"
       id={"assignment-popover"}
       open={Boolean(props.popoverAnchor)}
       anchorEl={props.popoverAnchor}

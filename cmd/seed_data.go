@@ -137,7 +137,7 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 
 			for _, item := range checklist.Items {
 				entry.Assignments = append(entry.Assignments, &practice.Assignment{
-					Position: position,
+					Position:  position,
 					Name:      item.Name,
 					Completed: item.State == "complete",
 				})
