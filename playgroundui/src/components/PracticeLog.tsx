@@ -6,27 +6,14 @@ import {
 } from './types'
 import {
   Typography,
-  Chip,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableRow,
-  Paper,
-  IconButton,
   Grid,
   Button,
   Popover
 } from '@material-ui/core'
-import {
-  MusicNote
-} from '@material-ui/icons'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import LogEntryManagement from './elements/LogEntryManagement'
 import LogLabelManagement from './elements/LogLabelManagement'
+import LogEntryAssignment from './elements/LogEntryAssignment'
+import LogTable from './elements/LogTable'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 
 type Props = {
@@ -37,6 +24,7 @@ type State = {
   logEntries: LogEntryJSON[]
   logLabels: LogLabelJSON[]
   editLogEntry: LogEntryJSON | null
+  viewLogEntry: LogEntryJSON | null
   pageNum: number
   hasNextPage: boolean
   popoverAnchor: HTMLButtonElement | null
@@ -51,6 +39,7 @@ export default class PracticeLog extends React.Component<Props, State> {
       logEntries: [],
       logLabels: [],
       editLogEntry: null,
+      viewLogEntry: null,
       pageNum: 1,
       hasNextPage: false,
       popoverAnchor: null
@@ -124,78 +113,40 @@ export default class PracticeLog extends React.Component<Props, State> {
       })
   }
 
-  newHandlerLogEntryEdit = (log: LogEntryJSON) => () => {
+  handleSetLogEntryView = (log: LogEntryJSON) => {
+    this.setState({
+      viewLogEntry: log
+    })
+  }
+
+  handleClearLogEntryView = () => {
+    this.setState({
+      viewLogEntry: null
+    })
+  }
+
+  handleSetLogEntryEdit = (log: LogEntryJSON) => {
     this.setState({
       editLogEntry: log
     })
   }
 
-  handleLogEntryEditClear = () => {
+  handleClearLogEntryEdit = () => {
     this.setState({
       editLogEntry: null
     })
   }
 
-  get LogEntryTable() {
-    const tableRows: JSX.Element[] = []
-    const cellStyle = { "padding": "8px" }
-
-    this.state.logEntries.forEach((log: LogEntryJSON) => {
-      const chipStyle = { "margin": "0.1rem" }
-
-      let labels: JSX.Element[] = []
-      if (log.labels) {
-        labels = log.labels.map((label: LogLabelJSON) => (
-          <Chip style={chipStyle} label={label.name} icon={<MusicNote />} color="primary" />
-        ))
-      }
-
-      const handleClickAssignment = (event: React.MouseEvent<HTMLButtonElement>) => {
-        console.log('clicking', event.currentTarget)
-        console.log(this)
-        this.setState({ popoverAnchor: event.currentTarget })
-      }
-
-      tableRows.push(
-        <TableRow>
-          <TableCell style={cellStyle}>{log.date.toDateString()}</TableCell>
-          <TableCell style={cellStyle}>{log.duration} minutes</TableCell>
-          <TableCell style={cellStyle}>{labels}</TableCell>
-          <TableCell style={cellStyle}>{log.title}</TableCell>
-          <TableCell style={cellStyle}>
-          <IconButton color="primary" component="span" onClick={handleClickAssignment}>
-            <AssignmentIcon />
-          </IconButton>
-          <IconButton color="primary" component="span" onClick={this.newHandlerLogEntryEdit(log)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="secondary" component="span">
-            <DeleteIcon />
-          </IconButton>
-          </TableCell>
-        </TableRow>
-      )
-    })
-    return (
-      <TableContainer className="log-entry-table" component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={cellStyle}>Date</TableCell>
-            <TableCell style={cellStyle}>Duration</TableCell>
-            <TableCell style={cellStyle}>Labels</TableCell>
-            <TableCell style={cellStyle}>Message</TableCell>
-            <TableCell style={cellStyle}>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tableRows}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    )
+  handleSetAssignment = (event: React.MouseEvent<HTMLButtonElement>) => {
+    this.setState({ popoverAnchor: event.currentTarget })
   }
 
+  handleClearAssignment = () => {
+    this.setState({
+      popoverAnchor: null
+    })
+  }
+ 
   get PaginationControlPanel() {
     const handlePrevPage = () => {
       this.setState({ pageNum: this.state.pageNum - 1 })
@@ -240,28 +191,22 @@ export default class PracticeLog extends React.Component<Props, State> {
     )
   }
 
-  get LogEntryAssignment() {
-    return (
-      <Popover
-        id={"assignment-popover"}
-        open={Boolean(this.state.popoverAnchor)}
-        anchorEl={this.state.popoverAnchor}
-        onClose={() => this.setState({ popoverAnchor: null })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Typography>The content of the Popover.</Typography>
-      </Popover>
-    )
-  }
-
   render() {
+    // Due to the lack of a Redux store, function to set states have to be passed around.
     return (
       <section className="PracticeLog">
-        {this.LogEntryAssignment}
-        {this.LogEntryTable}
+        <LogEntryAssignment 
+          handleClearAssignment={this.handleClearAssignment}
+          popoverAnchor={this.state.popoverAnchor} 
+          viewLogEntry={this.state.viewLogEntry} /> 
+        <LogTable
+          logEntries={this.state.logEntries} 
+          handleSetAssignment={this.handleSetAssignment}
+          handleSetLogEntryView={this.handleSetLogEntryView}
+          handleSetLogEntryEdit={this.handleSetLogEntryEdit} />
         {this.PaginationControlPanel}
         <LogEntryManagement
-          clearEditLogEntry={this.handleLogEntryEditClear}
+          clearEditLogEntry={this.handleClearLogEntryEdit}
           editLogEntry={this.state.editLogEntry}
           logLabels={this.state.logLabels} />
         <LogLabelManagement
