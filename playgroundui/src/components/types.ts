@@ -35,4 +35,11 @@ export type LogEntryJSON = {
   title: string
   note: string
   duration: number
+  assignments: LogAssignmentJSON[]
+}
+
+export type LogAssignmentJSON = {
+  position: number
+  name: string
+  completed: boolean
 }

@@ -1,6 +1,7 @@
 import React from 'react'
-import { Popover, Typography } from '@material-ui/core'
-import { LogEntryJSON } from '../types'
+import { Popover, Typography, ListItem, ListItemIcon, Checkbox, ListItemText } from '@material-ui/core'
+import { LogEntryJSON, LogAssignmentJSON } from '../types'
+import { List } from '@material-ui/icons'
 
 type Props = {
   popoverAnchor: HTMLButtonElement | null
@@ -11,10 +12,25 @@ type Props = {
 export default function LogEntryAssignment(props: Props) {
   let content: JSX.Element
 
-  if (props.viewLogEntry === null) {
-    content = <Typography>No Entry Found</Typography>
+  if (props.viewLogEntry === null || !props.viewLogEntry.assignments || props.viewLogEntry.assignments.length === 0) {
+    content = <Typography>No Assignment Found</Typography>
   } else {
-    content = <Typography>{(props.viewLogEntry as LogEntryJSON).title}</Typography>
+    content = (
+      <List style={{width: "100%"}}>
+        {
+        props.viewLogEntry.assignments.map((assignment: LogAssignmentJSON) => {
+          const labelId = `assignment-checkbox-label-${assignment.position}`;
+          console.log("HELLLO?", assignment)
+          return (
+            <ListItem key={assignment.position}>
+              <Typography>HELLO?</Typography>
+            </ListItem>
+          )
+        })
+        }
+
+      </List>
+    )
   }
 
   return (

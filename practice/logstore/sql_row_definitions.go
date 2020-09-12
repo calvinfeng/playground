@@ -18,7 +18,7 @@ type DBPracticeLogEntry struct {
 	Duration int32           `db:"duration"`
 	Title    string          `db:"title"`
 	Note     string          `db:"note"`
-	Subtasks json.RawMessage `db:"subtasks"`
+	Assignments json.RawMessage `db:"assignments"`
 }
 
 func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLogEntry {
@@ -28,7 +28,7 @@ func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLo
 	row.Title = model.Title
 	row.Note = model.Note
 	row.Duration = model.Duration
-	row.Subtasks, _ = json.Marshal(model.Subtasks)
+	row.Assignments, _ = json.Marshal(model.Assignments)
 	return row
 }
 
@@ -41,9 +41,9 @@ func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 		Title:    row.Title,
 		Note:     row.Note,
 		Labels:   nil,
-		Subtasks: make(map[int]*practice.Subtask),
+		Assignments: make([]*practice.Assignment, 0),
 	}
-	_ = json.Unmarshal(row.Subtasks, &model.Subtasks)
+	_ = json.Unmarshal(row.Assignments, &model.Assignments)
 	return model
 }
 

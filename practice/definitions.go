@@ -15,11 +15,12 @@ type LogEntry struct {
 	Duration int32            `json:"duration"`
 	Title    string           `json:"title"`
 	Note     string           `json:"note"`
-	Subtasks map[int]*Subtask `json:"subtasks,omitempty"`
-	Labels   []*LogLabel      `json:"labels,omitempty"`
+	Assignments []*Assignment `json:"assignments,omitempty"`
+	Labels   []*LogLabel            `json:"labels,omitempty"`
 }
 
-type Subtask struct {
+type Assignment struct {
+	Position  int `json:"position"`
 	Name      string `json:"name"`
 	Completed bool   `json:"completed"`
 }

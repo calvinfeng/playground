@@ -128,7 +128,7 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 		}
 
 		var position int
-		entry.Subtasks = make(map[int]*practice.Subtask)
+		entry.Assignments = make([]*practice.Assignment, 0)
 		for _, listID := range card.ChecklistIDs {
 			checklist, ok := trelloChecklistsByID[listID]
 			if !ok {
@@ -136,10 +136,11 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 			}
 
 			for _, item := range checklist.Items {
-				entry.Subtasks[position] = &practice.Subtask{
+				entry.Assignments = append(entry.Assignments, &practice.Assignment{
+					Position: position,
 					Name:      item.Name,
 					Completed: item.State == "complete",
-				}
+				})
 				position++
 			}
 		}

@@ -5,7 +5,7 @@ CREATE TABLE practice_log_entries (
     duration INTEGER NOT NULL,
     title TEXT,
     note TEXT,
-    subtasks bytea
+    assignments bytea
 );
 
 CREATE TABLE practice_log_labels (

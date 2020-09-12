@@ -97,13 +97,15 @@ export default class PracticeLog extends React.Component<Props, State> {
         // time.Time is parsed as string. The string needs to be converted back into date object.
         const entries: LogEntryJSON[] = []
         for (let i = 0; i < resp.data.results.length; i++) {
+          console.log(resp.data.results[i].assignments)
           entries.push({
             id: resp.data.results[i].id,
             date: new Date(resp.data.results[i].date),
             labels: resp.data.results[i].labels,
             title: resp.data.results[i].title,
             note: resp.data.results[i].note,
-            duration: resp.data.results[i].duration
+            duration: resp.data.results[i].duration,
+            assignments: resp.data.results[i].assignments
           })
         }
         this.setState({

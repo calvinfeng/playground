@@ -17,16 +17,19 @@ func TestLogEntryConversion(t *testing.T) {
 		Duration: 90,
 		Title:    "Example",
 		Note:     "Example 1234",
-		Subtasks: map[int]*practice.Subtask{
-			0: {
+		Assignments: []*practice.Assignment{
+			{
+				Position: 0,
 				Name:      "Do A",
 				Completed: false,
 			},
-			1: {
+			{
+					Position: 1,
 				Name:      "Do B",
 				Completed: false,
 			},
-			2: {
+			{
+						Position: 2,
 				Name:      "Do C",
 				Completed: false,
 			},
@@ -35,14 +38,14 @@ func TestLogEntryConversion(t *testing.T) {
 	}
 
 	row := new(DBPracticeLogEntry).fromModel(entry)
-	assert.NotNil(t, row.Subtasks)
-	assert.NotEmpty(t, row.Subtasks)
+	assert.NotNil(t, row.Assignments)
+	assert.NotEmpty(t, row.Assignments)
 
 	model := row.toModel()
-	assert.NotNil(t, model.Subtasks)
-	assert.NotEmpty(t, model.Subtasks)
-	require.Len(t, model.Subtasks, 3)
-	assert.Equal(t, entry.Subtasks[0], model.Subtasks[0])
-	assert.Equal(t, entry.Subtasks[1], model.Subtasks[1])
-	assert.Equal(t, entry.Subtasks[2], model.Subtasks[2])
+	assert.NotNil(t, model.Assignments)
+	assert.NotEmpty(t, model.Assignments)
+	require.Len(t, model.Assignments, 3)
+	assert.Equal(t, entry.Assignments[0], model.Assignments[0])
+	assert.Equal(t, entry.Assignments[1], model.Assignments[1])
+	assert.Equal(t, entry.Assignments[2], model.Assignments[2])
 }
