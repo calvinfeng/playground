@@ -16,9 +16,7 @@ import LogEntryAssignment from './elements/LogEntryAssignment'
 import LogTable from './elements/LogTable'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 
-type Props = {
-
-}
+type Props = {}
 
 type State = {
   logEntries: LogEntryJSON[]
@@ -59,7 +57,10 @@ export default class PracticeLog extends React.Component<Props, State> {
 
   componentDidMount() {
     this.fetchLogEntriesByPage(this.state.pageNum)
+    this.fetchLogLabels()
+  }
 
+  fetchLogLabels() {
     this.http.get('/api/v2/practice/log/labels/')
       .then((resp: AxiosResponse) => {
         const labels: LogLabelJSON[] = resp.data.results
@@ -112,6 +113,29 @@ export default class PracticeLog extends React.Component<Props, State> {
           logEntries: entries,
           hasNextPage: resp.data.more
         })
+      })
+  }
+
+  handleUpdateLogAssignments = (entry: LogEntryJSON) => {
+    this.http.put(`/api/v2/practice/log/entries/${entry.id}/assignments/`, entry)
+      .then((resp: AxiosResponse) => {
+        const updatedEntry: LogEntryJSON = resp.data
+        const entries = this.state.logEntries
+        for (let i = 0; i < entries.length; i++) {
+          if (entries[i].id === updatedEntry.id) {
+            entries[i] = {
+              id: resp.data.id,
+              date: new Date(resp.data.date),
+              labels: resp.data.labels,
+              title: resp.data.title,
+              note: resp.data.note,
+              duration: resp.data.duration,
+              assignments: resp.data.assignments
+            }
+            break
+          }
+        }
+        this.setState({ logEntries: entries, viewLogEntry: updatedEntry })
       })
   }
 
@@ -195,6 +219,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     return (
       <section className="PracticeLog">
         <LogEntryAssignment 
+          handleUpdateLogAssignments={this.handleUpdateLogAssignments}
           handleClearAssignment={this.handleClearAnchorEl}
           popoverAnchor={this.state.popoverAnchor} 
           viewLogEntry={this.state.viewLogEntry} /> 

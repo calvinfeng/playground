@@ -101,11 +101,9 @@ func testPostgreSQLStore() error {
 	logrus.Infof("removing label %s", target.Labels[0].Name)
 	target.Labels = target.Labels[1:]
 
-	num, err := store.UpdateLogEntry(target)
-	if err != nil {
+	if err := store.UpdateLogEntry(target); err != nil {
 		return err
 	}
-	logrus.Infof("%d rows affected", num)
 	return nil
 }
 

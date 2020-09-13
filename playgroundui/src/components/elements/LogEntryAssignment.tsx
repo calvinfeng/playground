@@ -18,6 +18,7 @@ import './LogEntryAssignment.scss'
 type Props = {
   popoverAnchor: HTMLButtonElement | null
   handleClearAssignment: () => void
+  handleUpdateLogAssignments: (entry: LogEntryJSON) => void
   viewLogEntry: LogEntryJSON | null
 }
 
@@ -27,8 +28,14 @@ export default function LogEntryAssignment(props: Props) {
     assignments = props.viewLogEntry.assignments
   }
 
-  const handleBoxCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.checked)
+  const makeHandlerBoxCheck = (position: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (props.viewLogEntry === null) {
+      return
+    }
+    const entryToUpdate: LogEntryJSON = props.viewLogEntry as LogEntryJSON
+    entryToUpdate.assignments[position].completed = event.target.checked
+    console.log(entryToUpdate.assignments[position].name, 'set to', event.target.checked)
+    props.handleUpdateLogAssignments(entryToUpdate)
   } 
 
   const content = (
@@ -49,7 +56,7 @@ export default function LogEntryAssignment(props: Props) {
                 </TableCell>
                 <TableCell align="center">
                   <Checkbox
-                    onChange={handleBoxCheck}
+                    onChange={makeHandlerBoxCheck(assignment.position)}
                     checked={assignment.completed}
                     inputProps={{ 'aria-label': 'primary checkbox' }} />
                 </TableCell>

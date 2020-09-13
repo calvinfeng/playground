@@ -9,17 +9,17 @@ import (
 )
 
 type LogEntry struct {
-	ID          uuid.UUID     `json:"id"`
-	UserID      string        `json:"user_id"`
-	Date        time.Time     `json:"date"`
-	Duration    int32         `json:"duration"`
-	Title       string        `json:"title"`
-	Note        string        `json:"note"`
-	Assignments []*Assignment `json:"assignments,omitempty"`
-	Labels      []*LogLabel   `json:"labels,omitempty"`
+	ID          uuid.UUID        `json:"id"`
+	UserID      string           `json:"user_id"`
+	Date        time.Time        `json:"date"`
+	Duration    int32            `json:"duration"`
+	Title       string           `json:"title"`
+	Note        string           `json:"note"`
+	Assignments []*LogAssignment `json:"assignments,omitempty"`
+	Labels      []*LogLabel      `json:"labels,omitempty"`
 }
 
-type Assignment struct {
+type LogAssignment struct {
 	Position  int    `json:"position"`
 	Name      string `json:"name"`
 	Completed bool   `json:"completed"`
@@ -40,6 +40,7 @@ type (
 	HTTPService interface {
 		ListPracticeLogEntries(echo.Context) error
 		ListPracticeLogLabels(echo.Context) error
+		UpdatePracticeLogAssignments(echo.Context) error
 	}
 
 	SQLFilter func(squirrel.Eq)
@@ -50,6 +51,7 @@ type (
 		SelectLogLabels() ([]*LogLabel, error)
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
-		UpdateLogEntry(*LogEntry) (int64, error)
+		UpdateLogEntry(*LogEntry) error
+		UpdateLogAssignments(*LogEntry) error
 	}
 )

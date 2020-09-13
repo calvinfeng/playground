@@ -17,7 +17,7 @@ func TestLogEntryConversion(t *testing.T) {
 		Duration: 90,
 		Title:    "Example",
 		Note:     "Example 1234",
-		Assignments: []*practice.Assignment{
+		Assignments: []*practice.LogAssignment{
 			{
 				Position:  0,
 				Name:      "Do A",

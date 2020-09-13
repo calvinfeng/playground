@@ -61,6 +61,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	}))
 	e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
 	e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
+	e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
 
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")

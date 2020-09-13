@@ -41,7 +41,7 @@ func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 		Title:       row.Title,
 		Note:        row.Note,
 		Labels:      nil,
-		Assignments: make([]*practice.Assignment, 0),
+		Assignments: make([]*practice.LogAssignment, 0),
 	}
 	_ = json.Unmarshal(row.Assignments, &model.Assignments)
 	return model

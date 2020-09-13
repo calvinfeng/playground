@@ -18,6 +18,31 @@ type store struct {
 	db *sqlx.DB
 }
 
+func (s *store) UpdateLogAssignments(entry *practice.LogEntry) error {
+	newRow := new(DBPracticeLogEntry).fromModel(entry)
+
+	updateQ := squirrel.Update(PracticeLogEntryTable).
+		Set("assignments", newRow.Assignments).
+		Where(squirrel.Eq{"id": newRow.ID.String()})
+
+	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	res, err := s.db.Exec(statement, args...)
+	if err != nil {
+		return err
+	}
+
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
+}
+
 func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
 	query := squirrel.Select("COUNT(*)").From(PracticeLogEntryTable)
 
@@ -138,7 +163,7 @@ func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 	return labels, nil
 }
 
-func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
+func (s *store) UpdateLogEntry(entry *practice.LogEntry) error {
 	newRow := new(DBPracticeLogEntry).fromModel(entry)
 
 	updateQ := squirrel.Update(PracticeLogEntryTable).
@@ -152,12 +177,12 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
 
 	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	tx, err := s.db.Beginx()
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer func() {
 		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
@@ -167,7 +192,7 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
 
 	res, err := tx.Exec(statement, args...)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	// Update association by removing everything and re-insert.
@@ -176,12 +201,12 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
 
 	statement, args, err = deleteQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	_, err = tx.Exec(statement, args...)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	// Re-insert associations
@@ -193,19 +218,24 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
 
 	statement, args, err = joinQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	_, err = tx.Exec(statement, args...)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("failed to commit transaction %w", err)
+		return fmt.Errorf("failed to commit transaction %w", err)
 	}
 
-	return res.RowsAffected()
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
 }
 
 func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error) {
