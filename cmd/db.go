@@ -11,7 +11,7 @@ import (
 )
 
 // Reset the database, apply migrationsV1 and then seed it.
-func manageDBRunE(_ *cobra.Command, args []string) error {
+func databaseRunE(_ *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		return errors.New("provide an argument to manage database [reset, migrate, seed]")
 	}

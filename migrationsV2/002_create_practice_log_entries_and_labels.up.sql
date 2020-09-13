@@ -20,3 +20,6 @@ CREATE TABLE association_practice_log_entries_labels(
     entry_id UUID REFERENCES practice_log_entries(id) ON DELETE CASCADE,
     label_id UUID REFERENCES practice_log_labels(id) ON DELETE CASCADE
 );
+
+CREATE INDEX association_practice_log_entry_id_index ON association_practice_log_entries_labels(entry_id);
+CREATE INDEX association_practice_log_label_id_index ON association_practice_log_entries_labels(label_id);

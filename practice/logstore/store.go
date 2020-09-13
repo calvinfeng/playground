@@ -1,6 +1,7 @@
 package logstore
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/calvinfeng/playground/practice"
@@ -70,11 +71,11 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 	}
 
 	// This join can become expensive eventually.
+	// But I want to have data consistency for labels.
 	query = squirrel.
 		Select("entry_id", "label_id", "parent_id", "name").
 		From(PracticeLogLabelTable).
-		LeftJoin(
-			fmt.Sprintf("%s ON id = label_id", AssociationPracticeLogEntryLabelTable)).
+		LeftJoin(fmt.Sprintf("%s ON id = label_id", AssociationPracticeLogEntryLabelTable)).
 		Where(squirrel.Eq{
 			"entry_id": entryIDs,
 		})
@@ -137,6 +138,76 @@ func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 	return labels, nil
 }
 
+func (s *store) UpdateLogEntry(entry *practice.LogEntry) (int64, error) {
+	newRow := new(DBPracticeLogEntry).fromModel(entry)
+
+	updateQ := squirrel.Update(PracticeLogEntryTable).
+		Set("user_id", newRow.UserID).
+		Set("date", newRow.Date).
+		Set("duration", newRow.Duration).
+		Set("title", newRow.Title).
+		Set("note", newRow.Note).
+		Set("assignments", newRow.Assignments).
+		Where(squirrel.Eq{"id": newRow.ID.String()})
+
+	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return 0, err
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
+			panic(err)
+		}
+	}()
+
+	res, err := tx.Exec(statement, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	// Update association by removing everything and re-insert.
+	deleteQ := squirrel.Delete(AssociationPracticeLogEntryLabelTable).
+		Where(squirrel.Eq{"entry_id": newRow.ID.String()})
+
+	statement, args, err = deleteQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = tx.Exec(statement, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	// Re-insert associations
+	joinQ := squirrel.Insert(AssociationPracticeLogEntryLabelTable).
+		Columns("association_id", "entry_id", "label_id")
+	for _, label := range entry.Labels {
+		joinQ = joinQ.Values(uuid.New(), entry.ID, label.ID)
+	}
+
+	statement, args, err = joinQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = tx.Exec(statement, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, fmt.Errorf("failed to commit transaction %w", err)
+	}
+
+	return res.RowsAffected()
+}
+
 func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error) {
 	query := squirrel.Insert(PracticeLogLabelTable).
 		Columns("id", "parent_id", "name")
@@ -164,29 +235,24 @@ func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error
 }
 
 func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, error) {
-	entryQuery := squirrel.Insert(PracticeLogEntryTable).
+	entryInsertQ := squirrel.Insert(PracticeLogEntryTable).
 		Columns("id", "user_id", "date", "duration", "title", "note", "assignments")
 
-	joinQuery := squirrel.Insert(AssociationPracticeLogEntryLabelTable).
+	joinInsertQ := squirrel.Insert(AssociationPracticeLogEntryLabelTable).
 		Columns("association_id", "entry_id", "label_id")
 
 	for _, entry := range entries {
 		entry.ID = uuid.New()
 		row := new(DBPracticeLogEntry).fromModel(entry)
-		entryQuery = entryQuery.Values(
+		entryInsertQ = entryInsertQ.Values(
 			row.ID, row.UserID, row.Date, row.Duration, row.Title, row.Note, row.Assignments)
 
 		for _, label := range entry.Labels {
-			joinQuery = joinQuery.Values(uuid.New(), entry.ID, label.ID)
+			joinInsertQ = joinInsertQ.Values(uuid.New(), entry.ID, label.ID)
 		}
 	}
 
-	entryInsertStmt, entryArgs, err := entryQuery.PlaceholderFormat(squirrel.Dollar).ToSql()
-	if err != nil {
-		return 0, errors.Wrap(err, "failed to construct query")
-	}
-
-	joinInsertStmt, joinArgs, err := joinQuery.PlaceholderFormat(squirrel.Dollar).ToSql()
+	statement, args, err := entryInsertQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to construct query")
 	}
@@ -195,19 +261,29 @@ func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, err
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to begin transaction")
 	}
+	defer func() {
+		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
+			panic(err)
+		}
+	}()
 
-	res, err := tx.Exec(entryInsertStmt, entryArgs...)
+	res, err := tx.Exec(statement, args...)
 	if err != nil {
-		return 0, fmt.Errorf("failed to execute query %w, now rollback err=%v", err, tx.Rollback())
+		return 0, fmt.Errorf("failed to execute query %w", err)
 	}
 
-	_, err = tx.Exec(joinInsertStmt, joinArgs...)
+	statement, args, err = joinInsertQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
-		return 0, fmt.Errorf("failed to execute query %w, now rollback err=%v", err, tx.Rollback())
+		return 0, errors.Wrap(err, "failed to construct query")
+	}
+
+	_, err = tx.Exec(statement, args...)
+	if err != nil {
+		return 0, fmt.Errorf("failed to execute query %w", err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("failed to commit transaction %w, now rollback err=%v", err, tx.Rollback())
+		return 0, fmt.Errorf("failed to commit transaction %w", err)
 	}
 
 	return res.RowsAffected()

@@ -118,10 +118,10 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 				case "Rhythm":
 					entry.Labels = append(entry.Labels, logLabelsByName["Acoustic"], logLabelsByName["Acoustic Rhythm"])
 				default:
-					if label, ok := logLabelsByName[label.Name]; ok {
-						entry.Labels = append(entry.Labels, label)
+					if logLabel, ok := logLabelsByName[label.Name]; ok {
+						entry.Labels = append(entry.Labels, logLabel)
 					} else {
-						logrus.Errorf("found unrecognized label name from Trello", label.Name)
+						logrus.Errorf("found unrecognized label name %s from Trello", label.Name)
 					}
 				}
 			}

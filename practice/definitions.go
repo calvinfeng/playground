@@ -50,5 +50,6 @@ type (
 		SelectLogLabels() ([]*LogLabel, error)
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
+		UpdateLogEntry(*LogEntry) (int64, error)
 	}
 )

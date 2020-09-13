@@ -64,18 +64,18 @@ func Execute() {
 	root.AddCommand(
 		&cobra.Command{
 			Use:   "reset_sqlite",
-			Short: "reset SQLite database and re-seed it",
+			Short: "legacy command to reset and reseed SQLite database",
 			RunE:  resetSQLiteRunE,
 		},
 		&cobra.Command{
 			Use:   "serve",
-			Short: "serve application to clients",
+			Short: "start HTTP server and serve HTTP requests",
 			RunE:  serveRunE,
 		},
 		&cobra.Command{
-			Use:   "managedb",
+			Use:   "db",
 			Short: "manage database",
-			RunE:  manageDBRunE,
+			RunE:  databaseRunE,
 		},
 		&cobra.Command{
 			Use:   "experiment",
