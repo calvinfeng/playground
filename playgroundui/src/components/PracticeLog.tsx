@@ -8,13 +8,13 @@ import {
   Typography,
   Grid,
   Button,
-  Popover
 } from '@material-ui/core'
-import LogEntryManagement from './elements/LogEntryManagement'
-import LogLabelManagement from './elements/LogLabelManagement'
-import LogEntryAssignment from './elements/LogEntryAssignment'
-import LogTable from './elements/LogTable'
+import LogTable from './practice_log_elements/LogTable'
+import LogEntryManagement from './practice_log_elements/LogEntryManagement'
+import LogLabelManagement from './practice_log_elements/LogLabelManagement'
+import AssignmentChecklistPopover from './practice_log_elements/AssignmentChecklistPopover'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
+import LogAssignmentManagement from './practice_log_elements/LogAssignmentManagement';
 
 type Props = {}
 
@@ -98,7 +98,6 @@ export default class PracticeLog extends React.Component<Props, State> {
         // time.Time is parsed as string. The string needs to be converted back into date object.
         const entries: LogEntryJSON[] = []
         for (let i = 0; i < resp.data.results.length; i++) {
-          console.log(resp.data.results[i].assignments)
           entries.push({
             id: resp.data.results[i].id,
             date: new Date(resp.data.results[i].date),
@@ -218,7 +217,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     // Due to the lack of a Redux store, function to set states have to be passed around.
     return (
       <section className="PracticeLog">
-        <LogEntryAssignment 
+        <AssignmentChecklistPopover 
           handleUpdateLogAssignments={this.handleUpdateLogAssignments}
           handleClearAssignment={this.handleClearAnchorEl}
           popoverAnchor={this.state.popoverAnchor} 
@@ -232,6 +231,7 @@ export default class PracticeLog extends React.Component<Props, State> {
           clearEditLogEntry={this.handleClearLogEntryEdit}
           editLogEntry={this.state.editLogEntry}
           logLabels={this.state.logLabels} />
+        <LogAssignmentManagement />
         <LogLabelManagement
           logLabels={this.state.logLabels} />
       </section>

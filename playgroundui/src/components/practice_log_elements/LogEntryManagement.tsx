@@ -284,7 +284,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
 
   get submission() {
     const buttonStyle = { margin: "0.1rem" }
-    let buttonGridItems: JSX.Element[]
+    let buttonGridItems: JSX.Element[] = []
     switch (this.state.mode) {
       case Mode.Edit:
         buttonGridItems = [
@@ -312,7 +312,12 @@ export default class LogEntryManagement extends React.Component<Props, State> {
       case Mode.Add:
         buttonGridItems = [
           <Grid item>
-            <Button style={buttonStyle} variant="contained" color="primary" startIcon={<AddIcon />}>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => console.log(this.state)}>
               Add
             </Button>
           </Grid>

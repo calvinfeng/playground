@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { LogEntryJSON, LogAssignmentJSON } from '../types'
 import { } from '@material-ui/core'
-import './LogEntryAssignment.scss'
+import './AssignmentChecklistPopover.scss'
 
 type Props = {
   popoverAnchor: HTMLButtonElement | null
@@ -22,7 +22,7 @@ type Props = {
   viewLogEntry: LogEntryJSON | null
 }
 
-export default function LogEntryAssignment(props: Props) {
+export default function AssignmentChecklistPopover(props: Props) {
   let assignments: LogAssignmentJSON[] = []
   if (props.viewLogEntry !== null && props.viewLogEntry.assignments) {
     assignments = props.viewLogEntry.assignments
@@ -70,7 +70,7 @@ export default function LogEntryAssignment(props: Props) {
 
   return (
     <Popover
-      className="LogEntryAssignment"
+      className="AssignmentChecklistPopover"
       id={"assignment-popover"}
       open={Boolean(props.popoverAnchor)}
       anchorEl={props.popoverAnchor}

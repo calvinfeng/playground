@@ -10,9 +10,9 @@ import {
 } from 'react-vertical-timeline-component'
 import 'react-vertical-timeline-component/style.min.css'
 
-import PracticeRecordingElement from './elements/PracticeRecordingElement'
-import ProgressReportElement from './elements/ProgressReportElement'
-import TextElement from './elements/TextElement'
+import PracticeRecordingElement from './timeline_elements/PracticeRecordingElement'
+import ProgressReportElement from './timeline_elements/ProgressReportElement'
+import TextElement from './timeline_elements/TextElement'
 import './Timeline.scss'
 
 type Props = {}
