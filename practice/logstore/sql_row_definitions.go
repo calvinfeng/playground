@@ -16,8 +16,8 @@ type DBPracticeLogEntry struct {
 	UserID      string          `db:"user_id"`
 	Date        time.Time       `db:"date"`
 	Duration    int32           `db:"duration"`
-	Title       string          `db:"title"`
-	Note        string          `db:"note"`
+	Message     string          `db:"message"`
+	Details     string          `db:"details"`
 	Assignments json.RawMessage `db:"assignments"`
 }
 
@@ -25,8 +25,8 @@ func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLo
 	row.ID = model.ID
 	row.UserID = model.UserID
 	row.Date = model.Date
-	row.Title = model.Title
-	row.Note = model.Note
+	row.Message = model.Message
+	row.Details = model.Details
 	row.Duration = model.Duration
 	row.Assignments, _ = json.Marshal(model.Assignments)
 	return row
@@ -38,8 +38,8 @@ func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 		UserID:      row.UserID,
 		Date:        row.Date,
 		Duration:    row.Duration,
-		Title:       row.Title,
-		Note:        row.Note,
+		Message:     row.Message,
+		Details:     row.Details,
 		Labels:      nil,
 		Assignments: make([]*practice.LogAssignment, 0),
 	}

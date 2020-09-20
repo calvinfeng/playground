@@ -13,8 +13,8 @@ type LogEntry struct {
 	UserID      string           `json:"user_id"`
 	Date        time.Time        `json:"date"`
 	Duration    int32            `json:"duration"`
-	Title       string           `json:"title"`
-	Note        string           `json:"note"`
+	Message     string           `json:"message"`
+	Details     string           `json:"details"`
 	Assignments []*LogAssignment `json:"assignments,omitempty"`
 	Labels      []*LogLabel      `json:"labels,omitempty"`
 }
@@ -47,8 +47,15 @@ type (
 
 	LogStore interface {
 		CountLogEntries(...SQLFilter) (int, error)
+		// SelectLogEntries return entries and associated labels.
 		SelectLogEntries(limit, offset uint64, filters ...SQLFilter) ([]*LogEntry, error)
+
+		CountLogEntriesByLabelIDs(labelIDs []string)
+		// SelectLogEntriesByLabelIDs return entries and associated labels by label IDs.
+		SelectLogEntriesByLabelIDs(limit, offset uint64, labelIDs []string) ([]*LogEntry, error)
+
 		SelectLogLabels() ([]*LogLabel, error)
+
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
 		UpdateLogEntry(*LogEntry) error

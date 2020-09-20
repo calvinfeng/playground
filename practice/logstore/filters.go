@@ -10,3 +10,9 @@ func ByID(id string) practice.SQLFilter {
 		eq["id"] = id
 	}
 }
+
+func ByLabelIDs(ids []string) practice.SQLFilter {
+	return func(eq squirrel.Eq) {
+		eq["label_id"] = ids
+	}
+}

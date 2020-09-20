@@ -18,31 +18,6 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) UpdateLogAssignments(entry *practice.LogEntry) error {
-	newRow := new(DBPracticeLogEntry).fromModel(entry)
-
-	updateQ := squirrel.Update(PracticeLogEntryTable).
-		Set("assignments", newRow.Assignments).
-		Where(squirrel.Eq{"id": newRow.ID.String()})
-
-	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
-	if err != nil {
-		return err
-	}
-
-	res, err := s.db.Exec(statement, args...)
-	if err != nil {
-		return err
-	}
-
-	if count, err := res.RowsAffected(); err != nil {
-		return err
-	} else if count == 0 {
-		return errors.New("no row was affected, query did not work as intended")
-	}
-	return nil
-}
-
 func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
 	query := squirrel.Select("COUNT(*)").From(PracticeLogEntryTable)
 
@@ -74,6 +49,19 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 		Offset(offset).
 		Where(eqCondition).
 		OrderBy("date DESC")
+
+	if val, hasKey := eqCondition["label_id"]; hasKey {
+		if labelIDs, ok := val.([]string); ok && len(labelIDs) > 0 {
+			query = squirrel.Select("id", "user_id", "date", "duration", "message").
+				From(PracticeLogEntryTable).
+				LeftJoin(fmt.Sprintf("%s ON %s.id = entry_id", AssociationPracticeLogEntryLabelTable, PracticeLogEntryTable)).
+				Limit(limit).
+				Offset(offset).
+				Where(eqCondition).
+				GroupBy(fmt.Sprintf("%s.id", PracticeLogEntryTable)).
+				OrderBy("date DESC")
+		}
+	}
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
@@ -142,6 +130,44 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 	return entries, nil
 }
 
+func (s *store) CountLogEntriesByLabelIDs(labelIDs []string) {
+	panic("implement me")
+}
+
+func (s *store) SelectLogEntriesByLabelIDs(limit, offset uint64, labelIDs []string) ([]*practice.LogEntry, error) {
+	if len(labelIDs) == 0 {
+		return nil, errors.New("please provide at least one label ID for this expensive query")
+	}
+
+	query := squirrel.Select("id", "user_id", "date", "duration", "message").
+		From(PracticeLogEntryTable).
+		LeftJoin(fmt.Sprintf("%s ON %s.id = entry_id", AssociationPracticeLogEntryLabelTable, PracticeLogEntryTable)).
+		Limit(limit).
+		Offset(offset).
+		Where(squirrel.Eq{
+			"label_id": labelIDs,
+		}).
+		GroupBy(fmt.Sprintf("%s.id", PracticeLogEntryTable)).
+		OrderBy("date DESC")
+
+	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows := make([]*DBPracticeLogEntry, 0)
+	if err = s.db.Select(&rows, statement, args...); err != nil {
+		return nil, err
+	}
+
+	entries := make([]*practice.LogEntry, 0)
+	for _, row := range rows {
+		entries = append(entries, row.toModel())
+	}
+
+	return entries, nil
+}
+
 func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 	query := squirrel.Select("*").From(PracticeLogLabelTable)
 
@@ -170,8 +196,8 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) error {
 		Set("user_id", newRow.UserID).
 		Set("date", newRow.Date).
 		Set("duration", newRow.Duration).
-		Set("title", newRow.Title).
-		Set("note", newRow.Note).
+		Set("message", newRow.Message).
+		Set("details", newRow.Details).
 		Set("assignments", newRow.Assignments).
 		Where(squirrel.Eq{"id": newRow.ID.String()})
 
@@ -238,6 +264,31 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) error {
 	return nil
 }
 
+func (s *store) UpdateLogAssignments(entry *practice.LogEntry) error {
+	newRow := new(DBPracticeLogEntry).fromModel(entry)
+
+	updateQ := squirrel.Update(PracticeLogEntryTable).
+		Set("assignments", newRow.Assignments).
+		Where(squirrel.Eq{"id": newRow.ID.String()})
+
+	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	res, err := s.db.Exec(statement, args...)
+	if err != nil {
+		return err
+	}
+
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
+}
+
 func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error) {
 	query := squirrel.Insert(PracticeLogLabelTable).
 		Columns("id", "parent_id", "name")
@@ -266,7 +317,7 @@ func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error
 
 func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, error) {
 	entryInsertQ := squirrel.Insert(PracticeLogEntryTable).
-		Columns("id", "user_id", "date", "duration", "title", "note", "assignments")
+		Columns("id", "user_id", "date", "duration", "message", "details", "assignments")
 
 	joinInsertQ := squirrel.Insert(AssociationPracticeLogEntryLabelTable).
 		Columns("association_id", "entry_id", "label_id")
@@ -275,7 +326,7 @@ func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, err
 		entry.ID = uuid.New()
 		row := new(DBPracticeLogEntry).fromModel(entry)
 		entryInsertQ = entryInsertQ.Values(
-			row.ID, row.UserID, row.Date, row.Duration, row.Title, row.Note, row.Assignments)
+			row.ID, row.UserID, row.Date, row.Duration, row.Message, row.Details, row.Assignments)
 
 		for _, label := range entry.Labels {
 			joinInsertQ = joinInsertQ.Values(uuid.New(), entry.ID, label.ID)

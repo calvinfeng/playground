@@ -36,11 +36,15 @@ func seedLogLabels(store practice.LogStore) error {
 		{Name: "Spider Walk", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Trills", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Linear Exercises", ParentID: defaultParentLogLabels[2].ID},
+		{Name: "Angular Exercises", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Barre Chords", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Chord Change", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Now & Forever", ParentID: defaultParentLogLabels[5].ID},
-		{Name: "Final Countdown", ParentID: defaultParentLogLabels[5].ID},
+		{Name: "The Final Countdown", ParentID: defaultParentLogLabels[5].ID},
 		{Name: "海阔天空", ParentID: defaultParentLogLabels[5].ID},
+		{Name: "灰色轨迹", ParentID: defaultParentLogLabels[5].ID},
+		{Name: "光辉岁月", ParentID: defaultParentLogLabels[5].ID},
+		{Name: "November Rain", ParentID: defaultParentLogLabels[5].ID},
 	}
 
 	inserted, err = store.BatchInsertLogLabels(defaultChildLogLabels...)
@@ -97,8 +101,8 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 		}
 
 		entry := new(practice.LogEntry)
-		entry.Title = card.Name
-		entry.Note = card.Description
+		entry.Message = card.Name
+		entry.Details = card.Description
 		entry.Labels = make([]*practice.LogLabel, 0)
 		entry.UserID = "calvin.j.feng@gmail.com"
 		for _, labelID := range card.LabelIDs {
@@ -157,7 +161,7 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 
 		entry.Date = date
 		if len(entry.Labels) == 0 {
-			logrus.Warnf("log entry %s %s has no labels", entry.Title, entry.Date)
+			logrus.Warnf("log entry %s %s has no labels", entry.Message, entry.Date)
 		}
 
 		entries = append(entries, entry)

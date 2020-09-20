@@ -3,8 +3,8 @@ CREATE TABLE practice_log_entries (
     user_id VARCHAR(255) NOT NULL,
     date timestamp NOT NULL,
     duration INTEGER NOT NULL,
-    title TEXT,
-    note TEXT,
+    message TEXT,
+    details TEXT,
     assignments bytea
 );
 

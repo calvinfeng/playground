@@ -70,7 +70,7 @@ func testTrelloAPI() error {
 	return nil
 }
 
-func testPostgreSQLStore() error {
+func testPracticeLogStoreUpdate() error {
 	pg, err := sqlx.Open("postgres", databaseAddress())
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func testPostgreSQLStore() error {
 
 	target := entries[0]
 
-	logrus.Infof("target %s %s has %d labels", target.ID, target.Title, len(target.Labels))
+	logrus.Infof("target %s %s has %d labels", target.ID, target.Message, len(target.Labels))
 	for _, label := range target.Labels {
 		logrus.Info(label.Name)
 	}
@@ -107,6 +107,28 @@ func testPostgreSQLStore() error {
 	return nil
 }
 
+func testPracticeLogStoreSelect() error {
+	pg, err := sqlx.Open("postgres", databaseAddress())
+	if err != nil {
+		return err
+	}
+
+	store := logstore.New(pg)
+	entries, err := store.SelectLogEntries(100, 0, logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
+	if err != nil {
+		return err
+	}
+
+	var dur int32
+	for _, entry := range entries {
+		logrus.Infof("entry %s %s %s", entry.ID, entry.Date.String(), entry.Message)
+		dur += entry.Duration
+	}
+	logrus.Infof("%d minutes spent", dur)
+
+	return nil
+}
+
 func experimentRunE(_ *cobra.Command, _ []string) error {
-	return testPostgreSQLStore()
+	return testPracticeLogStoreSelect()
 }
