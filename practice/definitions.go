@@ -47,15 +47,8 @@ type (
 
 	LogStore interface {
 		CountLogEntries(...SQLFilter) (int, error)
-		// SelectLogEntries return entries and associated labels.
 		SelectLogEntries(limit, offset uint64, filters ...SQLFilter) ([]*LogEntry, error)
-
-		CountLogEntriesByLabelIDs(labelIDs []string)
-		// SelectLogEntriesByLabelIDs return entries and associated labels by label IDs.
-		SelectLogEntriesByLabelIDs(limit, offset uint64, labelIDs []string) ([]*LogEntry, error)
-
 		SelectLogLabels() ([]*LogLabel, error)
-
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
 		UpdateLogEntry(*LogEntry) error

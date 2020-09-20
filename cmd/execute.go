@@ -82,6 +82,11 @@ func Execute() {
 			Short: "experiment some basic backend logic",
 			RunE:  experimentRunE,
 		},
+		&cobra.Command{
+			Use:   "time_spent_on",
+			Short: "calculate the total time in minutes spent on a particular practice item",
+			RunE:  timeSpentRunE,
+		},
 	)
 
 	if err := root.Execute(); err != nil {

@@ -114,10 +114,18 @@ func testPracticeLogStoreSelect() error {
 	}
 
 	store := logstore.New(pg)
+
+	count, err := store.CountLogEntries(logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
+	if err != nil {
+		return err
+	}
+	logrus.Infof("database counted %d practice log entries", count)
+
 	entries, err := store.SelectLogEntries(100, 0, logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
 	if err != nil {
 		return err
 	}
+	logrus.Infof("query returned %d practice log entries", len(entries))
 
 	var dur int32
 	for _, entry := range entries {

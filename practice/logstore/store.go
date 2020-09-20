@@ -19,21 +19,31 @@ type store struct {
 }
 
 func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
-	query := squirrel.Select("COUNT(*)").From(PracticeLogEntryTable)
-
 	eqCondition := make(squirrel.Eq)
 	for _, f := range filters {
 		f(eqCondition)
 	}
 
-	statement, args, err := query.Where(eqCondition).PlaceholderFormat(squirrel.Dollar).ToSql()
+	query := squirrel.Select("COUNT(*)").Where(eqCondition).From(PracticeLogEntryTable)
+	if val, hasKey := eqCondition["label_id"]; hasKey {
+		if labelIDs, ok := val.([]string); ok && len(labelIDs) > 0 {
+			query = squirrel.Select(fmt.Sprintf("COUNT(DISTINCT %s.id)", PracticeLogEntryTable)).
+				From(PracticeLogEntryTable).
+				LeftJoin(fmt.Sprintf("%s ON %s.id = entry_id", AssociationPracticeLogEntryLabelTable, PracticeLogEntryTable)).
+				Where(eqCondition)
+		}
+	}
+
+	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to construct query")
 	}
+
 	count := make([]int, 0)
 	if err = s.db.Select(&count, statement, args...); err != nil {
 		return 0, err
 	}
+
 	return count[0], nil
 }
 
@@ -125,44 +135,6 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 		for _, label := range labels {
 			entry.Labels = append(entry.Labels, label)
 		}
-	}
-
-	return entries, nil
-}
-
-func (s *store) CountLogEntriesByLabelIDs(labelIDs []string) {
-	panic("implement me")
-}
-
-func (s *store) SelectLogEntriesByLabelIDs(limit, offset uint64, labelIDs []string) ([]*practice.LogEntry, error) {
-	if len(labelIDs) == 0 {
-		return nil, errors.New("please provide at least one label ID for this expensive query")
-	}
-
-	query := squirrel.Select("id", "user_id", "date", "duration", "message").
-		From(PracticeLogEntryTable).
-		LeftJoin(fmt.Sprintf("%s ON %s.id = entry_id", AssociationPracticeLogEntryLabelTable, PracticeLogEntryTable)).
-		Limit(limit).
-		Offset(offset).
-		Where(squirrel.Eq{
-			"label_id": labelIDs,
-		}).
-		GroupBy(fmt.Sprintf("%s.id", PracticeLogEntryTable)).
-		OrderBy("date DESC")
-
-	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
-	if err != nil {
-		return nil, err
-	}
-
-	rows := make([]*DBPracticeLogEntry, 0)
-	if err = s.db.Select(&rows, statement, args...); err != nil {
-		return nil, err
-	}
-
-	entries := make([]*practice.LogEntry, 0)
-	for _, row := range rows {
-		entries = append(entries, row.toModel())
 	}
 
 	return entries, nil
