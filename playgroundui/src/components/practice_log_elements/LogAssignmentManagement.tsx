@@ -37,6 +37,8 @@ export default class LogAssignmentManagement extends React.Component<Props, Stat
   handleNewAssignmentSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
     console.log(this.state)
+    // Add assignments to the edit log entry, this requires changing the state of
+    // its parent.
   }
 
   get assignmentInput() {

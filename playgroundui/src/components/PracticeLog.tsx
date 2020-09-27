@@ -227,6 +227,7 @@ export default class PracticeLog extends React.Component<Props, State> {
 
   render() {
     // Due to the lack of a Redux store, function to set states have to be passed around.
+    // TODO Pass editLogEntry to LogAssignmentManagement
     return (
       <section className="PracticeLog">
         <AssignmentChecklistPopover 

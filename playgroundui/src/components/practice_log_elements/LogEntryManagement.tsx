@@ -135,32 +135,45 @@ export default class LogEntryManagement extends React.Component<Props, State> {
     })
   }
 
+  isLabelSelectedAlready(labelID: string): boolean {
+    const found = this.state.inputFieldLabels.find(
+      (label: LogLabelJSON) => label.id === labelID
+    )
+    return Boolean(found)
+  }
+
+  findLabelFromProps(labelID: string): LogLabelJSON | undefined {
+    return this.props.logLabels.find(
+      (label: LogLabelJSON) => label.id === labelID
+    )
+  }
+
   handleLabelAdd = () => {
     if (this.state.selectorFieldLabelID === null) {
       return
     }
 
-    const found = this.state.inputFieldLabels.find(
-      (label: LogLabelJSON) => label.id === this.state.selectorFieldLabelID
-    )
-
-    if (found) {
+    if (this.isLabelSelectedAlready(this.state.selectorFieldLabelID)) {
       return
     }
 
-    const labelToAdd = this.props.logLabels.find(
-      (label: LogLabelJSON) => label.id === this.state.selectorFieldLabelID
-    )
+    const newInputFieldLabels = [...this.state.inputFieldLabels]
 
+    const labelToAdd = this.findLabelFromProps(this.state.selectorFieldLabelID)
     if (labelToAdd) {
-      this.setState({
-        inputFieldLabels: [...this.state.inputFieldLabels, labelToAdd]
-      })
-    } 
-  }
-
-  handleLogEntryHTTPost = () => {
+      newInputFieldLabels.push(labelToAdd)
+    }
     
+    if (labelToAdd && 
+        labelToAdd.parent_id !== null &&
+        !this.isLabelSelectedAlready(labelToAdd.parent_id)
+    ) {
+        const parentToAdd = this.findLabelFromProps(labelToAdd.parent_id)
+        if (parentToAdd) {
+          newInputFieldLabels.push(parentToAdd)
+        }      
+      }
+    this.setState({ inputFieldLabels: newInputFieldLabels })
   }
 
   get header() {
