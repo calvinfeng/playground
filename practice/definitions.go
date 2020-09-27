@@ -10,13 +10,13 @@ import (
 
 type LogEntry struct {
 	ID          uuid.UUID        `json:"id"`
-	UserID      string           `json:"user_id"`
-	Date        time.Time        `json:"date"`
-	Duration    int32            `json:"duration"`
-	Message     string           `json:"message"`
+	UserID      string           `json:"user_id" validate:"required,email"`
+	Date        time.Time        `json:"date" validate:"required"`
+	Duration    int32            `json:"duration" validate:"required"`
+	Labels      []*LogLabel      `json:"labels,omitempty" validate:"required,min=1"`
+	Message     string           `json:"message" validate:"required"`
 	Details     string           `json:"details"`
 	Assignments []*LogAssignment `json:"assignments,omitempty"`
-	Labels      []*LogLabel      `json:"labels,omitempty"`
 }
 
 type LogAssignment struct {
@@ -28,7 +28,7 @@ type LogAssignment struct {
 type LogLabel struct {
 	ID       uuid.UUID   `json:"id"`
 	ParentID uuid.UUID   `json:"parent_id,omitempty"`
-	Name     string      `json:"name"`
+	Name     string      `json:"name" validate:"required"`
 	Children []uuid.UUID `json:"children,omitempty"`
 }
 
@@ -41,6 +41,7 @@ type (
 		ListPracticeLogEntries(echo.Context) error
 		ListPracticeLogLabels(echo.Context) error
 		UpdatePracticeLogAssignments(echo.Context) error
+		CreatePracticeLogEntry(echo.Context) error
 	}
 
 	SQLFilter func(squirrel.Eq)

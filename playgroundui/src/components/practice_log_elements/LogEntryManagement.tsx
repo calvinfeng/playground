@@ -31,6 +31,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 
 type Props = {
   clearEditLogEntry: () => void
+  createLogEntry: (logEntry: LogEntryJSON) => void
   editLogEntry: LogEntryJSON | null
   logLabels: LogLabelJSON[]
   // Need a function to reload the labels for every successful POST or DELETE.
@@ -48,7 +49,7 @@ type State = {
   inputFieldDate: Date | null
   inputFieldLabels: LogLabelJSON[]
   inputFieldDuration: number
-  inputFieldTitle: string
+  inputFieldMessage: string
   selectorFieldLabelID: string | null
 }
 
@@ -58,7 +59,7 @@ const defaultState: State = {
   inputFieldDate: new Date(),
   inputFieldLabels: [],
   inputFieldDuration: 0,
-  inputFieldTitle: "",
+  inputFieldMessage: "",
   selectorFieldLabelID: null
 }
 
@@ -75,7 +76,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         inputFieldDate: props.editLogEntry.date,
         inputFieldDuration: props.editLogEntry.duration,
         inputFieldLabels: props.editLogEntry.labels,
-        inputFieldTitle: props.editLogEntry.title,
+        inputFieldMessage: props.editLogEntry.message,
         selectorFieldLabelID: null
       }
     }
@@ -96,7 +97,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         inputFieldDate: nextProps.editLogEntry.date,
         inputFieldDuration: nextProps.editLogEntry.duration,
         inputFieldLabels: nextProps.editLogEntry.labels,
-        inputFieldTitle: nextProps.editLogEntry.title,
+        inputFieldMessage: nextProps.editLogEntry.message,
         selectorFieldLabelID: null
       })
     }
@@ -118,7 +119,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
 
   handleMessageChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      inputFieldTitle: ev.target.value
+      inputFieldMessage: ev.target.value
     })
   }
 
@@ -156,6 +157,10 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         inputFieldLabels: [...this.state.inputFieldLabels, labelToAdd]
       })
     } 
+  }
+
+  handleLogEntryHTTPost = () => {
+    
   }
 
   get header() {
@@ -274,7 +279,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
       <section className="edit-panel-message">
         <TextField
           label="Log Message"
-          value={this.state.inputFieldTitle}
+          value={this.state.inputFieldMessage}
           onChange={this.handleMessageChange}
           fullWidth
           InputLabelProps={{ shrink: true }} />
@@ -294,7 +299,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
               variant="contained"
               color="primary"
               startIcon={<SaveIcon />}
-              onClick={() => console.log(this.state)}>
+              onClick={ () => console.log(this.state) }>
               Save
             </Button>
           </Grid>,
@@ -317,7 +322,19 @@ export default class LogEntryManagement extends React.Component<Props, State> {
               variant="contained"
               color="primary"
               startIcon={<AddIcon />}
-              onClick={() => console.log(this.state)}>
+              onClick={() => {
+                const logEntry: LogEntryJSON = {
+                  id: "00000000-0000-0000-0000-000000000000",
+                  date: new Date(),
+                  duration: this.state.inputFieldDuration,
+                  message: this.state.inputFieldMessage,
+                  labels: this.state.inputFieldLabels, 
+                  user_id: "calvin.j.feng@gmail.com",  
+                  details: "",
+                  assignments: []            
+                }
+                this.props.createLogEntry(logEntry)
+              }}>
               Add
             </Button>
           </Grid>

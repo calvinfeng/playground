@@ -101,13 +101,15 @@ export default class PracticeLog extends React.Component<Props, State> {
           entries.push({
             id: resp.data.results[i].id,
             date: new Date(resp.data.results[i].date),
+            user_id: resp.data.results[i].user_id,
             labels: resp.data.results[i].labels,
-            title: resp.data.results[i].title,
-            note: resp.data.results[i].note,
+            message: resp.data.results[i].message,
+            details: resp.data.results[i].details,
             duration: resp.data.results[i].duration,
             assignments: resp.data.results[i].assignments
           })
         }
+        // For some reason, this would set editLogEntry as null.
         this.setState({
           logEntries: entries,
           hasNextPage: resp.data.more
@@ -125,9 +127,10 @@ export default class PracticeLog extends React.Component<Props, State> {
             entries[i] = {
               id: resp.data.id,
               date: new Date(resp.data.date),
+              user_id: resp.data.user_id,
               labels: resp.data.labels,
-              title: resp.data.title,
-              note: resp.data.note,
+              message: resp.data.message,
+              details: resp.data.details,
               duration: resp.data.duration,
               assignments: resp.data.assignments
             }
@@ -135,6 +138,15 @@ export default class PracticeLog extends React.Component<Props, State> {
           }
         }
         this.setState({ logEntries: entries, viewLogEntry: updatedEntry })
+      })
+  }
+
+  handleCreateLogEntry = (entry: LogEntryJSON) => {
+    this.http.post(`/api/v2/practice/log/entries/`, entry)
+      .then((resp: AxiosResponse) => {
+        if (resp.status === 201) {
+          this.fetchLogEntriesByPage(this.state.pageNum)
+        }
       })
   }
 
@@ -228,6 +240,7 @@ export default class PracticeLog extends React.Component<Props, State> {
           handleSetLogEntryEdit={this.handleSetLogEntryEdit} />
         {this.PaginationControlPanel}
         <LogEntryManagement
+          createLogEntry={this.handleCreateLogEntry} 
           clearEditLogEntry={this.handleClearLogEntryEdit}
           editLogEntry={this.state.editLogEntry}
           logLabels={this.state.logLabels} />

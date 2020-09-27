@@ -40,7 +40,7 @@ export default function LogTable(props: Props) {
         <TableCell style={cellStyle}>{log.date.toDateString()}</TableCell>
         <TableCell style={cellStyle}>{log.duration} minutes</TableCell>
         <TableCell style={cellStyle}>{labels}</TableCell>
-        <TableCell style={cellStyle}>{log.title}</TableCell>
+        <TableCell style={cellStyle}>{log.message}</TableCell>
         <TableCell style={cellStyle}>
         <IconButton color="primary" component="span" onClick={makeHandlerSetLogViewAndAssignment(log)}>
           <AssignmentIcon/>

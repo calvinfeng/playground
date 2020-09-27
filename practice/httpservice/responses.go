@@ -1,6 +1,9 @@
 package httpservice
 
-import "github.com/calvinfeng/playground/practice"
+import (
+	"github.com/calvinfeng/playground/practice"
+	"github.com/google/uuid"
+)
 
 type PracticeLogEntryListJSONResponse struct {
 	Count   int                  `json:"count"`
@@ -11,4 +14,8 @@ type PracticeLogEntryListJSONResponse struct {
 type PracticeLogLabelListJSONResponse struct {
 	Count   int                  `json:"count"`
 	Results []*practice.LogLabel `json:"results"`
+}
+
+type IDResponse struct {
+	ID uuid.UUID `json:"id"`
 }

@@ -31,10 +31,11 @@ export type LogLabelJSON = {
 export type LogEntryJSON = {
   id: string
   date: Date
-  labels: LogLabelJSON[]
-  title: string
-  note: string
+  user_id: string
+  message: string
+  details: string
   duration: number
+  labels: LogLabelJSON[]
   assignments: LogAssignmentJSON[]
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/calvinfeng/playground/practice"
 	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"net/http"
@@ -11,12 +12,40 @@ import (
 
 func New(store practice.LogStore) practice.HTTPService {
 	return &service{
-		store: store,
+		store:    store,
+		validate: validator.New(),
 	}
 }
 
 type service struct {
-	store practice.LogStore
+	store    practice.LogStore
+	validate *validator.Validate
+}
+
+func (s *service) CreatePracticeLogEntry(c echo.Context) error {
+	entry := new(practice.LogEntry)
+	if err := c.Bind(entry); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "failed to parse JSON data").Error())
+	}
+
+	if err := s.validate.Struct(entry); err != nil {
+		fieldErrors := err.(validator.ValidationErrors)
+		jsonM := make(map[string]string)
+		for _, fieldErr := range fieldErrors {
+			field := fieldErr.Field()
+			err := fieldErr.(error)
+			jsonM[field] = err.Error()
+		}
+		return echo.NewHTTPError(http.StatusBadRequest, jsonM)
+	}
+
+	if _, err := s.store.BatchInsertLogEntries(entry); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError,
+			errors.Wrap(err, "failed to insert to database").Error())
+	}
+
+	return c.JSON(http.StatusCreated, IDResponse{ID: entry.ID})
 }
 
 func (s *service) UpdatePracticeLogAssignments(c echo.Context) error {
