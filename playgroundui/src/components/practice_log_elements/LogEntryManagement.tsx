@@ -70,8 +70,13 @@ export default class LogEntryManagement extends React.Component<Props, State> {
     if (props.editLogEntry === null) {
       this.state = defaultState
     } else {
+      let mode: Mode = Mode.Edit
+      if (props.editLogEntry.id.length === 0) {
+        mode = Mode.Add
+      }
+
       this.state = {
-        mode: Mode.Edit,
+        mode: mode,
         inputFieldLogID: props.editLogEntry.id,
         inputFieldDate: props.editLogEntry.date,
         inputFieldDuration: props.editLogEntry.duration,
@@ -84,23 +89,24 @@ export default class LogEntryManagement extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.editLogEntry === null) {
-      if (this.state.inputFieldLogID !== null) {
-        this.setState(defaultState)
-      }
+      this.setState(defaultState)
       return
     }
 
-    if (this.state.inputFieldLogID !== nextProps.editLogEntry.id) {
-      this.setState({
-        mode: Mode.Edit,
-        inputFieldLogID: nextProps.editLogEntry.id,
-        inputFieldDate: nextProps.editLogEntry.date,
-        inputFieldDuration: nextProps.editLogEntry.duration,
-        inputFieldLabels: nextProps.editLogEntry.labels,
-        inputFieldMessage: nextProps.editLogEntry.message,
-        selectorFieldLabelID: null
-      })
+    let mode: Mode = Mode.Edit
+    if (nextProps.editLogEntry.id.length === 0) {
+      mode = Mode.Add
     }
+
+    this.setState({
+      mode: mode,
+      inputFieldLogID: nextProps.editLogEntry.id,
+      inputFieldDate: nextProps.editLogEntry.date,
+      inputFieldDuration: nextProps.editLogEntry.duration,
+      inputFieldLabels: nextProps.editLogEntry.labels,
+      inputFieldMessage: nextProps.editLogEntry.message,
+      selectorFieldLabelID: null
+    })
   }
 
   newHandlerRemoveLabel = (labelID: string) => () => {

@@ -5,6 +5,7 @@ import { MusicNote } from '@material-ui/icons'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import './LogTable.scss'
 
 type Props = {
@@ -15,10 +16,15 @@ type Props = {
 
 export default function LogTable(props: Props) {
   const tableRows: JSX.Element[] = []
-  const cellStyle = { "padding": "8px" }
+  const cellStyle = { "padding": "5px" }
 
   const makeHandlerSetLogEdit = (log: LogEntryJSON) => () => {
     props.handleSetLogEntryEdit(log)
+  }
+
+  const makeHandlerSetLogCopy = (log: LogEntryJSON) => () => {
+    const copy: LogEntryJSON = Object.assign({}, log, {id: ""})
+    props.handleSetLogEntryEdit(copy)
   }
 
   const makeHandlerSetLogViewAndAssignment = (log: LogEntryJSON) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,6 +53,9 @@ export default function LogTable(props: Props) {
         </IconButton>
         <IconButton color="primary" component="span" onClick={makeHandlerSetLogEdit(log)}>
           <EditIcon />
+        </IconButton>
+        <IconButton color="primary" component="span" onClick={makeHandlerSetLogCopy(log)}>
+          <FileCopyIcon />
         </IconButton>
         <IconButton color="secondary" component="span">
           <DeleteIcon />
