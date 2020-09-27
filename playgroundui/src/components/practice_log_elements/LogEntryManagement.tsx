@@ -30,8 +30,8 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 
 type Props = {
-  clearEditLogEntry: () => void
-  createLogEntry: (logEntry: LogEntryJSON) => void
+  handleClearEditLogEntry: () => void
+  handleHTTPCreateLogEntry: (logEntry: LogEntryJSON) => void
   editLogEntry: LogEntryJSON | null
   logLabels: LogLabelJSON[]
   // Need a function to reload the labels for every successful POST or DELETE.
@@ -327,7 +327,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
               style={buttonStyle}
               variant="contained"
               color="secondary"
-              onClick={this.props.clearEditLogEntry}>
+              onClick={this.props.handleClearEditLogEntry}>
               Cancel
             </Button>
           </Grid>
@@ -352,7 +352,7 @@ export default class LogEntryManagement extends React.Component<Props, State> {
                   details: "",
                   assignments: []            
                 }
-                this.props.createLogEntry(logEntry)
+                this.props.handleHTTPCreateLogEntry(logEntry)
               }}>
               Add
             </Button>

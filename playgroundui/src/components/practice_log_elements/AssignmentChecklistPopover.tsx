@@ -16,10 +16,10 @@ import { } from '@material-ui/core'
 import './AssignmentChecklistPopover.scss'
 
 type Props = {
+  viewLogEntry: LogEntryJSON | null
   popoverAnchor: HTMLButtonElement | null
   handleClearAssignment: () => void
-  handleUpdateLogAssignments: (entry: LogEntryJSON) => void
-  viewLogEntry: LogEntryJSON | null
+  handleHTTPUpdateLogAssignments: (entry: LogEntryJSON) => void
 }
 
 export default function AssignmentChecklistPopover(props: Props) {
@@ -35,7 +35,7 @@ export default function AssignmentChecklistPopover(props: Props) {
     const entryToUpdate: LogEntryJSON = props.viewLogEntry as LogEntryJSON
     entryToUpdate.assignments[position].completed = event.target.checked
     console.log(entryToUpdate.assignments[position].name, 'set to', event.target.checked)
-    props.handleUpdateLogAssignments(entryToUpdate)
+    props.handleHTTPUpdateLogAssignments(entryToUpdate)
   } 
 
   const content = (

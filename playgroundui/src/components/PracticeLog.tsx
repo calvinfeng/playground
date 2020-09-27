@@ -60,6 +60,9 @@ export default class PracticeLog extends React.Component<Props, State> {
     this.fetchLogLabels()
   }
 
+  /**
+   * This is an internal class helper function to populate log labels as state.
+   */
   fetchLogLabels() {
     this.http.get('/api/v2/practice/log/labels/')
       .then((resp: AxiosResponse) => {
@@ -88,6 +91,10 @@ export default class PracticeLog extends React.Component<Props, State> {
       })
   }
 
+  /**
+   * This is an internal class helper function to populate log entries as state.
+   * @param page indicates which page to fetch from.
+   */
   fetchLogEntriesByPage(page: number) {
     this.http.get('/api/v2/practice/log/entries/', {
         params: {
@@ -117,7 +124,11 @@ export default class PracticeLog extends React.Component<Props, State> {
       })
   }
 
-  handleUpdateLogAssignments = (entry: LogEntryJSON) => {
+  /**
+   * This is a callback for child components to call to update a log entry.
+   * @param entry is the entry to submit to API for update.
+   */
+  handleHTTPUpdateLogAssignments = (entry: LogEntryJSON) => {
     this.http.put(`/api/v2/practice/log/entries/${entry.id}/assignments/`, entry)
       .then((resp: AxiosResponse) => {
         const updatedEntry: LogEntryJSON = resp.data
@@ -141,44 +152,17 @@ export default class PracticeLog extends React.Component<Props, State> {
       })
   }
 
-  handleCreateLogEntry = (entry: LogEntryJSON) => {
+  /**
+   * This is a callback for child components to call to create a log entry.
+   * @param entry is the entry to submit to API For create.
+   */
+  handleHTTPCreateLogEntry = (entry: LogEntryJSON) => {
     this.http.post(`/api/v2/practice/log/entries/`, entry)
       .then((resp: AxiosResponse) => {
         if (resp.status === 201) {
           this.fetchLogEntriesByPage(this.state.pageNum)
         }
       })
-  }
-
-  handleSetLogEntryViewAndAnchorEl = (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => {
-    this.setState({
-      viewLogEntry: log,
-      popoverAnchor: event.currentTarget 
-    })
-  }
-
-  handleClearAnchorEl = () => {
-    this.setState({
-      popoverAnchor: null
-    })
-  }
-
-  handleClearLogEntryView = () => {
-    this.setState({
-      viewLogEntry: null
-    })
-  }
-
-  handleSetLogEntryEdit = (log: LogEntryJSON) => {
-    this.setState({
-      editLogEntry: log
-    })
-  }
-
-  handleClearLogEntryEdit = () => {
-    this.setState({
-      editLogEntry: null
-    })
   }
 
   get PaginationControlPanel() {
@@ -226,25 +210,35 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
 
   render() {
+    const handleClearPopoverAnchorEl = () => this.setState({ popoverAnchor: null, viewLogEntry: null })
+    const handleSetLogEntryEdit = (log: LogEntryJSON) => this.setState({ editLogEntry: log })
+    const handleClearLogEntryEdit = () => this.setState({ editLogEntry: null })
+    const handleSetLogEntryViewAndAnchorEl = (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => {
+      this.setState({
+        viewLogEntry: log,
+        popoverAnchor: event.currentTarget 
+      })
+    }
+
     // Due to the lack of a Redux store, function to set states have to be passed around.
     // TODO Pass editLogEntry to LogAssignmentManagement
     return (
       <section className="PracticeLog">
         <AssignmentChecklistPopover 
-          handleUpdateLogAssignments={this.handleUpdateLogAssignments}
-          handleClearAssignment={this.handleClearAnchorEl}
+          viewLogEntry={this.state.viewLogEntry} 
           popoverAnchor={this.state.popoverAnchor} 
-          viewLogEntry={this.state.viewLogEntry} /> 
+          handleClearAssignment={handleClearPopoverAnchorEl} 
+          handleHTTPUpdateLogAssignments={this.handleHTTPUpdateLogAssignments} /> 
         <LogTable
           logEntries={this.state.logEntries} 
-          handleSetLogEntryViewAndAnchorEl={this.handleSetLogEntryViewAndAnchorEl}
-          handleSetLogEntryEdit={this.handleSetLogEntryEdit} />
+          handleSetLogEntryViewAndAnchorEl={handleSetLogEntryViewAndAnchorEl}
+          handleSetLogEntryEdit={handleSetLogEntryEdit} />
         {this.PaginationControlPanel}
         <LogEntryManagement
-          createLogEntry={this.handleCreateLogEntry} 
-          clearEditLogEntry={this.handleClearLogEntryEdit}
+          logLabels={this.state.logLabels} 
           editLogEntry={this.state.editLogEntry}
-          logLabels={this.state.logLabels} />
+          handleClearEditLogEntry={handleClearLogEntryEdit} 
+          handleHTTPCreateLogEntry={this.handleHTTPCreateLogEntry} />
         <LogAssignmentManagement />
         <LogLabelManagement
           logLabels={this.state.logLabels} />
