@@ -14,7 +14,6 @@ import LogEntryManagement from './practice_log_elements/LogEntryManagement'
 import LogLabelManagement from './practice_log_elements/LogLabelManagement'
 import AssignmentChecklistPopover from './practice_log_elements/AssignmentChecklistPopover'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
-import LogAssignmentManagement from './practice_log_elements/LogAssignmentManagement';
 
 type Props = {}
 
@@ -239,7 +238,6 @@ export default class PracticeLog extends React.Component<Props, State> {
           editLogEntry={this.state.editLogEntry}
           handleClearEditLogEntry={handleClearLogEntryEdit} 
           handleHTTPCreateLogEntry={this.handleHTTPCreateLogEntry} />
-        <LogAssignmentManagement />
         <LogLabelManagement
           logLabels={this.state.logLabels} />
       </section>
