@@ -5,6 +5,7 @@ import (
 	"github.com/calvinfeng/playground/practice"
 	"github.com/calvinfeng/playground/practice/logstore"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"net/http"
@@ -46,6 +47,49 @@ func (s *service) CreatePracticeLogEntry(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, IDResponse{ID: entry.ID})
+}
+
+func (s *service) UpdatePracticeLogEntry(c echo.Context) error {
+	entry := new(practice.LogEntry)
+	if err := c.Bind(entry); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "failed to parse JSON data").Error())
+	}
+
+	if id, err := uuid.Parse(c.Param("entry_id")); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "log entry id in path parameter is not a valid uuid ").Error())
+	} else {
+		if id != entry.ID {
+			return echo.NewHTTPError(http.StatusBadRequest,
+				"payload log entry ID does not match with path log entry ID")
+		}
+	}
+
+	if err := s.validate.Struct(entry); err != nil {
+		fieldErrors := err.(validator.ValidationErrors)
+		jsonM := make(map[string]string)
+		for _, fieldErr := range fieldErrors {
+			field := fieldErr.Field()
+			err := fieldErr.(error)
+			jsonM[field] = err.Error()
+		}
+		return echo.NewHTTPError(http.StatusBadRequest, jsonM)
+	}
+
+	for i, assignment := range entry.Assignments {
+		if assignment.Position != i {
+			return echo.NewHTTPError(http.StatusBadRequest,
+				"assignments must have correct position values, [0, ..., N]")
+		}
+	}
+
+	if err := s.store.UpdateLogEntry(entry); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError,
+			errors.Wrap(err, "failed to update log assignments").Error())
+	}
+
+	return c.JSON(http.StatusOK, entry)
 }
 
 func (s *service) UpdatePracticeLogAssignments(c echo.Context) error {
