@@ -25,6 +25,7 @@ type Props = {
   editLogEntry: LogEntryJSON | null
   handleClearEditLogEntry: () => void
   handleHTTPCreateLogEntry: (logEntry: LogEntryJSON) => void
+  handleHTTPUpdateLogEntry: (logEntry: LogEntryJSON) => void
 }
 
 type State = {
@@ -372,7 +373,19 @@ export default class LogEntryManagement extends React.Component<Props, State> {
         buttonGridItems = [
           <Grid item>
             <Button style={buttonStyle} variant="contained" color="primary" startIcon={<SaveIcon />}
-              onClick={ () => console.log(this.state) }>
+              onClick={ () => {
+                const logEntry: LogEntryJSON = {
+                  id: this.state.inputFieldLogID as string, 
+                  user_id: "calvin.j.feng@gmail.com",  
+                  date: new Date(),
+                  duration: this.state.inputFieldDuration,
+                  message: this.state.inputFieldMessage,
+                  labels: this.state.inputFieldLabels, 
+                  assignments: this.state.inputFieldAssignments,
+                  details: "",
+                }
+                this.props.handleHTTPUpdateLogEntry(logEntry)
+              }}>
               Save
             </Button>
           </Grid>,

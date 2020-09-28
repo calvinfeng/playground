@@ -124,8 +124,24 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
 
   /**
+   * This is a callback for child components to call to create a log entry.
+   * @param entry is the entry to submit to API For create.
+   */
+  handleHTTPCreateLogEntry = (entry: LogEntryJSON) => {
+    this.http.post(`/api/v2/practice/log/entries/`, entry)
+      .then((resp: AxiosResponse) => {
+        if (resp.status === 201) {
+          this.fetchLogEntriesByPage(this.state.pageNum)
+        }
+      })
+      .catch((reason: any) => {
+        console.error(reason)
+      })
+  }
+
+  /**
    * This is a callback for child components to call to update a log entry.
-   * @param entry is the entry to submit to API for update.
+   * @param entry is the entry to submit to API for assignments update.
    */
   handleHTTPUpdateLogAssignments = (entry: LogEntryJSON) => {
     this.http.put(`/api/v2/practice/log/entries/${entry.id}/assignments/`, entry)
@@ -150,17 +166,31 @@ export default class PracticeLog extends React.Component<Props, State> {
         this.setState({ logEntries: entries, viewLogEntry: updatedEntry })
       })
   }
-
   /**
-   * This is a callback for child components to call to create a log entry.
-   * @param entry is the entry to submit to API For create.
+   * This is a callback for child components to call to update a log entry.
+   * @param entry is the entry to submit to API for update.
    */
-  handleHTTPCreateLogEntry = (entry: LogEntryJSON) => {
-    this.http.post(`/api/v2/practice/log/entries/`, entry)
+  handleHTTPUpdateLogEntry = (entry: LogEntryJSON) => {
+    this.http.put(`/api/v2/practice/log/entries/${entry.id}/`, entry)
       .then((resp: AxiosResponse) => {
-        if (resp.status === 201) {
-          this.fetchLogEntriesByPage(this.state.pageNum)
+        const updatedEntry: LogEntryJSON = resp.data
+        const entries = this.state.logEntries
+        for (let i = 0; i < entries.length; i++) {
+          if (entries[i].id === updatedEntry.id) {
+            entries[i] = {
+              id: resp.data.id,
+              date: new Date(resp.data.date),
+              user_id: resp.data.user_id,
+              labels: resp.data.labels,
+              message: resp.data.message,
+              details: resp.data.details,
+              duration: resp.data.duration,
+              assignments: resp.data.assignments
+            }
+            break
+          }
         }
+        this.setState({ logEntries: entries, editLogEntry: updatedEntry })
       })
   }
 
@@ -237,6 +267,7 @@ export default class PracticeLog extends React.Component<Props, State> {
           logLabels={this.state.logLabels} 
           editLogEntry={this.state.editLogEntry}
           handleClearEditLogEntry={handleClearLogEntryEdit} 
+          handleHTTPUpdateLogEntry={this.handleHTTPUpdateLogEntry}
           handleHTTPCreateLogEntry={this.handleHTTPCreateLogEntry} />
         <LogLabelManagement
           logLabels={this.state.logLabels} />
