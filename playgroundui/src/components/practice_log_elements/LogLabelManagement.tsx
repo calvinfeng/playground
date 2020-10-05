@@ -25,6 +25,8 @@ type State = {
 
 type Props = {
   logLabels: LogLabelJSON[] 
+  handleHTTPCreateLogLabel: (label: LogLabelJSON) => void
+  handleHTTPUpdateLogLabel: (label: LogLabelJSON) => void
 }
 
 export default class LabelManagement extends React.Component<Props, State> {

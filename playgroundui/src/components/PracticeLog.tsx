@@ -29,7 +29,6 @@ type State = {
 
 export default class PracticeLog extends React.Component<Props, State> {
   private http: AxiosInstance
-
   constructor(props) {
     super(props)
     this.state = {
@@ -89,7 +88,6 @@ export default class PracticeLog extends React.Component<Props, State> {
         })
       })
   }
-
   /**
    * This is an internal class helper function to populate log entries as state.
    * @param page indicates which page to fetch from.
@@ -122,10 +120,47 @@ export default class PracticeLog extends React.Component<Props, State> {
         })
       })
   }
-
+  /**
+   * This is a callback for child components to call to create a log label.
+   * @param label is the log label to submit to API for create. 
+   */
+  handleHTTPCreateLogLabel = (label: LogLabelJSON) => {
+    this.http.post(`/api/v2/practice/log/labels/`, label)
+    .then((resp: AxiosResponse) => {
+      if (resp.status === 202) {
+        this.fetchLogLabels()
+      }
+    })
+    .catch((reason: any) => {
+      console.error(reason)
+    })
+  }
+  /**
+   * This is a callback for child components to call to update a log label.
+   * @param label is the log label to submit to API for update. 
+   */
+  handleHTTPUpdateLogLabel = (label: LogLabelJSON) => {
+    this.http.put(`/api/v2/practice/log/labels/${label.id}/`, label)
+    .then((resp: AxiosResponse) => {
+      const updatedLabel: LogLabelJSON = resp.data
+      const labels = this.state.logLabels
+      for (let i = 0; i < labels.length; i++) {
+        if (labels[i].id === updatedLabel.id) {
+          labels[i] = {
+            id: resp.data.id,
+            parent_id: resp.data.parent_id,
+            name: resp.data.name,
+            children: []
+          }
+          break
+        }
+      }
+      this.setState({ logLabels: labels })
+    })
+  }
   /**
    * This is a callback for child components to call to delete a log entry.
-   * @param entry is the entry to submit to API For create.
+   * @param entry is the entry to submit to API for create.
    */
   handleHTTPDeleteLogEntry = (entry: LogEntryJSON) => {
     this.http.delete(`/api/v2/practice/log/entries/${entry.id}/`)
@@ -138,7 +173,6 @@ export default class PracticeLog extends React.Component<Props, State> {
         console.error(reason)
       })
   }
-
   /**
    * This is a callback for child components to call to create a log entry.
    * @param entry is the entry to submit to API For create.
@@ -154,7 +188,6 @@ export default class PracticeLog extends React.Component<Props, State> {
         console.error(reason)
       })
   }
-
   /**
    * This is a callback for child components to call to update a log entry.
    * @param entry is the entry to submit to API for assignments update.
@@ -287,6 +320,8 @@ export default class PracticeLog extends React.Component<Props, State> {
           handleHTTPUpdateLogEntry={this.handleHTTPUpdateLogEntry}
           handleHTTPCreateLogEntry={this.handleHTTPCreateLogEntry} />
         <LogLabelManagement
+          handleHTTPCreateLogLabel={this.handleHTTPCreateLogLabel}
+          handleHTTPUpdateLogLabel={this.handleHTTPUpdateLogLabel}
           logLabels={this.state.logLabels} />
       </section>
     )

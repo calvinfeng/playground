@@ -71,9 +71,14 @@ func (s *store) UpdateLogLabel(label *practice.LogLabel) error {
 	newRow := new(DBPracticeLogLabel).fromModel(label)
 
 	updateQ := squirrel.Update(PracticeLogLabelTable).
-		Set("parent_id", newRow.ParentID.String()).
-		Set("name", newRow.Name).
-		Where(squirrel.Eq{"id": newRow.ID.String()})
+		Where(squirrel.Eq{"id": newRow.ID.String()}).
+		Set("name", newRow.Name)
+	if newRow.ParentID == uuid.Nil {
+		updateQ = updateQ.Set("parent_id", nil)
+	} else {
+		updateQ = updateQ.Set("parent_id", newRow.ParentID.String())
+	}
+
 	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
 	if err != nil {
 		return err
