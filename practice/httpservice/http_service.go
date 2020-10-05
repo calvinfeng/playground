@@ -23,6 +23,23 @@ type service struct {
 	validate *validator.Validate
 }
 
+func (s *service) DeletePracticeLogEntry(c echo.Context) error {
+	id, err := uuid.Parse(c.Param("entry_id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "log label id in path parameter is not a valid uuid ").Error())
+	}
+
+	if err := s.store.DeleteLogEntry(&practice.LogEntry{
+		ID: id,
+	}); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError,
+			errors.Wrap(err, "failed to delete entry from database").Error())
+	}
+
+	return c.JSON(http.StatusAccepted, IDResponse{ID: id})
+}
+
 func (s *service) CreatePracticeLogLabel(c echo.Context) error {
 	label := new(practice.LogLabel)
 	if err := c.Bind(label); err != nil {

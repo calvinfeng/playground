@@ -67,6 +67,7 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
 	e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
 	e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
+	e.DELETE("/api/v2/practice/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
 
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")

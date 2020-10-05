@@ -46,6 +46,7 @@ type (
 		CreatePracticeLogEntry(echo.Context) error
 		UpdatePracticeLogEntry(echo.Context) error
 		UpdatePracticeLogAssignments(echo.Context) error
+		DeletePracticeLogEntry(echo.Context) error
 	}
 
 	SQLFilter func(squirrel.Eq)
