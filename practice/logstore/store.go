@@ -18,6 +18,54 @@ type store struct {
 	db *sqlx.DB
 }
 
+func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
+	row := new(DBPracticeLogEntry).fromModel(entry)
+
+	deleteQ := squirrel.Delete(PracticeLogEntryTable).Where(squirrel.Eq{"id": row.ID.String()})
+
+	statement, args, err := deleteQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	res, err := s.db.Exec(statement, args)
+	if err != nil {
+		return err
+	}
+
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
+}
+
+func (s *store) UpdateLogLabel(label *practice.LogLabel) error {
+	newRow := new(DBPracticeLogLabel).fromModel(label)
+
+	updateQ := squirrel.Update(PracticeLogLabelTable).
+		Set("parent_id", newRow.ParentID.String()).
+		Set("name", newRow.Name).
+		Where(squirrel.Eq{"id": newRow.ID.String()})
+	statement, args, err := updateQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	res, err := s.db.Exec(statement, args...)
+	if err != nil {
+		return err
+	}
+
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
+}
+
 func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
 	eqCondition := make(squirrel.Eq)
 	for _, f := range filters {

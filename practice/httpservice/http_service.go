@@ -23,6 +23,68 @@ type service struct {
 	validate *validator.Validate
 }
 
+func (s *service) CreatePracticeLogLabel(c echo.Context) error {
+	label := new(practice.LogLabel)
+	if err := c.Bind(label); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "failed to parse JSON data").Error())
+	}
+
+	if err := s.validate.Struct(label); err != nil {
+		fieldErrors := err.(validator.ValidationErrors)
+		jsonM := make(map[string]string)
+		for _, fieldErr := range fieldErrors {
+			field := fieldErr.Field()
+			err := fieldErr.(error)
+			jsonM[field] = err.Error()
+		}
+		return echo.NewHTTPError(http.StatusBadRequest, jsonM)
+	}
+
+	if _, err := s.store.BatchInsertLogLabels(label); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError,
+			errors.Wrap(err, "failed to insert to database").Error())
+	}
+
+	return c.JSON(http.StatusCreated, IDResponse{ID: label.ID})
+}
+
+func (s *service) UpdatePracticeLogLabel(c echo.Context) error {
+	label := new(practice.LogLabel)
+	if err := c.Bind(label); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "failed to parse JSON data").Error())
+	}
+
+	if id, err := uuid.Parse(c.Param("label_id")); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			errors.Wrap(err, "log label id in path parameter is not a valid uuid ").Error())
+	} else {
+		if id != label.ID {
+			return echo.NewHTTPError(http.StatusBadRequest,
+				"payload log label ID does not match with path log label ID")
+		}
+	}
+
+	if err := s.validate.Struct(label); err != nil {
+		fieldErrors := err.(validator.ValidationErrors)
+		jsonM := make(map[string]string)
+		for _, fieldErr := range fieldErrors {
+			field := fieldErr.Field()
+			err := fieldErr.(error)
+			jsonM[field] = err.Error()
+		}
+		return echo.NewHTTPError(http.StatusBadRequest, jsonM)
+	}
+
+	if err := s.store.UpdateLogLabel(label); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError,
+			errors.Wrap(err, "failed to update log label").Error())
+	}
+
+	return c.JSON(http.StatusOK, label)
+}
+
 func (s *service) CreatePracticeLogEntry(c echo.Context) error {
 	entry := new(practice.LogEntry)
 	if err := c.Bind(entry); err != nil {
@@ -154,6 +216,7 @@ func (s *service) ListPracticeLogLabels(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError,
 			fmt.Errorf("server failed to query store %w", err))
 	}
+	resp.Count = len(labels)
 	resp.Results = labels
 	return c.JSON(http.StatusOK, resp)
 }

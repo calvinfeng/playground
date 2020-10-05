@@ -38,11 +38,14 @@ func (l LogLabel) String() string {
 
 type (
 	HTTPService interface {
-		ListPracticeLogEntries(echo.Context) error
 		ListPracticeLogLabels(echo.Context) error
-		UpdatePracticeLogAssignments(echo.Context) error
+		CreatePracticeLogLabel(echo.Context) error
+		UpdatePracticeLogLabel(echo.Context) error
+
+		ListPracticeLogEntries(echo.Context) error
 		CreatePracticeLogEntry(echo.Context) error
 		UpdatePracticeLogEntry(echo.Context) error
+		UpdatePracticeLogAssignments(echo.Context) error
 	}
 
 	SQLFilter func(squirrel.Eq)
@@ -50,10 +53,13 @@ type (
 	LogStore interface {
 		CountLogEntries(...SQLFilter) (int, error)
 		SelectLogEntries(limit, offset uint64, filters ...SQLFilter) ([]*LogEntry, error)
-		SelectLogLabels() ([]*LogLabel, error)
-		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		BatchInsertLogEntries(...*LogEntry) (int64, error)
 		UpdateLogEntry(*LogEntry) error
 		UpdateLogAssignments(*LogEntry) error
+		DeleteLogEntry(*LogEntry) error
+
+		SelectLogLabels() ([]*LogLabel, error)
+		BatchInsertLogLabels(...*LogLabel) (int64, error)
+		UpdateLogLabel(*LogLabel) error
 	}
 )

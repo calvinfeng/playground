@@ -59,9 +59,12 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
+	e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
+	e.POST("/api/v2/practice/log/labels/", srv.CreatePracticeLogLabel)
+	e.PUT("/api/v2/practice/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
+
 	e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
 	e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
-	e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
 	e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
 	e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
 
