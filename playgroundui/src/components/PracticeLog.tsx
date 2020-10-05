@@ -124,6 +124,22 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
 
   /**
+   * This is a callback for child components to call to delete a log entry.
+   * @param entry is the entry to submit to API For create.
+   */
+  handleHTTPDeleteLogEntry = (entry: LogEntryJSON) => {
+    this.http.delete(`/api/v2/practice/log/entries/${entry.id}/`)
+      .then((resp: AxiosResponse) => {
+        if (resp.status === 202) {
+          this.fetchLogEntriesByPage(this.state.pageNum)
+        }
+      })
+      .catch((reason: any) => {
+        console.error(reason)
+      })
+  }
+
+  /**
    * This is a callback for child components to call to create a log entry.
    * @param entry is the entry to submit to API For create.
    */
@@ -261,7 +277,8 @@ export default class PracticeLog extends React.Component<Props, State> {
         <LogTable
           logEntries={this.state.logEntries} 
           handleSetLogEntryViewAndAnchorEl={handleSetLogEntryViewAndAnchorEl}
-          handleSetLogEntryEdit={handleSetLogEntryEdit} />
+          handleSetLogEntryEdit={handleSetLogEntryEdit}
+          handleHTTPDeleteLogEntry={this.handleHTTPDeleteLogEntry} />
         {this.PaginationControlPanel}
         <LogEntryManagement
           logLabels={this.state.logLabels} 

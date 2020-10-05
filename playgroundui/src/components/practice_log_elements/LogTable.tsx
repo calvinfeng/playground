@@ -10,6 +10,7 @@ import './LogTable.scss'
 
 type Props = {
   logEntries: LogEntryJSON[]
+  handleHTTPDeleteLogEntry: (log: LogEntryJSON) => void
   handleSetLogEntryEdit: (log: LogEntryJSON) => void
   handleSetLogEntryViewAndAnchorEl: (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => void
 }
@@ -20,6 +21,10 @@ export default function LogTable(props: Props) {
 
   const makeHandlerSetLogEdit = (log: LogEntryJSON) => () => {
     props.handleSetLogEntryEdit(log)
+  }
+
+  const makeHandlerDeleteLogEntry = (log: LogEntryJSON) => () => {
+    props.handleHTTPDeleteLogEntry(log)
   }
 
   const makeHandlerSetLogCopy = (log: LogEntryJSON) => () => {
@@ -57,13 +62,14 @@ export default function LogTable(props: Props) {
         <IconButton color="primary" component="span" onClick={makeHandlerSetLogCopy(log)}>
           <FileCopyIcon />
         </IconButton>
-        <IconButton color="secondary" component="span">
+        <IconButton color="secondary" component="span" onClick={makeHandlerDeleteLogEntry(log)}>
           <DeleteIcon />
         </IconButton>
         </TableCell>
       </TableRow>
     )
   })
+  
   return (
     <TableContainer className="LogTable" component={Paper}>
       <Table>
