@@ -21,6 +21,7 @@ const nilUUID = '00000000-0000-0000-0000-000000000000'
 type State = {
   selectedLabel: LogLabelJSON | null
   selectedSubLabel: LogLabelJSON | null
+  inputFieldLabelName: string
 }
 
 type Props = {
@@ -34,20 +35,17 @@ export default class LabelManagement extends React.Component<Props, State> {
     super(props)
     this.state = {
       selectedLabel: null,
-      selectedSubLabel: null
+      selectedSubLabel: null,
+      inputFieldLabelName: ""
     }
   }
 
   newHandlerSelectLabel = (label: LogLabelJSON | null) => () => {
-    this.setState({
-      selectedLabel: label
-    })
+    this.setState({ selectedLabel: label })
   }
 
   newHandlerSelectSubLabel = (label: LogLabelJSON | null) => () => {
-    this.setState({
-      selectedSubLabel: label
-    })
+    this.setState({ selectedSubLabel: label })
   }
 
   get panelParentLabels() {
@@ -126,11 +124,40 @@ export default class LabelManagement extends React.Component<Props, State> {
   }
 
   get panelEditLabel() {
+    const handleLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({ inputFieldLabelName: ev.target.value })
+    }
+
+    const handleClickAddNewLabel = () => {
+      const newLabel: LogLabelJSON = {
+        id: nilUUID,
+        parent_id: null,
+        children: [],
+        name: this.state.inputFieldLabelName
+      }
+      this.props.handleHTTPCreateLogLabel(newLabel)
+      this.setState({ inputFieldLabelName: "" })
+    }
+
+    const handleClickAddNewChildLabel = () => {
+      if (this.state.selectedLabel !== null ) {
+        const newLabel: LogLabelJSON = {
+          id: nilUUID,
+          parent_id: this.state.selectedLabel.id,
+          children: [],
+          name: this.state.inputFieldLabelName
+        }
+        this.props.handleHTTPCreateLogLabel(newLabel)
+        this.setState({ inputFieldLabelName: "" })
+      }
+    }
+
     let gridItems: JSX.Element[]
     // 3 possible cases:
     //   - parent & child selected
     //   - parent selected
     //   - none selected
+    // TODO: I don't think I should support delete
     if (this.state.selectedLabel !== null && this.state.selectedSubLabel !== null) {
       gridItems = [
         <Grid item>
@@ -152,13 +179,17 @@ export default class LabelManagement extends React.Component<Props, State> {
         <Grid item>
           <TextField
             label="New Sub Label Name"
-            value={""}
-            onChange={() => {}}
-          fullWidth
-          InputLabelProps={{ shrink: true }} />
+            value={this.state.inputFieldLabelName}
+            onChange={handleLabelNameChange}
+            fullWidth
+            InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="primary">Add Child</Button>
+          <Button
+            style={{margin: "0.1rem"}}
+            onClick={handleClickAddNewChildLabel}
+            variant="contained"
+            color="primary">Add Child</Button>
           <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
         </Grid>
       ]
@@ -167,13 +198,16 @@ export default class LabelManagement extends React.Component<Props, State> {
         <Grid item>
           <TextField
             label="New Label Name"
-            value={""}
-            onChange={() => {}}
-          fullWidth
-          InputLabelProps={{ shrink: true }} />
+            value={this.state.inputFieldLabelName}
+            onChange={handleLabelNameChange}
+            fullWidth
+            InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button style={{margin: "0.1rem"}}  variant="contained" color="primary">Add</Button>
+          <Button
+            style={{margin: "0.1rem"}}
+            onClick={handleClickAddNewLabel}
+            variant="contained" color="primary">Add</Button>
         </Grid>
       ]
     }

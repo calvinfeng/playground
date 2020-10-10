@@ -127,7 +127,7 @@ export default class PracticeLog extends React.Component<Props, State> {
   handleHTTPCreateLogLabel = (label: LogLabelJSON) => {
     this.http.post(`/api/v2/practice/log/labels/`, label)
     .then((resp: AxiosResponse) => {
-      if (resp.status === 202) {
+      if (resp.status === 201) {
         this.fetchLogLabels()
       }
     })

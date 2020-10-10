@@ -1,14 +1,19 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/calvinfeng/playground/practice/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
+	"github.com/futurenda/google-auth-id-token-verifier"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"google.golang.org/api/oauth2/v2"
+	"google.golang.org/api/option"
+	"net/http"
 	"os"
 )
 
@@ -137,6 +142,39 @@ func testPracticeLogStoreSelect() error {
 	return nil
 }
 
+func verifyIdToken(idToken string) (*oauth2.Tokeninfo, error) {
+	oauthSrv, err := oauth2.NewService(context.Background(), option.WithHTTPClient(http.DefaultClient))
+	if err != nil {
+		return nil, err
+	}
+	tokenInfoCall := oauthSrv.Tokeninfo()
+	tokenInfo, err := tokenInfoCall.IdToken(idToken).Do()
+	if err != nil {
+		return nil, err
+	}
+	return tokenInfo, nil
+}
+
 func experimentRunE(_ *cobra.Command, _ []string) error {
-	return testPracticeLogStoreSelect()
+	const IDToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdkYTc4NjNlODYzN2Q2NjliYzJhMTI2MjJjZWRlMmE4ODEzZDExYjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiODE5MDEzNDQzNjcyLXJ0OGVvbXNyMjVqbWtmZWoyb2Rrc2ppaHNib2R1bzZhLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiODE5MDEzNDQzNjcyLXJ0OGVvbXNyMjVqbWtmZWoyb2Rrc2ppaHNib2R1bzZhLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEwODg4MzQxNDE4MDIxNzgwNzU2IiwiZW1haWwiOiJjYWx2aW4uai5mZW5nQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiZlMxeDQ5MEw4UkVaczFuZVZfbXBxUSIsIm5hbWUiOiJDYWx2aW4gRmVuZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS0vQU9oMTRHZ2ZuanNlQk14MWQ2aXEyYnItZXh3T2RJSEF0d0ZsdEQyeC1lX3d3UT1zOTYtYyIsImdpdmVuX25hbWUiOiJDYWx2aW4iLCJmYW1pbHlfbmFtZSI6IkZlbmciLCJsb2NhbGUiOiJlbiIsImlhdCI6MTYwMjM3MjUxNCwiZXhwIjoxNjAyMzc2MTE0LCJqdGkiOiIzZDYyNDM0Yzg2YzcyZDA4MGU4OGZkNWQ1NTEwOGQyOGU5YjNkODJkIn0.XiEVHSo1sn-k08KDG50l9k8SH8p6T8X3gveiScuWNZk2570r1ePFaO3yMdGbNrN1u2ulv4NgkiYukCFc3_zyaBCDh8i25L5imhKn-A7Vs3BBZR2R30t2njewYpK-qKhOCrVrwez7x4z3UdwFPEcNoH4MXRU3U4ZLpdfxlCcUTvMjk9Tw2nnwlvt3f8lihFzXnNjfKqv_Rk8YgBPEot9y-GC7GPlvDSBlvYyx_QUW0Snd6vSlZeV-WXuuYjxxalwqQjtWxsXiApdcGDwtbEBXpeJchErJpD49QkbFgpK8ttLXuspgQaDJPkQvx76mmQnIShsG946Q-nQNQDAMjW0ciA"
+	tokenInfo, err := verifyIdToken(IDToken)
+	if err != nil {
+		return err
+	}
+	logrus.Infof("Golang oauth token info %v", tokenInfo)
+
+	v := googleAuthIDTokenVerifier.Verifier{}
+	err = v.VerifyIDToken(IDToken, []string{
+		"819013443672-rt8eomsr25jmkfej2odksjihsboduo6a.apps.googleusercontent.com",
+	})
+	if err != nil {
+		return err
+	}
+	claimSet, err := googleAuthIDTokenVerifier.Decode(IDToken)
+	if err != nil {
+		return err
+	}
+	logrus.Infof("Golang JWT token claim %v", claimSet)
+
+	return nil
 }

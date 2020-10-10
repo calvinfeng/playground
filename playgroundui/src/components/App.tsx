@@ -20,18 +20,21 @@ import {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from 'react-google-login';
+
 import Timeline from './Timeline'
 import About from './About'
 import Fretboard from './Fretboard'
 import PracticeLog from './PracticeLog'
 import PracticeTimeProgress from './widgets/PracticeTimeProgress'
 import './App.scss'
+import { GoogleUserProfile } from './types';
 
 const clientID = "819013443672-rt8eomsr25jmkfej2odksjihsboduo6a.apps.googleusercontent.com"
 
 function App() {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
+  const [user, setUser] = React.useState<GoogleUserProfile | null>(null);
 
   const handleMenuOnClose = (ev: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(null)
@@ -43,15 +46,27 @@ function App() {
     setMenuOpen(true)
   }
 
+  // TODO: Store the ID token in cache
+  // As soon as page is loaded, check the token and send it to backend to verify that token is
+  // still valid and return profile information.
   const handleGoogleResponse = (resp: GoogleLoginResponse | GoogleLoginResponseOffline) => {
     if ((resp as GoogleLoginResponseOffline).code) {
       resp = resp as GoogleLoginResponseOffline
     } else {
       resp = resp as GoogleLoginResponse
-      console.log('token ID', resp.tokenId)
-      console.log('user profile', resp.getBasicProfile())
-      console.log('access token', resp.accessToken)
-      console.log('scopes', resp.getGrantedScopes())
+      const userProfile: GoogleUserProfile = {
+        token_id: resp.tokenId,
+        access_token: resp.accessToken,
+        granted_scopes: resp.getGrantedScopes(),
+        google_user_id: resp.getBasicProfile().getId(),
+        google_email: resp.getBasicProfile().getEmail(),
+        full_name: resp.getBasicProfile().getName(),
+        given_name: resp.getBasicProfile().getGivenName(),
+        family_name: resp.getBasicProfile().getFamilyName(),
+        image_url: resp.getBasicProfile().getImageUrl()
+      }
+      setUser(userProfile)
+      console.log(userProfile)
       // It seems to me that Google user only has scopes for 
       // [email,
       //  profile,
@@ -94,7 +109,7 @@ function App() {
         <section className="right-container">
           <Toolbar>
             <GoogleLogin
-              disabled={true}
+              disabled={process.env.NODE_ENV !== "development"}
               clientId={clientID}
               buttonText={"Login with Google"}
               onSuccess={handleGoogleResponse}

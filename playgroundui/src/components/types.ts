@@ -44,3 +44,15 @@ export type LogAssignmentJSON = {
   name: string
   completed: boolean
 }
+
+export type GoogleUserProfile = {
+  token_id: string
+  access_token: string
+  granted_scopes: string
+  google_user_id: string;
+  google_email: string;
+  full_name: string;
+  given_name: string;
+  family_name: string;
+  image_url: string;
+}
