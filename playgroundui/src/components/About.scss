@@ -37,34 +37,30 @@
   .background {
     width: 100%;
     max-width: 1280px;
-    flex-grow: 1;
     margin-top: 1rem;
     .card {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       width: 100%;
-      .math {
+      .media-content {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 1rem;
+      }
+      .text-content {
+        display: flex;
+        flex-direction: column;
+        height: 350px;
+        justify-content: center;
+        align-items: flex-start;
         justify-content: center;
         .eqn {
-          margin: 0.5rem;
+          margin: 1rem;
         }
       }
     }
   }
-
-  .meissner-demo {
-    width: 100%;
-    max-width: 1280px;
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-  }
-
+  
   .activities {
     width: 100%;
     max-width: 1280px;

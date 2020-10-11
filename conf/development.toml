@@ -1,3 +1,6 @@
+[features]
+v2_endpoint_enabled = true
+
 [postgresql]
 hostname = "localhost"
 port = 5432
@@ -5,5 +8,3 @@ dbname = "playground"
 username = "cfeng"
 password = "cfeng"
 ssl_mode="disable"
-
-

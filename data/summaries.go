@@ -93,7 +93,7 @@ var Summaries = []*datastore.MonthlySummary{
 	{
 		Year:     2020,
 		Month:    7,
-		Title:    "The Final Countdown",
+		Title:    "The Final Countdown Part 1",
 		Subtitle: "The SpongeBob Solo and Microwave Commercial",
 		Body: `After working through Beyond's solos, I have the confidence to tackle my next favorite solo from the band 
 		Europe. This is the song we used to sing in AP Calculus before the class starts. I always thought this is 
@@ -104,11 +104,20 @@ var Summaries = []*datastore.MonthlySummary{
 	{
 		Year:     2020,
 		Month:    8,
-		Title:    "The Final Countdown",
+		Title:    "The Final Countdown Part 2",
 		Subtitle: "Consistent and Persistent",
 		Body: `One month was simply not enough for me to develop the finger strength and dexterity for this song. I am
-		continuing my practice, pushing from 100 beats per minute to the original tempo at 118 beats per minute. 
-        Honestly, it's been getting quite repetitive. However, I cannot give up. I just need to have patience and go the
-		distance.`,
+		continuing my practice, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
+        Honestly, it's been getting quite repetitive. But I am definitely not giving up. If time is what it takes, so be
+		it.`,
+	},
+	{
+		Year:     2020,
+		Month:    9,
+		Title:    "The Final Countdown Part 3",
+		Subtitle: "Keep Pushing",
+		Body: `The last 10% speed is ridiculously difficult. This is going to be my third month on The Final Countdown
+		solo. I am so determined to execute this song as flawless as possible at its original tempo. It's getting really
+		close.`,
 	},
 }

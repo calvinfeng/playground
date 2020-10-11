@@ -30,7 +30,7 @@ WORKDIR /go/bin
 # Copy binary, static files, & SQL database
 COPY --from=gobuild /go/src/playground/playground .
 COPY --from=gobuild /go/src/playground/blog.db .
-COPY --from=nodebuild /home/node/playgroundui/build ./playgroundui/build/
-COPY --from=gobuild /go/src/playground/migrations ./migrations
+COPY --from=gobuild /go/src/playground/conf ./conf
+COPY --from=nodebuild /home/node/playgroundui/build ./playgroundui/build
 
-CMD ["./playground", "serve"]
+CMD ["./playground", "--config", "production", "serve"]

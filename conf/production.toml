@@ -1,0 +1,10 @@
+[features]
+v2_endpoint_enabled = false
+
+[postgresql]
+hostname = ""
+port = 0
+dbname = ""
+username = ""
+password = ""
+ssl_mode=""

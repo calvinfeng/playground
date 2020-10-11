@@ -66,7 +66,6 @@ function App() {
         image_url: resp.getBasicProfile().getImageUrl()
       }
       setUser(userProfile)
-      console.log(userProfile)
       // It seems to me that Google user only has scopes for 
       // [email,
       //  profile,
@@ -83,47 +82,78 @@ function App() {
     </p>
   )
 
-  return (
-    <div className="App">
-      <BrowserRouter>
-      <AppBar position="static" color="default" className="app-bar">
-        <section className="left-container">
-          <Toolbar>
-            <IconButton color="inherit" aria-label="Menu" onClick={handleMenuOnClick}>
-              <MenuRounded />
-            </IconButton>
-            <Menu 
-              open={menuOpen}
-              onClose={handleMenuOnClose} 
-              getContentAnchorEl={null}
-              anchorEl={anchorEl}
-              anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
-              <TimelineMenuItem />
-              <PracticeLogMenuItem />
-              <AboutMenuItem />
-              <FretboardMenuItem />
-            </Menu>
-            <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
-          </Toolbar>
-        </section>
-        <section className="right-container">
-          <Toolbar>
-            <GoogleLogin
-              disabled={process.env.NODE_ENV !== "development"}
-              clientId={clientID}
-              buttonText={"Login with Google"}
-              onSuccess={handleGoogleResponse}
-              onFailure={handleGoogleResponse} />
-          </Toolbar>
-        </section>
-      </AppBar>
-      <PracticeTimeProgress />
+  let routeSwitch: JSX.Element;
+  let menu: JSX.Element;
+  if (process.env.NODE_ENV === "development") {
+    menu = (
+      <Menu 
+        open={menuOpen}
+        onClose={handleMenuOnClose} 
+        getContentAnchorEl={null}
+        anchorEl={anchorEl}
+        anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
+        <TimelineMenuItem />
+        <PracticeLogMenuItem />
+        <AboutMenuItem />
+        <FretboardMenuItem />
+      </Menu>
+    )
+    routeSwitch = (
       <Switch>
         <Route path="/" exact component={Timeline} />
         <Route path="/practicelog" exact component={PracticeLog} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
       </Switch>
+    )
+  } else {
+    menu = (
+      <Menu 
+        open={menuOpen}
+        onClose={handleMenuOnClose} 
+        getContentAnchorEl={null}
+        anchorEl={anchorEl}
+        anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
+        <TimelineMenuItem />
+        <AboutMenuItem />
+        <FretboardMenuItem />
+      </Menu>
+    )
+    routeSwitch = (
+      <Switch>
+        <Route path="/" exact component={Timeline} />
+        <Route path="/about" exact component={About} />
+        <Route path="/fretboard" exact component={Fretboard} />
+      </Switch>
+    )
+  }
+
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <AppBar position="static" color="default" className="app-bar">
+          <section className="left-container">
+            <Toolbar>
+              <IconButton color="inherit" aria-label="Menu" onClick={handleMenuOnClick}>
+                <MenuRounded />
+              </IconButton>
+              {menu}
+              <Typography color="inherit" variant="h6" className="title">Calvin Feng</Typography>
+            </Toolbar>
+          </section>
+          <section className="right-container">
+            <Toolbar>
+              <GoogleLogin
+                disabled={process.env.NODE_ENV !== "development"}
+                clientId={clientID}
+                buttonText={"Login with Google"}
+                onSuccess={handleGoogleResponse}
+                onFailure={handleGoogleResponse} />
+            </Toolbar>
+          </section>
+        </AppBar>
+        <PracticeTimeProgress />
+        {routeSwitch}
       </BrowserRouter>
     </div>
   );

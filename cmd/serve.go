@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/calvinfeng/playground/practice/httpservice"
 	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/spf13/viper"
 	"net/http"
 	"os"
 
@@ -24,14 +25,6 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	}
 	sqlite.SetMaxOpenConns(1)
 	store := datastore.New(sqlite)
-
-	pg, err := sqlx.Open("postgres", databaseAddress())
-	if err != nil {
-		return err
-	}
-	logrus.Infof("pg is up %s", pg)
-
-	srv := httpservice.New(logstore.New(pg))
 
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -59,15 +52,26 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
-	e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
-	e.POST("/api/v2/practice/log/labels/", srv.CreatePracticeLogLabel)
-	e.PUT("/api/v2/practice/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
 
-	e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
-	e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
-	e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
-	e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
-	e.DELETE("/api/v2/practice/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
+	if viper.GetBool("features.v2_endpoint_enabled") {
+		logrus.Info("v2 endpoint is enabled")
+		pg, err := sqlx.Open("postgres", databaseAddress())
+		if err != nil {
+			return err
+		}
+		logrus.Infof("connected to relational database with credentials %s", databaseAddress())
+		srv := httpservice.New(logstore.New(pg))
+
+		e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
+		e.POST("/api/v2/practice/log/labels/", srv.CreatePracticeLogLabel)
+		e.PUT("/api/v2/practice/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
+
+		e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
+		e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
+		e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
+		e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
+		e.DELETE("/api/v2/practice/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
+	}
 
 	logrus.Infof("http server is listening on 8080")
 	return e.Start(":8080")

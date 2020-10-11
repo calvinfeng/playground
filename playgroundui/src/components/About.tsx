@@ -36,7 +36,8 @@ export default function About() {
             fleet management system, distributed robotic orchestration, real-time data streaming,
             and big data collection from robots running in the wild. It sounds fancy but it is not
             an overstatement. We have robotics engineers working on the individual intelligence of
-            robot. I work on the collective intelligence of robots and provide data-driven solutions.
+            robot. I work on the collective intelligence of robots and provide data-driven
+            solutions.
           </Typography>
         </CardContent>
       </Card>
@@ -66,48 +67,51 @@ export default function About() {
       </Typography>
     </section>
   )
+
   const background = (
     <section className="background">
       <Card className="card">
-        <CardContent className="text-content">
-          <Typography variant="h4">
-            Background
-          </Typography>
-          <Typography variant="subtitle1" color="textSecondary">
-            Solid State Physics - Superconductivity
-          </Typography>
-          <Typography variant="body2">
-            I studied physics with a specialization in computational physics. My research interest
-            was in solid-state physics. I was studying how and why do materials go superconducting,
-            i.e its electrical resistance drops to zero after reaching a critical temperature with
-            Jorge Hirsch, the dude who invented H-index. My background heavily influenced my interests
-            in programming. It was my first experience of writing a software to solve a real world
-            problem.
-          </Typography>
-        </CardContent>
-        <CardContent className="math">
-            <TeX math={Equations.BlochEqn} className="eqn" />
-            <TeX math={Equations.LondonEqn1} className="eqn" />
-            <TeX math={Equations.LondonEqn2} className="eqn" />
-        </CardContent>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          justify="center"
+          spacing={0}>
+          <Grid item style={{width: "400px"}}>
+            <CardContent className="media-content">
+              <ReactPlayer 
+                url={'https://www.youtube.com/watch?v=Bia4vV4CS5o'}
+                width={400}
+                height={360}
+                controls={true} />
+            </CardContent>
+          </Grid>
+          <Grid item style={{width: "calc(100% - 423px)"}}>
+            <CardContent className="text-content">
+              <Typography variant="h4">
+                Background
+              </Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                Solid State Physics - Superconductivity
+              </Typography>
+              <Typography variant="body2">
+                I studied physics with a specialization in computational physics. My research interest
+                was in solid-state physics. I was studying how and why do materials go superconducting,
+                i.e its electrical resistance drops to zero after reaching a critical temperature with
+                Jorge Hirsch, the dude who invented H-index. My background heavily influenced my
+                interests in programming. It was my first experience of writing a software to solve a
+                real world problem.
+              </Typography>
+              <TeX math={Equations.BlochEqn} className="eqn" />
+              <TeX math={Equations.LondonEqn1} className="eqn" />
+              <TeX math={Equations.LondonEqn2} className="eqn" />
+            </CardContent>
+          </Grid>
+        </Grid>
       </Card>
     </section>
   )
 
-  const meisnerDemo = (
-    <section className="meissner-demo">
-      <Card className="card">
-        <CardContent>
-          <ReactPlayer 
-            url={'https://www.youtube.com/watch?v=Bia4vV4CS5o'}
-            width={480}
-            height={270}
-            controls={true} />
-        </CardContent>
-      </Card>
-    </section>
-  )
-  
   const guitarShopping = (
     <Card className="medium-card">
       <CardHeader
@@ -163,7 +167,6 @@ export default function About() {
       {bio}
       {quote1}
       {background}
-      {meisnerDemo}
       {quote2}
       {activities}
       {quote3}
