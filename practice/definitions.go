@@ -41,6 +41,7 @@ type (
 		ListPracticeLogLabels(echo.Context) error
 		CreatePracticeLogLabel(echo.Context) error
 		UpdatePracticeLogLabel(echo.Context) error
+		DeletePracticeLogLabel(echo.Context) error
 
 		ListPracticeLogEntries(echo.Context) error
 		CreatePracticeLogEntry(echo.Context) error
@@ -62,5 +63,6 @@ type (
 		SelectLogLabels() ([]*LogLabel, error)
 		BatchInsertLogLabels(...*LogLabel) (int64, error)
 		UpdateLogLabel(*LogLabel) error
+		DeleteLogLabel(*LogLabel) error
 	}
 )

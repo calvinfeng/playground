@@ -18,17 +18,11 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
-	row := new(DBPracticeLogEntry).fromModel(entry)
-
-	deleteEntryQ := squirrel.Delete(PracticeLogEntryTable).Where(squirrel.Eq{"id": row.ID.String()})
+func (s *store) DeleteLogLabel(label *practice.LogLabel) error {
+	row := new(DBPracticeLogLabel).fromModel(label)
+	deleteLabelQ := squirrel.Delete(PracticeLogLabelTable).Where(squirrel.Eq{"id": row.ID.String()})
 	deleteAssocQ := squirrel.Delete(AssociationPracticeLogEntryLabelTable).
-		Where(squirrel.Eq{"entry_id": row.ID.String()})
-
-	statement, args, err := deleteEntryQ.PlaceholderFormat(squirrel.Dollar).ToSql()
-	if err != nil {
-		return err
-	}
+		Where(squirrel.Eq{"label_id": row.ID.String()})
 
 	tx, err := s.db.Beginx()
 	if err != nil {
@@ -39,6 +33,60 @@ func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
 			panic(err)
 		}
 	}()
+
+	statement, args, err := deleteLabelQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	res, err := tx.Exec(statement, args...)
+	if err != nil {
+		return fmt.Errorf("failed to execute query %w", err)
+	}
+
+	statement, args, err = deleteAssocQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(statement, args...)
+	if err != nil {
+		return fmt.Errorf("failed to execute query %w", err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction %w", err)
+	}
+
+	if count, err := res.RowsAffected(); err != nil {
+		return err
+	} else if count == 0 {
+		return errors.New("no row was affected, query did not work as intended")
+	}
+	return nil
+}
+
+func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
+	row := new(DBPracticeLogEntry).fromModel(entry)
+
+	deleteEntryQ := squirrel.Delete(PracticeLogEntryTable).Where(squirrel.Eq{"id": row.ID.String()})
+	deleteAssocQ := squirrel.Delete(AssociationPracticeLogEntryLabelTable).
+		Where(squirrel.Eq{"entry_id": row.ID.String()})
+
+	tx, err := s.db.Beginx()
+	if err != nil {
+		return errors.Wrap(err, "failed to begin transaction")
+	}
+	defer func() {
+		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
+			panic(err)
+		}
+	}()
+
+	statement, args, err := deleteEntryQ.PlaceholderFormat(squirrel.Dollar).ToSql()
+	if err != nil {
+		return err
+	}
 
 	res, err := tx.Exec(statement, args...)
 	if err != nil {
