@@ -142,20 +142,27 @@ export default class PracticeLog extends React.Component<Props, State> {
   handleHTTPUpdateLogLabel = (label: LogLabelJSON) => {
     this.http.put(`/api/v2/practice/log/labels/${label.id}`, label)
     .then((resp: AxiosResponse) => {
-      const updatedLabel: LogLabelJSON = resp.data
-      const labels = this.state.logLabels
-      for (let i = 0; i < labels.length; i++) {
-        if (labels[i].id === updatedLabel.id) {
-          labels[i] = {
-            id: resp.data.id,
-            parent_id: resp.data.parent_id,
-            name: resp.data.name,
-            children: []
-          }
-          break
-        }
+      if (resp.status === 200) {
+        this.fetchLogLabels()
+        this.fetchLogEntriesByPage(this.state.pageNum)
       }
-      this.setState({ logLabels: labels })
+    })
+  }
+
+  /**
+   * This is a callback for child components to call to delete a log label.
+   * @param label is the log label to submit to API for delete.
+   */
+  handleHTTPDeleteLogLabel = (label: LogLabelJSON) => {
+    this.http.delete(`/api/v2/practice/log/labels/${label.id}`)
+    .then((resp: AxiosResponse) => {
+      if (resp.status === 200) {
+        this.fetchLogLabels()
+        this.fetchLogEntriesByPage(this.state.pageNum)
+      }
+    })
+    .catch((reason: any) => {
+      console.error(reason)
     })
   }
   /**
@@ -165,7 +172,7 @@ export default class PracticeLog extends React.Component<Props, State> {
   handleHTTPDeleteLogEntry = (entry: LogEntryJSON) => {
     this.http.delete(`/api/v2/practice/log/entries/${entry.id}`)
       .then((resp: AxiosResponse) => {
-        if (resp.status === 202) {
+        if (resp.status === 200) {
           this.fetchLogEntriesByPage(this.state.pageNum)
         }
       })
@@ -190,6 +197,7 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
   /**
    * This is a callback for child components to call to update a log entry.
+   * It is unnecessary to refresh the page with a HTTP request. I expect frequent update here.
    * @param entry is the entry to submit to API for assignments update.
    */
   handleHTTPUpdateLogAssignments = (entry: LogEntryJSON) => {
@@ -217,6 +225,7 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
   /**
    * This is a callback for child components to call to update a log entry.
+   * It is unnecessary to refresh the page with a HTTP request. I expect frequent update here.
    * @param entry is the entry to submit to API for update.
    */
   handleHTTPUpdateLogEntry = (entry: LogEntryJSON) => {
@@ -322,6 +331,7 @@ export default class PracticeLog extends React.Component<Props, State> {
         <LogLabelManagement
           handleHTTPCreateLogLabel={this.handleHTTPCreateLogLabel}
           handleHTTPUpdateLogLabel={this.handleHTTPUpdateLogLabel}
+          handleHTTPDeleteLogLabel={this.handleHTTPDeleteLogLabel}
           logLabels={this.state.logLabels} />
       </section>
     )

@@ -28,21 +28,20 @@ type Props = {
   logLabels: LogLabelJSON[] 
   handleHTTPCreateLogLabel: (label: LogLabelJSON) => void
   handleHTTPUpdateLogLabel: (label: LogLabelJSON) => void
+  handleHTTPDeleteLogLabel: (label: LogLabelJSON) => void
+}
+
+const defaultState: State = {
+  selectedParentLabel: null,
+  selectedChildLabel: null,
+  inputParentLabelName: "",
+  inputChildLabelName: ""
 }
 
 export default class LabelManagement extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = {
-      selectedParentLabel: null,
-      selectedChildLabel: null,
-      inputParentLabelName: "",
-      inputChildLabelName: ""
-    }
-  }
-
-  componentDidUpdate() {
-
+    this.state = defaultState
   }
 
   newHandlerSelectParentLabel = (label: LogLabelJSON | null) => () => {
@@ -148,41 +147,83 @@ export default class LabelManagement extends React.Component<Props, State> {
     )
   }
 
-  get panelEditLabel() {
-    const handleParentLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-      this.setState({ inputParentLabelName: ev.target.value })
+  handleCreateParentLabel = () => {
+    const newLabel: LogLabelJSON = {
+      id: nilUUID,
+      parent_id: null,
+      children: [],
+      name: this.state.inputParentLabelName
     }
+    this.props.handleHTTPCreateLogLabel(newLabel)
+    // TODO: Use Promise!!!
+    this.setState(defaultState)
+  }
 
-    const handleChildLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-      this.setState({ inputChildLabelName: ev.target.value })
+  handleUpdateParentLabel = () => {
+    if (this.state.selectedParentLabel !== null) {
+      const payload: LogLabelJSON = {
+        id: this.state.selectedParentLabel.id,
+        parent_id: nilUUID,
+        name: this.state.inputParentLabelName,
+        children: [],
+      }
+      this.props.handleHTTPUpdateLogLabel(payload)
+      // TODO: Use Promise!!!
+      this.setState(defaultState)
     }
+  }
 
-    const handleClickAddParentLabel = () => {
+  handleDeleteParentLabel = () => {
+    if (this.state.selectedParentLabel !== null) {
+      this.props.handleHTTPDeleteLogLabel(this.state.selectedParentLabel)
+      this.setState(defaultState)
+    }
+  }
+
+  handleClickCreateChildLabel = () => {
+    if (this.state.selectedParentLabel !== null ) {
       const newLabel: LogLabelJSON = {
         id: nilUUID,
-        parent_id: null,
+        parent_id: this.state.selectedParentLabel.id,
+        name: this.state.inputChildLabelName,
         children: [],
-        name: this.state.inputParentLabelName
       }
       this.props.handleHTTPCreateLogLabel(newLabel)
-      // TODO: Use Promise!
-      this.setState({ inputParentLabelName: "", inputChildLabelName: "" })
+      // TODO: Use Promise!!!
+      this.setState(defaultState)
     }
+  }
 
-    const handleClickAddNewChildLabel = () => {
-      if (this.state.selectedParentLabel !== null ) {
-        const newLabel: LogLabelJSON = {
-          id: nilUUID,
-          parent_id: this.state.selectedParentLabel.id,
-          children: [],
-          name: this.state.inputChildLabelName
-        }
-        this.props.handleHTTPCreateLogLabel(newLabel)
-        // TODO: Use Promise!
-        this.setState({ inputParentLabelName: "", inputChildLabelName: "" })
+  handleUpdateChildLabel = () => {
+    if (this.state.selectedChildLabel !== null) {
+      const payload: LogLabelJSON = {
+        id: this.state.selectedChildLabel.id,
+        parent_id: this.state.selectedChildLabel.parent_id,
+        name: this.state.inputChildLabelName,
+        children: [],
       }
+      this.props.handleHTTPUpdateLogLabel(payload)
+      // TODO: Use Promise!!!
+      this.setState(defaultState)
     }
+  }
 
+  handleDeleteChildLabel = () => {
+    if (this.state.selectedChildLabel !== null) {
+      this.props.handleHTTPDeleteLogLabel(this.state.selectedChildLabel)
+      this.setState(defaultState)
+    }
+  }
+
+  handleParentLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ inputParentLabelName: ev.target.value })
+  }
+
+  handleChildLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ inputChildLabelName: ev.target.value })
+  }
+
+  get panelEditLabel() {
     let gridItems: JSX.Element[]
 
     if (this.state.selectedParentLabel !== null && this.state.selectedChildLabel !== null) {
@@ -195,11 +236,18 @@ export default class LabelManagement extends React.Component<Props, State> {
         </Grid>,
         <Grid item>
           <TextField label="Child Label Name" value={this.state.inputChildLabelName}
-            onChange={handleChildLabelNameChange} fullWidth InputLabelProps={{ shrink: true }} />
+            onChange={this.handleChildLabelNameChange} fullWidth InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="primary">Update</Button>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
+          <Button style={{margin: "0.1rem"}} onClick={this.handleUpdateChildLabel}
+            disabled={this.state.inputChildLabelName === this.state.selectedChildLabel.name}
+            variant="contained" color="primary">
+            Update
+          </Button>
+          <Button style={{margin: "0.1rem"}} onClick={this.handleDeleteChildLabel}
+            variant="contained" color="secondary">
+            Delete
+          </Button>
         </Grid>
       ]
     } else if (this.state.selectedParentLabel !== null && this.state.selectedChildLabel === null) {
@@ -207,30 +255,32 @@ export default class LabelManagement extends React.Component<Props, State> {
       gridItems = [
         <Grid item>
           <Typography variant="subtitle1">
-            Selected Label: {this.state.selectedParentLabel.name}
+            Selected Parent Label: {this.state.selectedParentLabel.name}
           </Typography>
         </Grid>,
         <Grid item>
           <TextField
-            label="Parent Label Name" value={this.state.inputParentLabelName} onChange={handleChildLabelNameChange}
+            label="Parent Label Name" value={this.state.inputParentLabelName} onChange={this.handleParentLabelNameChange}
             fullWidth InputLabelProps={{ shrink: true }} />
           </Grid>,
         <Grid item>
           <TextField
-            label="Child Label Name" value={this.state.inputChildLabelName} onChange={handleChildLabelNameChange}
+            label="Child Label Name" value={this.state.inputChildLabelName} onChange={this.handleChildLabelNameChange}
             fullWidth InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button style={{margin: "0.1rem"}} onClick={handleClickAddNewChildLabel}
+          <Button style={{margin: "0.1rem"}} onClick={this.handleClickCreateChildLabel}
             disabled={this.state.inputChildLabelName.length === 0}
             variant="contained" color="primary">
-              Add Child
+              Create Child
           </Button>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="primary"
-            disabled={this.state.inputChildLabelName.length > 0}>
+          <Button style={{margin: "0.1rem"}} onClick={this.handleUpdateParentLabel}
+            disabled={this.state.inputParentLabelName === this.state.selectedParentLabel.name}
+            variant="contained" color="primary">
               Update
           </Button>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">
+          <Button style={{margin: "0.1rem"}} onClick={this.handleDeleteParentLabel}
+            variant="contained" color="secondary">
             Delete {this.state.selectedParentLabel.name}
           </Button>
         </Grid>
@@ -240,16 +290,16 @@ export default class LabelManagement extends React.Component<Props, State> {
       gridItems = [
         <Grid item>
           <TextField
-            label="Parent Label Name"
+            label="New Label Name"
             value={this.state.inputParentLabelName}
-            onChange={handleParentLabelNameChange}
+            onChange={this.handleParentLabelNameChange}
             fullWidth
             InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button style={{margin: "0.1rem"}} onClick={handleClickAddParentLabel}
+          <Button style={{margin: "0.1rem"}} onClick={this.handleCreateParentLabel}
             variant="contained" color="primary">
-            Add
+            Create
           </Button>
         </Grid>
       ]
