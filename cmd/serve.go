@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/calvinfeng/playground/practice/httpservice"
-	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/calvinfeng/playground/practicelog/httpservice"
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"
@@ -45,8 +45,8 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 	// 	e.Static("/", "./playgroundui/build/")
 	e.GET("/api/v1/progress/recordings/", httphandler.ProgressRecordingListHandler(httphandler.Config{Store: store}))
 	e.GET("/api/v1/summaries/", httphandler.MonthlySummaryListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/v1/practice/recordings/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
-	e.GET("/api/v1/practice/time/", httphandler.PracticeTimeHandler(httphandler.Config{
+	e.GET("/api/v1/practicelog/recordings/", httphandler.PracticeRecordingListHandler(httphandler.Config{Store: store}))
+	e.GET("/api/v1/practicelog/time/", httphandler.PracticeTimeHandler(httphandler.Config{
 		Store:          nil,
 		TrelloAPIKey:   os.Getenv("TRELLO_API_KEY"),
 		TrelloAPIToken: os.Getenv("TRELLO_API_TOKEN"),
@@ -64,19 +64,19 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		srv := httpservice.New(logstore.New(pg))
 
 		// Labels
-		e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
-		e.POST("/api/v2/practice/log/labels/", srv.CreatePracticeLogLabel)
-		e.PUT("/api/v2/practice/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
-		e.DELETE("/api/v2/practice/log/labels/:label_id/", srv.DeletePracticeLogLabel)
+		e.GET("/api/v2/practicelog/log/labels/", srv.ListPracticeLogLabels)
+		e.POST("/api/v2/practicelog/log/labels/", srv.CreatePracticeLogLabel)
+		e.PUT("/api/v2/practicelog/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
+		e.DELETE("/api/v2/practicelog/log/labels/:label_id/", srv.DeletePracticeLogLabel)
 
 		// Entries
-		e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
-		e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
-		e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
-		e.DELETE("/api/v2/practice/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
+		e.GET("/api/v2/practicelog/log/entries/", srv.ListPracticeLogEntries)
+		e.POST("/api/v2/practicelog/log/entries/", srv.CreatePracticeLogEntry)
+		e.PUT("/api/v2/practicelog/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
+		e.DELETE("/api/v2/practicelog/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
 
 		// Assignments
-		e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
+		e.PUT("/api/v2/practicelog/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
 	}
 
 	logrus.Infof("http server is listening on 8080")

@@ -84,7 +84,7 @@ func Execute() {
 		},
 		&cobra.Command{
 			Use:   "time_spent_on",
-			Short: "calculate the total time in minutes spent on a particular practice item",
+			Short: "calculate the total time in minutes spent on a particular practicelog item",
 			RunE:  timeSpentRunE,
 		},
 	)

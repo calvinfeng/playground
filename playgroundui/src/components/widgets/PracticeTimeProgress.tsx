@@ -27,7 +27,7 @@ export default class PracticeTimeProgress extends React.Component<Props, State> 
   }
 
   componentDidMount() {
-    this.http.get('/api/v1/practice/time/').then((resp: AxiosResponse) => {
+    this.http.get('/api/v1/practicelog/time/').then((resp: AxiosResponse) => {
       this.setState({
         hours: resp.data.total_hours,
         minutes: resp.data.total_minutes

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
 	"github.com/futurenda/google-auth-id-token-verifier"
@@ -124,13 +124,13 @@ func testPracticeLogStoreSelect() error {
 	if err != nil {
 		return err
 	}
-	logrus.Infof("database counted %d practice log entries", count)
+	logrus.Infof("database counted %d practicelog log entries", count)
 
 	entries, err := store.SelectLogEntries(100, 0, logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
 	if err != nil {
 		return err
 	}
-	logrus.Infof("query returned %d practice log entries", len(entries))
+	logrus.Infof("query returned %d practicelog log entries", len(entries))
 
 	var dur int32
 	for _, entry := range entries {

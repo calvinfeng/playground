@@ -61,10 +61,10 @@ func seed() error {
 
 	practiceRecordings, err := loadPracticeRecordings(srv)
 	if err != nil {
-		return fmt.Errorf("failed to load practice recordings from YouTube %w", err)
+		return fmt.Errorf("failed to load practicelog recordings from YouTube %w", err)
 	}
 
-	logrus.Infof("inserting %d practice recordings", len(practiceRecordings))
+	logrus.Infof("inserting %d practicelog recordings", len(practiceRecordings))
 	if numInserted, err := store.BatchInsertPracticeRecordings(practiceRecordings...); err != nil {
 		return fmt.Errorf("failed to perform batch insert %w", err)
 	} else {

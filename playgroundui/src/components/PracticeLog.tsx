@@ -62,7 +62,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * This is an internal class helper function to populate log labels as state.
    */
   fetchLogLabels() {
-    this.http.get('/api/v2/practice/log/labels/')
+    this.http.get('/api/v2/practicelog/log/labels/')
       .then((resp: AxiosResponse) => {
         const labels: LogLabelJSON[] = resp.data.results
         const childrenIDByParentID = new Map<string, string[]>()
@@ -93,7 +93,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param page indicates which page to fetch from.
    */
   fetchLogEntriesByPage(page: number) {
-    this.http.get('/api/v2/practice/log/entries/', {
+    this.http.get('/api/v2/practicelog/log/entries/', {
         params: {
           "page": page
         }

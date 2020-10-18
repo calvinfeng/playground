@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/calvinfeng/playground/practice"
-	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
@@ -13,8 +13,8 @@ import (
 
 const boardID = "woq8deqm"
 
-func seedLogLabels(store practice.LogStore) error {
-	defaultParentLogLabels := []*practice.LogLabel{
+func seedLogLabels(store practicelog.Store) error {
+	defaultParentLogLabels := []*practicelog.Label{
 		{Name: "Acoustic"},
 		{Name: "Blues"},
 		{Name: "Finger Mechanics"},
@@ -31,7 +31,7 @@ func seedLogLabels(store practice.LogStore) error {
 
 	logrus.Infof("inserted %d parent log labels", inserted)
 
-	defaultChildLogLabels := []*practice.LogLabel{
+	defaultChildLogLabels := []*practicelog.Label{
 		{Name: "Acoustic Rhythm", ParentID: defaultParentLogLabels[0].ID},
 		{Name: "Spider Walk", ParentID: defaultParentLogLabels[2].ID},
 		{Name: "Trills", ParentID: defaultParentLogLabels[2].ID},
@@ -57,8 +57,8 @@ func seedLogLabels(store practice.LogStore) error {
 	return nil
 }
 
-func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
-	logLabelsByName := make(map[string]*practice.LogLabel)
+func seedLogEntries(api trelloapi.Service, store practicelog.Store) error {
+	logLabelsByName := make(map[string]*practicelog.Label)
 
 	logLabels, err := store.SelectLogLabels()
 	if err != nil {
@@ -94,16 +94,16 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 		return err
 	}
 
-	entries := make([]*practice.LogEntry, 0, len(trelloCards))
+	entries := make([]*practicelog.Entry, 0, len(trelloCards))
 	for _, card := range trelloCards {
 		if card.IsTemplate {
 			continue
 		}
 
-		entry := new(practice.LogEntry)
+		entry := new(practicelog.Entry)
 		entry.Message = card.Name
 		entry.Details = card.Description
-		entry.Labels = make([]*practice.LogLabel, 0)
+		entry.Labels = make([]*practicelog.Label, 0)
 		entry.UserID = "calvin.j.feng@gmail.com"
 		for _, labelID := range card.LabelIDs {
 			label, ok := trelloLabelsByID[labelID]
@@ -132,7 +132,7 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 		}
 
 		var position int
-		entry.Assignments = make([]*practice.LogAssignment, 0)
+		entry.Assignments = make([]*practicelog.Assignment, 0)
 		for _, listID := range card.ChecklistIDs {
 			checklist, ok := trelloChecklistsByID[listID]
 			if !ok {
@@ -140,7 +140,7 @@ func seedLogEntries(api trelloapi.Service, store practice.LogStore) error {
 			}
 
 			for _, item := range checklist.Items {
-				entry.Assignments = append(entry.Assignments, &practice.LogAssignment{
+				entry.Assignments = append(entry.Assignments, &practicelog.Assignment{
 					Position:  position,
 					Name:      item.Name,
 					Completed: item.State == "complete",

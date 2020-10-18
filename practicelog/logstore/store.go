@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Masterminds/squirrel"
-	"github.com/calvinfeng/playground/practice"
+	"github.com/calvinfeng/playground/practicelog"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-func New(db *sqlx.DB) practice.LogStore {
+func New(db *sqlx.DB) practicelog.Store {
 	return &store{db: db}
 }
 
@@ -18,7 +18,7 @@ type store struct {
 	db *sqlx.DB
 }
 
-func (s *store) DeleteLogLabel(label *practice.LogLabel) error {
+func (s *store) DeleteLogLabel(label *practicelog.Label) error {
 	row := new(DBPracticeLogLabel).fromModel(label)
 	deleteLabelQ := squirrel.Delete(PracticeLogLabelTable).Where(squirrel.Eq{"id": row.ID.String()})
 	deleteAssocQ := squirrel.Delete(AssociationPracticeLogEntryLabelTable).
@@ -66,7 +66,7 @@ func (s *store) DeleteLogLabel(label *practice.LogLabel) error {
 	return nil
 }
 
-func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
+func (s *store) DeleteLogEntry(entry *practicelog.Entry) error {
 	row := new(DBPracticeLogEntry).fromModel(entry)
 
 	deleteEntryQ := squirrel.Delete(PracticeLogEntryTable).Where(squirrel.Eq{"id": row.ID.String()})
@@ -115,7 +115,7 @@ func (s *store) DeleteLogEntry(entry *practice.LogEntry) error {
 	return nil
 }
 
-func (s *store) UpdateLogLabel(label *practice.LogLabel) error {
+func (s *store) UpdateLogLabel(label *practicelog.Label) error {
 	newRow := new(DBPracticeLogLabel).fromModel(label)
 
 	updateQ := squirrel.Update(PracticeLogLabelTable).
@@ -145,7 +145,7 @@ func (s *store) UpdateLogLabel(label *practice.LogLabel) error {
 	return nil
 }
 
-func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
+func (s *store) CountLogEntries(filters ...practicelog.SQLFilter) (int, error) {
 	eqCondition := make(squirrel.Eq)
 	for _, f := range filters {
 		f(eqCondition)
@@ -174,7 +174,7 @@ func (s *store) CountLogEntries(filters ...practice.SQLFilter) (int, error) {
 	return count[0], nil
 }
 
-func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFilter) ([]*practice.LogEntry, error) {
+func (s *store) SelectLogEntries(limit, offset uint64, filters ...practicelog.SQLFilter) ([]*practicelog.Entry, error) {
 	eqCondition := make(squirrel.Eq)
 	for _, f := range filters {
 		f(eqCondition)
@@ -210,7 +210,7 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 		return nil, err
 	}
 
-	entries := make([]*practice.LogEntry, 0)
+	entries := make([]*practicelog.Entry, 0)
 	for _, row := range rows {
 		entries = append(entries, row.toModel())
 	}
@@ -240,12 +240,12 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 		return nil, err
 	}
 
-	entryToLabels := make(map[uuid.UUID]map[uuid.UUID]*practice.LogLabel)
+	entryToLabels := make(map[uuid.UUID]map[uuid.UUID]*practicelog.Label)
 	for _, lbl := range labelRows {
 		if _, ok := entryToLabels[lbl.EntryID]; !ok {
-			entryToLabels[lbl.EntryID] = make(map[uuid.UUID]*practice.LogLabel)
+			entryToLabels[lbl.EntryID] = make(map[uuid.UUID]*practicelog.Label)
 		}
-		entryToLabels[lbl.EntryID][lbl.ID] = &practice.LogLabel{
+		entryToLabels[lbl.EntryID][lbl.ID] = &practicelog.Label{
 			ID:       lbl.ID,
 			ParentID: lbl.ParentID,
 			Name:     lbl.Name,
@@ -258,7 +258,7 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 			continue
 		}
 
-		entry.Labels = make([]*practice.LogLabel, 0, len(labels))
+		entry.Labels = make([]*practicelog.Label, 0, len(labels))
 		for _, label := range labels {
 			entry.Labels = append(entry.Labels, label)
 		}
@@ -267,7 +267,7 @@ func (s *store) SelectLogEntries(limit, offset uint64, filters ...practice.SQLFi
 	return entries, nil
 }
 
-func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
+func (s *store) SelectLogLabels() ([]*practicelog.Label, error) {
 	query := squirrel.Select("*").From(PracticeLogLabelTable)
 
 	statement, args, err := query.PlaceholderFormat(squirrel.Dollar).ToSql()
@@ -280,7 +280,7 @@ func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 		return nil, err
 	}
 
-	labels := make([]*practice.LogLabel, 0)
+	labels := make([]*practicelog.Label, 0)
 	for _, row := range rows {
 		labels = append(labels, row.toModel())
 	}
@@ -288,7 +288,7 @@ func (s *store) SelectLogLabels() ([]*practice.LogLabel, error) {
 	return labels, nil
 }
 
-func (s *store) UpdateLogEntry(entry *practice.LogEntry) error {
+func (s *store) UpdateLogEntry(entry *practicelog.Entry) error {
 	newRow := new(DBPracticeLogEntry).fromModel(entry)
 
 	updateQ := squirrel.Update(PracticeLogEntryTable).
@@ -363,7 +363,7 @@ func (s *store) UpdateLogEntry(entry *practice.LogEntry) error {
 	return nil
 }
 
-func (s *store) UpdateLogAssignments(entry *practice.LogEntry) error {
+func (s *store) UpdateLogAssignments(entry *practicelog.Entry) error {
 	newRow := new(DBPracticeLogEntry).fromModel(entry)
 
 	updateQ := squirrel.Update(PracticeLogEntryTable).
@@ -388,7 +388,7 @@ func (s *store) UpdateLogAssignments(entry *practice.LogEntry) error {
 	return nil
 }
 
-func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error) {
+func (s *store) BatchInsertLogLabels(labels ...*practicelog.Label) (int64, error) {
 	query := squirrel.Insert(PracticeLogLabelTable).
 		Columns("id", "parent_id", "name")
 
@@ -414,7 +414,7 @@ func (s *store) BatchInsertLogLabels(labels ...*practice.LogLabel) (int64, error
 	return res.RowsAffected()
 }
 
-func (s *store) BatchInsertLogEntries(entries ...*practice.LogEntry) (int64, error) {
+func (s *store) BatchInsertLogEntries(entries ...*practicelog.Entry) (int64, error) {
 	entryInsertQ := squirrel.Insert(PracticeLogEntryTable).
 		Columns("id", "user_id", "date", "duration", "message", "details", "assignments")
 

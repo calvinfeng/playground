@@ -1,7 +1,7 @@
 package logstore
 
 import (
-	"github.com/calvinfeng/playground/practice"
+	"github.com/calvinfeng/playground/practicelog"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -10,14 +10,14 @@ import (
 )
 
 func TestLogEntryConversion(t *testing.T) {
-	entry := &practice.LogEntry{
+	entry := &practicelog.Entry{
 		ID:       uuid.New(),
 		UserID:   "calvin.j.feng@gmail.com",
 		Date:     time.Now(),
 		Duration: 90,
 		Title:    "Example",
 		Note:     "Example 1234",
-		Assignments: []*practice.LogAssignment{
+		Assignments: []*practicelog.Assignment{
 			{
 				Position:  0,
 				Name:      "Do A",

@@ -2,7 +2,7 @@ package logstore
 
 import (
 	"encoding/json"
-	"github.com/calvinfeng/playground/practice"
+	"github.com/calvinfeng/playground/practicelog"
 	"github.com/google/uuid"
 	"time"
 )
@@ -21,7 +21,7 @@ type DBPracticeLogEntry struct {
 	Assignments json.RawMessage `db:"assignments"`
 }
 
-func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLogEntry {
+func (row *DBPracticeLogEntry) fromModel(model *practicelog.Entry) *DBPracticeLogEntry {
 	row.ID = model.ID
 	row.UserID = model.UserID
 	row.Date = model.Date
@@ -32,8 +32,8 @@ func (row *DBPracticeLogEntry) fromModel(model *practice.LogEntry) *DBPracticeLo
 	return row
 }
 
-func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
-	model := &practice.LogEntry{
+func (row *DBPracticeLogEntry) toModel() *practicelog.Entry {
+	model := &practicelog.Entry{
 		ID:          row.ID,
 		UserID:      row.UserID,
 		Date:        row.Date,
@@ -41,7 +41,7 @@ func (row *DBPracticeLogEntry) toModel() *practice.LogEntry {
 		Message:     row.Message,
 		Details:     row.Details,
 		Labels:      nil,
-		Assignments: make([]*practice.LogAssignment, 0),
+		Assignments: make([]*practicelog.Assignment, 0),
 	}
 	_ = json.Unmarshal(row.Assignments, &model.Assignments)
 	return model
@@ -60,15 +60,15 @@ type DBReadOnlyPracticeLogLabel struct {
 	EntryID  uuid.UUID `db:"entry_id"`
 }
 
-func (row *DBPracticeLogLabel) fromModel(model *practice.LogLabel) *DBPracticeLogLabel {
+func (row *DBPracticeLogLabel) fromModel(model *practicelog.Label) *DBPracticeLogLabel {
 	row.ID = model.ID
 	row.ParentID = model.ParentID
 	row.Name = model.Name
 	return row
 }
 
-func (row *DBPracticeLogLabel) toModel() *practice.LogLabel {
-	model := &practice.LogLabel{
+func (row *DBPracticeLogLabel) toModel() *practicelog.Label {
+	model := &practicelog.Label{
 		ID:       row.ID,
 		ParentID: row.ParentID,
 		Name:     row.Name,

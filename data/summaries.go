@@ -31,7 +31,7 @@ var Summaries = []*datastore.MonthlySummary{
 		Title:    "Christmas",
 		Subtitle: "Holiday Slacking Off",
 		Body: `Well, I received a Les Paul for my birthday! I've been working on Blues lesson from Justin Guitar and
-		general music theory. I continued with my regular practice routines, i.e. scales, barre chords, improvisation,
+		general music theory. I continued with my regular practicelog routines, i.e. scales, barre chords, improvisation,
 		and chord changes.`,
 	},
 	{
@@ -107,7 +107,7 @@ var Summaries = []*datastore.MonthlySummary{
 		Title:    "The Final Countdown Part 2",
 		Subtitle: "Consistent and Persistent",
 		Body: `One month was simply not enough for me to develop the finger strength and dexterity for this song. I am
-		continuing my practice, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
+		continuing my practicelog, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
         Honestly, it's been getting quite repetitive. But I am definitely not giving up. If time is what it takes, so be
 		it.`,
 	},

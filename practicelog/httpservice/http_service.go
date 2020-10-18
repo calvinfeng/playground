@@ -2,8 +2,8 @@ package httpservice
 
 import (
 	"fmt"
-	"github.com/calvinfeng/playground/practice"
-	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func New(store practice.LogStore) practice.HTTPService {
+func New(store practicelog.Store) practicelog.HTTPService {
 	return &service{
 		store:    store,
 		validate: validator.New(),
@@ -19,7 +19,7 @@ func New(store practice.LogStore) practice.HTTPService {
 }
 
 type service struct {
-	store    practice.LogStore
+	store    practicelog.Store
 	validate *validator.Validate
 }
 
@@ -30,7 +30,7 @@ func (s *service) DeletePracticeLogLabel(c echo.Context) error {
 			errors.Wrap(err, "log label id in path parameter is not a valid uuid ").Error())
 	}
 
-	if err := s.store.DeleteLogLabel(&practice.LogLabel{
+	if err := s.store.DeleteLogLabel(&practicelog.Label{
 		ID: id,
 	}); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
@@ -47,7 +47,7 @@ func (s *service) DeletePracticeLogEntry(c echo.Context) error {
 			errors.Wrap(err, "log label id in path parameter is not a valid uuid ").Error())
 	}
 
-	if err := s.store.DeleteLogEntry(&practice.LogEntry{
+	if err := s.store.DeleteLogEntry(&practicelog.Entry{
 		ID: id,
 	}); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
@@ -58,7 +58,7 @@ func (s *service) DeletePracticeLogEntry(c echo.Context) error {
 }
 
 func (s *service) CreatePracticeLogLabel(c echo.Context) error {
-	label := new(practice.LogLabel)
+	label := new(practicelog.Label)
 	if err := c.Bind(label); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			errors.Wrap(err, "failed to parse JSON data").Error())
@@ -84,7 +84,7 @@ func (s *service) CreatePracticeLogLabel(c echo.Context) error {
 }
 
 func (s *service) UpdatePracticeLogLabel(c echo.Context) error {
-	label := new(practice.LogLabel)
+	label := new(practicelog.Label)
 	if err := c.Bind(label); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			errors.Wrap(err, "failed to parse JSON data").Error())
@@ -120,7 +120,7 @@ func (s *service) UpdatePracticeLogLabel(c echo.Context) error {
 }
 
 func (s *service) CreatePracticeLogEntry(c echo.Context) error {
-	entry := new(practice.LogEntry)
+	entry := new(practicelog.Entry)
 	if err := c.Bind(entry); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			errors.Wrap(err, "failed to parse JSON data").Error())
@@ -146,7 +146,7 @@ func (s *service) CreatePracticeLogEntry(c echo.Context) error {
 }
 
 func (s *service) UpdatePracticeLogEntry(c echo.Context) error {
-	entry := new(practice.LogEntry)
+	entry := new(practicelog.Entry)
 	if err := c.Bind(entry); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			errors.Wrap(err, "failed to parse JSON data").Error())
@@ -189,7 +189,7 @@ func (s *service) UpdatePracticeLogEntry(c echo.Context) error {
 }
 
 func (s *service) UpdatePracticeLogAssignments(c echo.Context) error {
-	entry := new(practice.LogEntry)
+	entry := new(practicelog.Entry)
 	if err := c.Bind(entry); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			errors.Wrap(err, "failed to parse JSON data").Error())

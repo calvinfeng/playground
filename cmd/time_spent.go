@@ -3,8 +3,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/calvinfeng/playground/practice"
-	"github.com/calvinfeng/playground/practice/logstore"
+	"github.com/calvinfeng/playground/practicelog"
+	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -27,7 +27,7 @@ func timeSpentRunE(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	labelByName := make(map[string]*practice.LogLabel)
+	labelByName := make(map[string]*practicelog.Label)
 	for _, label := range labels {
 		labelByName[label.Name] = label
 	}
@@ -46,7 +46,7 @@ func timeSpentRunE(_ *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	logrus.Infof("query returned %d practice log entries", len(entries))
+	logrus.Infof("query returned %d practicelog log entries", len(entries))
 
 	var dur int32
 	for _, entry := range entries {
@@ -54,7 +54,7 @@ func timeSpentRunE(_ *cobra.Command, args []string) error {
 		logrus.Infof("entry %s %04d-%02d-%02d %s", entry.ID, year, month, day, entry.Message)
 		dur += entry.Duration
 	}
-	logrus.Infof("total practice time %d hours and %d minutes", dur/60, dur%60)
+	logrus.Infof("total practicelog time %d hours and %d minutes", dur/60, dur%60)
 
 	return nil
 }

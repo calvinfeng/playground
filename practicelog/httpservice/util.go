@@ -1,13 +1,13 @@
 package httpservice
 
 import (
-	"github.com/calvinfeng/playground/practice"
+	"github.com/calvinfeng/playground/practicelog"
 	"github.com/labstack/echo/v4"
 	"strconv"
 )
 
-func buildFiltersFromContext(c echo.Context) []practice.SQLFilter {
-	filters := make([]practice.SQLFilter, 0)
+func buildFiltersFromContext(c echo.Context) []practicelog.SQLFilter {
+	filters := make([]practicelog.SQLFilter, 0)
 
 	// TODO: Implement filters
 	if c.QueryParam("label_id") != "" {
