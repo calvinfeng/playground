@@ -62,7 +62,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * This is an internal class helper function to populate log labels as state.
    */
   fetchLogLabels() {
-    this.http.get('/api/v2/practicelog/log/labels/')
+    this.http.get('/api/v2/practice/log/labels')
       .then((resp: AxiosResponse) => {
         const labels: LogLabelJSON[] = resp.data.results
         const childrenIDByParentID = new Map<string, string[]>()
@@ -93,7 +93,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param page indicates which page to fetch from.
    */
   fetchLogEntriesByPage(page: number) {
-    this.http.get('/api/v2/practicelog/log/entries/', {
+    this.http.get('/api/v2/practice/log/entries', {
         params: {
           "page": page
         }
@@ -125,7 +125,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param label is the log label to submit to API for create. 
    */
   handleHTTPCreateLogLabel = (label: LogLabelJSON) => {
-    this.http.post(`/api/v2/practice/log/labels/`, label)
+    this.http.post(`/api/v2/practice/log/labels`, label)
     .then((resp: AxiosResponse) => {
       if (resp.status === 201) {
         this.fetchLogLabels()
@@ -140,7 +140,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param label is the log label to submit to API for update. 
    */
   handleHTTPUpdateLogLabel = (label: LogLabelJSON) => {
-    this.http.put(`/api/v2/practice/log/labels/${label.id}/`, label)
+    this.http.put(`/api/v2/practice/log/labels/${label.id}`, label)
     .then((resp: AxiosResponse) => {
       const updatedLabel: LogLabelJSON = resp.data
       const labels = this.state.logLabels
@@ -163,7 +163,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param entry is the entry to submit to API for create.
    */
   handleHTTPDeleteLogEntry = (entry: LogEntryJSON) => {
-    this.http.delete(`/api/v2/practice/log/entries/${entry.id}/`)
+    this.http.delete(`/api/v2/practice/log/entries/${entry.id}`)
       .then((resp: AxiosResponse) => {
         if (resp.status === 202) {
           this.fetchLogEntriesByPage(this.state.pageNum)
@@ -178,7 +178,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param entry is the entry to submit to API For create.
    */
   handleHTTPCreateLogEntry = (entry: LogEntryJSON) => {
-    this.http.post(`/api/v2/practice/log/entries/`, entry)
+    this.http.post(`/api/v2/practice/log/entries`, entry)
       .then((resp: AxiosResponse) => {
         if (resp.status === 201) {
           this.fetchLogEntriesByPage(this.state.pageNum)
@@ -193,7 +193,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param entry is the entry to submit to API for assignments update.
    */
   handleHTTPUpdateLogAssignments = (entry: LogEntryJSON) => {
-    this.http.put(`/api/v2/practice/log/entries/${entry.id}/assignments/`, entry)
+    this.http.put(`/api/v2/practice/log/entries/${entry.id}/assignments`, entry)
       .then((resp: AxiosResponse) => {
         const updatedEntry: LogEntryJSON = resp.data
         const entries = this.state.logEntries
@@ -220,7 +220,7 @@ export default class PracticeLog extends React.Component<Props, State> {
    * @param entry is the entry to submit to API for update.
    */
   handleHTTPUpdateLogEntry = (entry: LogEntryJSON) => {
-    this.http.put(`/api/v2/practice/log/entries/${entry.id}/`, entry)
+    this.http.put(`/api/v2/practice/log/entries/${entry.id}`, entry)
       .then((resp: AxiosResponse) => {
         const updatedEntry: LogEntryJSON = resp.data
         const entries = this.state.logEntries

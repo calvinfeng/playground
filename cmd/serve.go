@@ -64,19 +64,19 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		srv := httpservice.New(logstore.New(pg))
 
 		// Labels
-		e.GET("/api/v2/practice/log/labels/", srv.ListPracticeLogLabels)
-		e.POST("/api/v2/practice/log/labels/", srv.CreatePracticeLogLabel)
-		e.PUT("/api/v2/practice/log/labels/:label_id/", srv.UpdatePracticeLogLabel)
-		e.DELETE("/api/v2/practice/log/labels/:label_id/", srv.DeletePracticeLogLabel)
+		e.GET("/api/v2/practice/log/labels", srv.ListPracticeLogLabels)
+		e.POST("/api/v2/practice/log/labels", srv.CreatePracticeLogLabel)
+		e.PUT("/api/v2/practice/log/labels/:label_id", srv.UpdatePracticeLogLabel)
+		e.DELETE("/api/v2/practice/log/labels/:label_id", srv.DeletePracticeLogLabel)
 
 		// Entries
-		e.GET("/api/v2/practice/log/entries/", srv.ListPracticeLogEntries)
-		e.POST("/api/v2/practice/log/entries/", srv.CreatePracticeLogEntry)
-		e.PUT("/api/v2/practice/log/entries/:entry_id/", srv.UpdatePracticeLogEntry)
-		e.DELETE("/api/v2/practice/log/entries/:entry_id/", srv.DeletePracticeLogEntry)
+		e.GET("/api/v2/practice/log/entries", srv.ListPracticeLogEntries)
+		e.POST("/api/v2/practice/log/entries", srv.CreatePracticeLogEntry)
+		e.PUT("/api/v2/practice/log/entries/:entry_id", srv.UpdatePracticeLogEntry)
+		e.DELETE("/api/v2/practice/log/entries/:entry_id", srv.DeletePracticeLogEntry)
 
 		// Assignments
-		e.PUT("/api/v2/practice/log/entries/:entry_id/assignments/", srv.UpdatePracticeLogAssignments)
+		e.PUT("/api/v2/practice/log/entries/:entry_id/assignments", srv.UpdatePracticeLogAssignments)
 	}
 
 	logrus.Infof("http server is listening on 8080")

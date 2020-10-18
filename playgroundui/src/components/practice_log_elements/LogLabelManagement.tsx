@@ -15,13 +15,13 @@ import {
 } from '@material-ui/icons'
 import DoneIcon from '@material-ui/icons/Done'
 
-
 const nilUUID = '00000000-0000-0000-0000-000000000000'
 
 type State = {
-  selectedLabel: LogLabelJSON | null
-  selectedSubLabel: LogLabelJSON | null
-  inputFieldLabelName: string
+  selectedParentLabel: LogLabelJSON | null
+  selectedChildLabel: LogLabelJSON | null
+  inputParentLabelName: string
+  inputChildLabelName: string
 }
 
 type Props = {
@@ -34,18 +34,43 @@ export default class LabelManagement extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      selectedLabel: null,
-      selectedSubLabel: null,
-      inputFieldLabelName: ""
+      selectedParentLabel: null,
+      selectedChildLabel: null,
+      inputParentLabelName: "",
+      inputChildLabelName: ""
     }
   }
 
-  newHandlerSelectLabel = (label: LogLabelJSON | null) => () => {
-    this.setState({ selectedLabel: label })
+  componentDidUpdate() {
+
   }
 
-  newHandlerSelectSubLabel = (label: LogLabelJSON | null) => () => {
-    this.setState({ selectedSubLabel: label })
+  newHandlerSelectParentLabel = (label: LogLabelJSON | null) => () => {
+    if (label === null) {
+      this.setState({
+        inputParentLabelName: "",
+        selectedParentLabel: null
+      })
+    } else {
+      this.setState({
+        inputParentLabelName: label.name,
+        selectedParentLabel: label
+      })
+    }
+  }
+
+  newHandlerSelectChildLabel = (label: LogLabelJSON | null) => () => {
+    if (label === null) {
+      this.setState({
+        inputChildLabelName: "",
+        selectedChildLabel: null
+      })
+    } else {
+      this.setState({
+        inputChildLabelName: label.name,
+        selectedChildLabel: label
+      })
+    }
   }
 
   get panelParentLabels() {
@@ -53,10 +78,10 @@ export default class LabelManagement extends React.Component<Props, State> {
       return label.parent_id === nilUUID
     }).map((label: LogLabelJSON) => {
       let style = { margin: "0.1rem" }
-      let handler = this.newHandlerSelectLabel(label)
-      if (this.state.selectedLabel !== null && this.state.selectedLabel.id === label.id) {
+      let handler = this.newHandlerSelectParentLabel(label)
+      if (this.state.selectedParentLabel !== null && this.state.selectedParentLabel.id === label.id) {
         style["background"] = "green"
-        handler = this.newHandlerSelectLabel(null)
+        handler = this.newHandlerSelectParentLabel(null)
       }
       return (
         <Grid item>
@@ -84,18 +109,18 @@ export default class LabelManagement extends React.Component<Props, State> {
 
   get panelChildLabels() {
     const items: JSX.Element[] = this.props.logLabels.filter((label: LogLabelJSON) => {
-      if (this.state.selectedLabel === null) {
+      if (this.state.selectedParentLabel === null) {
         return false
       }
-      return label.parent_id === this.state.selectedLabel.id
+      return label.parent_id === this.state.selectedParentLabel.id
     }).map((label: LogLabelJSON) => {      
       let style = { margin: "0.1rem" }
-      let handler = this.newHandlerSelectSubLabel(label)
-      if (this.state.selectedLabel !== null && 
-        this.state.selectedSubLabel !== null &&
-        this.state.selectedSubLabel.id === label.id) {
+      let handler = this.newHandlerSelectChildLabel(label)
+      if (this.state.selectedParentLabel !== null && 
+        this.state.selectedChildLabel !== null &&
+        this.state.selectedChildLabel.id === label.id) {
         style["background"] = "green"
-        handler = this.newHandlerSelectSubLabel(null)
+        handler = this.newHandlerSelectChildLabel(null)
       }
 
       return (
@@ -124,93 +149,112 @@ export default class LabelManagement extends React.Component<Props, State> {
   }
 
   get panelEditLabel() {
-    const handleLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-      this.setState({ inputFieldLabelName: ev.target.value })
+    const handleParentLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({ inputParentLabelName: ev.target.value })
     }
 
-    const handleClickAddNewLabel = () => {
+    const handleChildLabelNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({ inputChildLabelName: ev.target.value })
+    }
+
+    const handleClickAddParentLabel = () => {
       const newLabel: LogLabelJSON = {
         id: nilUUID,
         parent_id: null,
         children: [],
-        name: this.state.inputFieldLabelName
+        name: this.state.inputParentLabelName
       }
       this.props.handleHTTPCreateLogLabel(newLabel)
-      this.setState({ inputFieldLabelName: "" })
+      // TODO: Use Promise!
+      this.setState({ inputParentLabelName: "", inputChildLabelName: "" })
     }
 
     const handleClickAddNewChildLabel = () => {
-      if (this.state.selectedLabel !== null ) {
+      if (this.state.selectedParentLabel !== null ) {
         const newLabel: LogLabelJSON = {
           id: nilUUID,
-          parent_id: this.state.selectedLabel.id,
+          parent_id: this.state.selectedParentLabel.id,
           children: [],
-          name: this.state.inputFieldLabelName
+          name: this.state.inputChildLabelName
         }
         this.props.handleHTTPCreateLogLabel(newLabel)
-        this.setState({ inputFieldLabelName: "" })
+        // TODO: Use Promise!
+        this.setState({ inputParentLabelName: "", inputChildLabelName: "" })
       }
     }
 
     let gridItems: JSX.Element[]
-    // 3 possible cases:
-    //   - parent & child selected
-    //   - parent selected
-    //   - none selected
-    // TODO: I don't think I should support delete
-    if (this.state.selectedLabel !== null && this.state.selectedSubLabel !== null) {
-      gridItems = [
-        <Grid item>
-        <Typography variant="subtitle1">
-          Selected Sub Label: {this.state.selectedSubLabel.name}
-        </Typography>
-        </Grid>,
-        <Grid item>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
-        </Grid>
-      ]
-    } else if (this.state.selectedLabel !== null && this.state.selectedSubLabel === null) {
+
+    if (this.state.selectedParentLabel !== null && this.state.selectedChildLabel !== null) {
+      // Parent & child are selected
       gridItems = [
         <Grid item>
           <Typography variant="subtitle1">
-            Selected Label: {this.state.selectedLabel.name}
+            Selected Child Label: {this.state.selectedChildLabel.name}
+          </Typography>
+        </Grid>,
+        <Grid item>
+          <TextField label="Child Label Name" value={this.state.inputChildLabelName}
+            onChange={handleChildLabelNameChange} fullWidth InputLabelProps={{ shrink: true }} />
+        </Grid>,
+        <Grid item>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="primary">Update</Button>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
+        </Grid>
+      ]
+    } else if (this.state.selectedParentLabel !== null && this.state.selectedChildLabel === null) {
+      // Parent is selected
+      gridItems = [
+        <Grid item>
+          <Typography variant="subtitle1">
+            Selected Label: {this.state.selectedParentLabel.name}
           </Typography>
         </Grid>,
         <Grid item>
           <TextField
-            label="New Sub Label Name"
-            value={this.state.inputFieldLabelName}
-            onChange={handleLabelNameChange}
-            fullWidth
-            InputLabelProps={{ shrink: true }} />
+            label="Parent Label Name" value={this.state.inputParentLabelName} onChange={handleChildLabelNameChange}
+            fullWidth InputLabelProps={{ shrink: true }} />
+          </Grid>,
+        <Grid item>
+          <TextField
+            label="Child Label Name" value={this.state.inputChildLabelName} onChange={handleChildLabelNameChange}
+            fullWidth InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button
-            style={{margin: "0.1rem"}}
-            onClick={handleClickAddNewChildLabel}
-            variant="contained"
-            color="primary">Add Child</Button>
-          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">Delete</Button>
+          <Button style={{margin: "0.1rem"}} onClick={handleClickAddNewChildLabel}
+            disabled={this.state.inputChildLabelName.length === 0}
+            variant="contained" color="primary">
+              Add Child
+          </Button>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="primary"
+            disabled={this.state.inputChildLabelName.length > 0}>
+              Update
+          </Button>
+          <Button style={{margin: "0.1rem"}} variant="contained" color="secondary">
+            Delete {this.state.selectedParentLabel.name}
+          </Button>
         </Grid>
       ]
     } else {
+      // None is selected
       gridItems = [
         <Grid item>
           <TextField
-            label="New Label Name"
-            value={this.state.inputFieldLabelName}
-            onChange={handleLabelNameChange}
+            label="Parent Label Name"
+            value={this.state.inputParentLabelName}
+            onChange={handleParentLabelNameChange}
             fullWidth
             InputLabelProps={{ shrink: true }} />
         </Grid>,
         <Grid item>
-          <Button
-            style={{margin: "0.1rem"}}
-            onClick={handleClickAddNewLabel}
-            variant="contained" color="primary">Add</Button>
+          <Button style={{margin: "0.1rem"}} onClick={handleClickAddParentLabel}
+            variant="contained" color="primary">
+            Add
+          </Button>
         </Grid>
       ]
     }
+
     return (
       <Grid
         style={{ width: "30%", margin: "0.5rem" }}
@@ -223,6 +267,7 @@ export default class LabelManagement extends React.Component<Props, State> {
       </Grid>
     )
   }
+
   render() {
     return (
       <Paper className="LabelManagement">
