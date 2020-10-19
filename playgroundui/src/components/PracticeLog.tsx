@@ -8,7 +8,9 @@ import {
   Typography,
   Grid,
   Button,
+  Snackbar,
 } from '@material-ui/core'
+import MuiAlert, { AlertProps, Color } from '@material-ui/lab/Alert';
 import LogTable from './practice_log_elements/LogTable'
 import LogEntryManagement from './practice_log_elements/LogEntryManagement'
 import LogLabelManagement from './practice_log_elements/LogLabelManagement'
@@ -25,6 +27,9 @@ type State = {
   pageNum: number
   hasNextPage: boolean
   popoverAnchor: HTMLButtonElement | null
+  alertShown: boolean
+  alertMessage: string
+  alertSeverity: Color
 }
 
 export default class PracticeLog extends React.Component<Props, State> {
@@ -38,7 +43,10 @@ export default class PracticeLog extends React.Component<Props, State> {
       viewLogEntry: null,
       pageNum: 1,
       hasNextPage: false,
-      popoverAnchor: null
+      popoverAnchor: null,
+      alertShown: false,
+      alertMessage: "",
+      alertSeverity: "info"
     }
     this.http = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
@@ -87,6 +95,13 @@ export default class PracticeLog extends React.Component<Props, State> {
           logLabels: labels
         })
       })
+      .catch((reason: any) => {
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to list log labels due to ${reason}`,
+          alertSeverity: "error"
+        })
+      })
   }
   /**
    * This is an internal class helper function to populate log entries as state.
@@ -119,6 +134,13 @@ export default class PracticeLog extends React.Component<Props, State> {
           hasNextPage: resp.data.more
         })
       })
+      .catch((reason: any) => {
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to list log entries due to ${reason}`,
+          alertSeverity: "error"
+        })
+      })
   }
   /**
    * This is a callback for child components to call to create a log label.
@@ -129,12 +151,21 @@ export default class PracticeLog extends React.Component<Props, State> {
     .then((resp: AxiosResponse) => {
       if (resp.status === 201) {
         this.fetchLogLabels()
+        this.setState({
+          alertShown: true,
+          alertMessage: `Successfully created log label ${label.name}`,
+          alertSeverity: "success"
+        })
       }
     })
     .catch((reason: any) => {
-      console.error(reason)
+      this.setState({
+        alertShown: true,
+        alertMessage: `Failed to create log label ${label.name} due to ${reason}`,
+        alertSeverity: "error"
+      })
     })
-  }
+  }  
   /**
    * This is a callback for child components to call to update a log label.
    * @param label is the log label to submit to API for update. 
@@ -145,10 +176,21 @@ export default class PracticeLog extends React.Component<Props, State> {
       if (resp.status === 200) {
         this.fetchLogLabels()
         this.fetchLogEntriesByPage(this.state.pageNum)
+        this.setState({
+          alertShown: true,
+          alertMessage: `Successfully updated log label ${label.name}`,
+          alertSeverity: "success"
+        })
       }
     })
+    .catch((reason: any) => {
+      this.setState({
+        alertShown: true,
+        alertMessage: `Failed to update log label ${label.name} due to ${reason}`,
+        alertSeverity: "error"
+      })
+    })
   }
-
   /**
    * This is a callback for child components to call to delete a log label.
    * @param label is the log label to submit to API for delete.
@@ -159,10 +201,19 @@ export default class PracticeLog extends React.Component<Props, State> {
       if (resp.status === 200) {
         this.fetchLogLabels()
         this.fetchLogEntriesByPage(this.state.pageNum)
+        this.setState({
+          alertShown: true,
+          alertMessage: `Successfully deleted log label ${label.name}`,
+          alertSeverity: "success"
+        })
       }
     })
     .catch((reason: any) => {
-      console.error(reason)
+      this.setState({
+        alertShown: true,
+        alertMessage: `Failed to delete log label ${label.name} due to ${reason}`,
+        alertSeverity: "error"
+      })
     })
   }
   /**
@@ -174,10 +225,19 @@ export default class PracticeLog extends React.Component<Props, State> {
       .then((resp: AxiosResponse) => {
         if (resp.status === 200) {
           this.fetchLogEntriesByPage(this.state.pageNum)
+          this.setState({
+            alertShown: true,
+            alertMessage: `Successfully deleted log entry ${entry.id}`,
+            alertSeverity: "success"
+          })
         }
       })
       .catch((reason: any) => {
-        console.error(reason)
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to delete log entry ${entry.id} due to ${reason}`,
+          alertSeverity: "error"
+        })
       })
   }
   /**
@@ -189,10 +249,19 @@ export default class PracticeLog extends React.Component<Props, State> {
       .then((resp: AxiosResponse) => {
         if (resp.status === 201) {
           this.fetchLogEntriesByPage(this.state.pageNum)
+          this.setState({
+            alertShown: true,
+            alertMessage: "Successfully created new log entry",
+            alertSeverity: "success"
+          })
         }
       })
       .catch((reason: any) => {
-        console.error(reason)
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to create log entry due to ${reason}`,
+          alertSeverity: "error"
+        })
       })
   }
   /**
@@ -220,7 +289,20 @@ export default class PracticeLog extends React.Component<Props, State> {
             break
           }
         }
-        this.setState({ logEntries: entries, viewLogEntry: updatedEntry })
+        this.setState({
+          logEntries: entries,
+          viewLogEntry: updatedEntry,
+          alertShown: true,
+          alertSeverity: "success",
+          alertMessage: `Successfully updated entry ${entry.id} assignments`
+        })
+      })
+      .catch((reason: any) => {
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to update log entry assignment due to ${reason}`,
+          alertSeverity: "error"
+        })
       })
   }
   /**
@@ -248,7 +330,20 @@ export default class PracticeLog extends React.Component<Props, State> {
             break
           }
         }
-        this.setState({ logEntries: entries, editLogEntry: updatedEntry })
+        this.setState({ 
+          logEntries: entries,
+          editLogEntry: updatedEntry,
+          alertShown: true,
+          alertSeverity: "success",
+          alertMessage: `Successfully updated entry ${entry.id}`
+        })
+      })
+      .catch((reason: any) => {
+        this.setState({
+          alertShown: true,
+          alertMessage: `Failed to update log entry due to ${reason}`,
+          alertSeverity: "error"
+        })
       })
   }
 
@@ -306,6 +401,11 @@ export default class PracticeLog extends React.Component<Props, State> {
         popoverAnchor: event.currentTarget 
       })
     }
+    const handleCloseAlert = (event?: React.SyntheticEvent, reason?: string) => {
+      if (reason !== 'clickaway') {
+        this.setState({alertShown: false});
+      }
+    };
 
     // Due to the lack of a Redux store, function to set states have to be passed around.
     // TODO Pass editLogEntry to LogAssignmentManagement
@@ -333,7 +433,16 @@ export default class PracticeLog extends React.Component<Props, State> {
           handleHTTPUpdateLogLabel={this.handleHTTPUpdateLogLabel}
           handleHTTPDeleteLogLabel={this.handleHTTPDeleteLogLabel}
           logLabels={this.state.logLabels} />
+        <Snackbar open={this.state.alertShown} autoHideDuration={6000} onClose={handleCloseAlert}>
+          <Alert onClose={handleCloseAlert} severity={this.state.alertSeverity}>
+            {this.state.alertMessage}
+          </Alert>
+        </Snackbar>
       </section>
     )
   }
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
