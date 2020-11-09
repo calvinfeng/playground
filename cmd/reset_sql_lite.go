@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/calvinfeng/playground/youtubeapi"
 	"os"
 	"strings"
+
+	"github.com/calvinfeng/playground/youtubeapi"
 
 	"github.com/calvinfeng/playground/data"
 	"github.com/calvinfeng/playground/datastore"
@@ -55,8 +56,9 @@ func seed() error {
 		logrus.Infof("successfully seeded database with %d records", numInserted)
 	}
 
+	logrus.Infof("starting YouTube API service with API key %s", os.Getenv("YOUTUBE_API_KEY"))
 	srv := youtubeapi.New(youtubeapi.Config{
-		APIKey: os.Getenv("GOOGLE_API_KEY"),
+		APIKey: os.Getenv("YOUTUBE_API_KEY"),
 	})
 
 	practiceRecordings, err := loadPracticeRecordings(srv)

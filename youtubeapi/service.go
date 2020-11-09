@@ -2,6 +2,7 @@ package youtubeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -65,6 +66,10 @@ func getPlaylistItems(resourceURL string) ([]PlaylistItem, string, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, "", err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, "", fmt.Errorf("response has error code %d: %s", resp.StatusCode, string(body))
 	}
 
 	var respPayload PlaylistItemResponse

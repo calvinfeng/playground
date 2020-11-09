@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+
 	"github.com/calvinfeng/playground/practicelog"
 	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/jmoiron/sqlx"
@@ -42,7 +43,7 @@ func timeSpentRunE(_ *cobra.Command, args []string) error {
 		labelIDs = append(labelIDs, label.ID.String())
 	}
 
-	entries, err := store.SelectLogEntries(100, 0, logstore.ByLabelIDs(labelIDs))
+	entries, err := store.SelectLogEntries(1000, 0, logstore.ByLabelIDs(labelIDs))
 	if err != nil {
 		return err
 	}
