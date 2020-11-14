@@ -23,7 +23,8 @@ export default function About() {
   const bio = (
     <section className="bio">
       <Card className="card">
-        <CardMedia image={process.env.PUBLIC_URL + '/img/snowy.jpg'} title="Staring Screen" className="media" />
+        <CardMedia image={process.env.PUBLIC_URL + '/img/nagano_snow_monkey_park.jpg'}
+          title="Nagano Snow Monkey Park" className="media" />
         <CardContent className="content">
           <Typography variant="h4">
             Introduction
@@ -34,10 +35,9 @@ export default function About() {
           <Typography variant="body2">
             I primarily work on the backend of fetchcore at Fetch Robotics. My work involves
             fleet management system, distributed robotic orchestration, real-time data streaming,
-            and big data collection from robots running in the wild. It sounds fancy but it is not
-            an overstatement. We have robotics engineers working on the individual intelligence of
-            robot. I work on the collective intelligence of robots and provide data-driven
-            solutions.
+            and big data collection from robots running in the wild. We have robotics engineers
+            working on the individual intelligence of robot. I work on the collective intelligence
+            of robots and provide data-driven solutions.
           </Typography>
         </CardContent>
       </Card>
@@ -118,7 +118,7 @@ export default function About() {
         title="Outside of Work"
         subheader="I enjoy shopping for guitars besides playing them." />
       <CardMedia
-        image={process.env.PUBLIC_URL + '/img/guitarshop.png'}
+        image={process.env.PUBLIC_URL + '/img/guitar_center.png'}
         title="At Guitar Center"
         className="media" />
     </Card>
@@ -140,13 +140,37 @@ export default function About() {
 
   const guitarPlaying = (
     <Card className="medium-card">
-    <CardHeader
-      title="Outside of Work"
-      subheader="It should be obvious now that I enjoy playing them" />
-    <CardMedia
-      image={process.env.PUBLIC_URL + '/img/playing.jpg'}
-      title="Playing Guitar"
-      className="media" />
+      <CardHeader
+        title="Outside of Work"
+        subheader="It should be obvious now that I enjoy playing them" />
+      <CardMedia
+        image={process.env.PUBLIC_URL + '/img/me_playing_acoustic_guitar.jpg'}
+        title="Playing Guitar"
+        className="media" />
+    </Card>
+  )
+
+  const lesPaul = (
+    <Card className="medium-card">
+      <CardHeader
+        title="My Guitars"
+        subheader="Gibson Les Paul Studio 2019" />
+      <CardMedia
+        image={process.env.PUBLIC_URL + '/img/les_paul_studio.jpg'}
+        title="Gibson Les Paul Studio"
+        className="media" />
+    </Card>
+  )
+
+  const prs = (
+    <Card className="medium-card">
+      <CardHeader
+        title="My Guitars"
+        subheader="PRS CE24 2020" />
+      <CardMedia
+        image={process.env.PUBLIC_URL + '/img/prs_ce24.jpg'}
+        title="PRS CE24"
+        className="media" />
     </Card>
   )
 
@@ -154,9 +178,11 @@ export default function About() {
     <section className="activities">
       <Grid container className="column" direction="column">
         <Grid container className="row" direction="row" spacing={1} justify="center" >
-          <Grid item>{guitarShopping}</Grid>
+          <Grid item>{lesPaul}</Grid>
+          <Grid item>{prs}</Grid>
+          {/* <Grid item>{guitarShopping}</Grid> */}
           {/* <Grid item>{guitarPlaying}</Grid> */}
-          <Grid item>{mountainDriving}</Grid>
+          {/* <Grid item>{mountainDriving}</Grid> */}
         </Grid>
       </Grid>
     </section>
@@ -169,7 +195,6 @@ export default function About() {
       {background}
       {quote2}
       {activities}
-      {quote3}
     </div>
   )
 }

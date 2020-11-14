@@ -21,13 +21,13 @@ export default function Timeline(props: Props) {
   // Given that videos update rate is pretty slow, I will just hard code the year and month values.
   return <div className="Timeline">
     <Card className="text-card">
-      <CardMedia image={process.env.PUBLIC_URL + '/img/acoustic-guitar.jpg'}
+      <CardMedia image={process.env.PUBLIC_URL + '/img/acoustic_guitar.jpg'}
         title="Random Guitar"
         className="media" />
       <CardContent className="content">
         <Typography variant="h4">Guitar Journey</Typography>
         <Typography variant="subtitle1" color="textSecondary" paragraph={true}>
-          A documentary of my learning progress from a beginner to intermediate player
+          A documentary of my learning progress from a beginner to an intermediate player
         </Typography>
         <Typography variant="body2" paragraph={true}>
           I was first exposed to guitar when I was around 16. As a teenager, I was lacking the
@@ -44,12 +44,13 @@ export default function Timeline(props: Props) {
           strictly at least one hour a day. I wanted to see how far can discipline get me. I
           decided to document my guitar playing. Every month I upload progress report
           video and practice recordings. The idea of a progress report is to track the development
-          of my techique. I use songs as a metric to test my skill level. If I am improving over
-          time, the songs I play will increase in fluidity, complexity and difficulty.
+          of my techique. I use songs as a metric to benchmark my skill level. If I am improving
+          over time, the songs I play will increase in fluidity, complexity and difficulty.
         </Typography>
       </CardContent>
     </Card>
     <VerticalTimeline animate={true}>
+      <PracticeRecordingElement year={2020} month={10} />
       <ProgressReportElement id={12} />
       <PracticeRecordingElement year={2020} month={9} />
       <ProgressReportElement id={11} />

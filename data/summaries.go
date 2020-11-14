@@ -107,9 +107,8 @@ var Summaries = []*datastore.MonthlySummary{
 		Title:    "The Final Countdown Part 2",
 		Subtitle: "Consistent and Persistent",
 		Body: `One month was simply not enough for me to develop the finger strength and dexterity for this song. I am
-		continuing my practicelog, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
-        Honestly, it's been getting quite repetitive. But I am definitely not giving up. If time is what it takes, so be
-		it.`,
+		continuing my practice, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
+        Honestly, it's been getting quite repetitive.`,
 	},
 	{
 		Year:     2020,
@@ -119,5 +118,15 @@ var Summaries = []*datastore.MonthlySummary{
 		Body: `The last 10% speed is ridiculously difficult. This is going to be my third month on The Final Countdown
 		solo. I am so determined to execute this song as flawless as possible at its original tempo. It's getting really
 		close.`,
+	},
+	{
+		Year:     2020,
+		Month:    10,
+		Title:    "The Final Countdown Part 4",
+		Subtitle: "Overcome the Final Hurdle",
+		Body: `I can play the arpeggio lick pretty reliably. The biggest hurdle is the Blues lick, mixing fast bending
+		into the fast passage. At 110 BPM, this is where my current limit lies. I probably will spend another month to
+		get to 117 BPM. In the meantime, I started working on November Rain's guitar solo. It is an easy solo but
+        the challenge is to get the notes ringing clean and pitch-perfect bending.`,
 	},
 }
