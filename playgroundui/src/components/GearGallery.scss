@@ -1,0 +1,19 @@
+.GearGallery {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem;
+  .grid-row {
+    margin-bottom: 1rem;
+    .portrait-card {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+    }
+    .landscape-card {
+      display: flex;
+      flex-direction: column;
+      max-width: 500px;
+    } 
+  }
+}

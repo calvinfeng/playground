@@ -28,6 +28,7 @@ import PracticeLog from './PracticeLog'
 import PracticeTimeProgress from './widgets/PracticeTimeProgress'
 import './App.scss'
 import { GoogleUserProfile } from './types';
+import GearGallery from './GearGallery';
 
 const clientID = "819013443672-rt8eomsr25jmkfej2odksjihsboduo6a.apps.googleusercontent.com"
 
@@ -93,9 +94,10 @@ function App() {
         anchorEl={anchorEl}
         anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
         <TimelineMenuItem />
-        <PracticeLogMenuItem />
+        <GearGalleryMenuItem />
         <AboutMenuItem />
         <FretboardMenuItem />
+        <PracticeLogMenuItem />
       </Menu>
     )
     routeSwitch = (
@@ -104,6 +106,7 @@ function App() {
         <Route path="/practicelog" exact component={PracticeLog} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
+        <Route path="/myguitars" exact component={GearGallery} />
       </Switch>
     )
   } else {
@@ -163,7 +166,8 @@ enum Path {
   Timeline = "/",
   About = "/about",
   Fretboard = "/fretboard",
-  PracticeLog = "/practicelog"
+  PracticeLog = "/practicelog",
+  MyGuitars ="/myguitars"
 }
 
 function TimelineMenuItem() {
@@ -222,6 +226,21 @@ function PracticeLogMenuItem() {
   return (
     <MenuItem onClick={handleClick} disabled={location.pathname === Path.PracticeLog}>
       Practice Log
+    </MenuItem>
+  );
+}
+
+function GearGalleryMenuItem() {
+  const history = useHistory()
+  const location = useLocation()
+
+  function handleClick() {
+    history.push(Path.MyGuitars);
+  }
+
+  return (
+    <MenuItem onClick={handleClick} disabled={location.pathname === Path.MyGuitars}>
+      My Gear
     </MenuItem>
   );
 }

@@ -156,6 +156,8 @@ export default function About() {
         title="My Guitars"
         subheader="Gibson Les Paul Studio 2019" />
       <CardMedia
+        component={"img"}
+        height={"800"}
         image={process.env.PUBLIC_URL + '/img/les_paul_studio.jpg'}
         title="Gibson Les Paul Studio"
         className="media" />
@@ -168,6 +170,8 @@ export default function About() {
         title="My Guitars"
         subheader="PRS CE24 2020" />
       <CardMedia
+        component="img"
+        height={"800"}
         image={process.env.PUBLIC_URL + '/img/prs_ce24.jpg'}
         title="PRS CE24"
         className="media" />
@@ -180,9 +184,9 @@ export default function About() {
         <Grid container className="row" direction="row" spacing={1} justify="center" >
           <Grid item>{lesPaul}</Grid>
           <Grid item>{prs}</Grid>
-          {/* <Grid item>{guitarShopping}</Grid> */}
-          {/* <Grid item>{guitarPlaying}</Grid> */}
-          {/* <Grid item>{mountainDriving}</Grid> */}
+          <Grid item>{guitarShopping}</Grid>
+          <Grid item>{guitarPlaying}</Grid>
+          <Grid item>{mountainDriving}</Grid>
         </Grid>
       </Grid>
     </section>
@@ -194,7 +198,6 @@ export default function About() {
       {quote1}
       {background}
       {quote2}
-      {activities}
     </div>
   )
 }
