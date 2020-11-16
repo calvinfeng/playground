@@ -17,6 +17,7 @@ COPY ./playgroundui .
 
 # Build JavaScripts
 RUN npm install
+RUN npm rebuild node-sass
 RUN npm run build
 
 FROM alpine:3.7 as deploy
