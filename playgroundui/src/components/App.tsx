@@ -103,10 +103,10 @@ function App() {
     routeSwitch = (
       <Switch>
         <Route path="/" exact component={Timeline} />
-        <Route path="/practicelog" exact component={PracticeLog} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
-        <Route path="/myguitars" exact component={GearGallery} />
+        <Route path="/mygear" exact component={GearGallery} />
+        <Route path="/practicelog" exact component={PracticeLog} />
       </Switch>
     )
   } else {
@@ -118,6 +118,7 @@ function App() {
         anchorEl={anchorEl}
         anchorOrigin={{"vertical": "bottom", "horizontal": "center"}} >
         <TimelineMenuItem />
+        <GearGalleryMenuItem />
         <AboutMenuItem />
         <FretboardMenuItem />
       </Menu>
@@ -127,6 +128,7 @@ function App() {
         <Route path="/" exact component={Timeline} />
         <Route path="/about" exact component={About} />
         <Route path="/fretboard" exact component={Fretboard} />
+        <Route path="/mygear" exact component={GearGallery} />
       </Switch>
     )
   }
@@ -167,7 +169,7 @@ enum Path {
   About = "/about",
   Fretboard = "/fretboard",
   PracticeLog = "/practicelog",
-  MyGuitars ="/myguitars"
+  MyGear ="/mygear"
 }
 
 function TimelineMenuItem() {
@@ -235,11 +237,11 @@ function GearGalleryMenuItem() {
   const location = useLocation()
 
   function handleClick() {
-    history.push(Path.MyGuitars);
+    history.push(Path.MyGear);
   }
 
   return (
-    <MenuItem onClick={handleClick} disabled={location.pathname === Path.MyGuitars}>
+    <MenuItem onClick={handleClick} disabled={location.pathname === Path.MyGear}>
       My Gear
     </MenuItem>
   );
