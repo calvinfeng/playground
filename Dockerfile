@@ -18,7 +18,7 @@ COPY ./playgroundui .
 # Build JavaScripts
 RUN npm install
 RUN npm rebuild node-sass
-RUN npm run build
+RUN REACT_APP_API_URL=http://calvin-playground.us-west-2.elasticbeanstalk.com npm run build
 
 FROM alpine:3.7 as deploy
 EXPOSE 8080
