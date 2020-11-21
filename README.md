@@ -14,7 +14,7 @@ docker build -t playground .
 docker run --rm -p 8080:8080 playground
 ```
 
-## Deployment
+## Deployment via AWS EB CLI
 
 I got my AWS credentials in root directory.
 
@@ -49,3 +49,13 @@ Since environment name is already inside the `.elasticbeanstalk` folder, I can j
 ```bash
 eb deploy
 ```
+
+## Deployment via Uploading Zip
+
+Create a zip using `git`.
+
+```bash
+git archive -v -o playground-v2020.11.21.zip --format=zip HEAD
+```
+
+Then upload it to Elastic Beanstalk.
