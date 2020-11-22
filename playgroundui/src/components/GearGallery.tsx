@@ -26,6 +26,21 @@ export default function GearGallery() {
           </Card>
         </Grid>
         <Grid item>
+          <Card className="portrait-card">
+            <CardMedia
+              component="img"
+              image={process.env.PUBLIC_URL + '/img/prs_ce24_body.jpg'}
+              className="media" />
+              <CardContent>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+                  convallis non nunc nec luctus. Nam at vulputate lorem, quis porttitor felis.
+                  Aliquam erat volutpat. Sed a neque lacus.
+                </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item>
           <Card className="landscape-card">
             <CardMedia
               component="img"
@@ -48,6 +63,51 @@ export default function GearGallery() {
           <Card className="portrait-card">
               <CardMedia
                 component="img"
+                image={process.env.PUBLIC_URL + '/img/strat.jpg'}
+                className="media" />
+              <CardHeader
+                title="Fender American Ultra Stratocaster 2020"
+                subheader="Plasma Red Burst, Alder Body with Bolt-on Maple Neck" />              
+          </Card>
+        </Grid>
+        <Grid item>
+          <Card className="portrait-card">
+              <CardMedia
+                component="img"
+                image={process.env.PUBLIC_URL + '/img/strat_body.jpg'}
+                className="media" />
+              <CardContent>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+                  convallis non nunc nec luctus. Nam at vulputate lorem, quis porttitor felis.
+                  Aliquam erat volutpat.
+                </Typography>
+              </CardContent>             
+          </Card>
+        </Grid>
+        <Grid item>
+          <Card className="landscape-card">
+              <CardMedia
+                component="img"
+                image={process.env.PUBLIC_URL + '/img/strat_controls.jpg'}
+                className="media" />
+              <CardContent>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+                  convallis non nunc nec luctus. Nam at vulputate lorem, quis porttitor felis.
+                  Aliquam erat volutpat. Sed a neque lacus. Integer justo sem, sollicitudin at
+                  interdum non, finibus vitae neque. Nulla sagittis vestibulum nisi, sed scelerisque
+                  sem molestie vitae. Nunc dignissim mollis tellus, ut hendrerit ipsum vulputate vel.
+                </Typography>
+              </CardContent>             
+          </Card>
+        </Grid>
+      </Grid>
+      <Grid container className="grid-row" direction="row" spacing={2} justify="center">
+        <Grid item>
+          <Card className="portrait-card">
+              <CardMedia
+                component="img"
                 image={process.env.PUBLIC_URL + '/img/les_paul_studio.jpg'}
                 className="media" />
               <CardHeader
@@ -60,6 +120,21 @@ export default function GearGallery() {
               <CardMedia
                 component="img"
                 image={process.env.PUBLIC_URL + '/img/les_paul_studio_body.jpg'}
+                className="media" />
+              <CardContent>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+                  convallis non nunc nec luctus. Nam at vulputate lorem, quis porttitor felis.
+                  Aliquam erat volutpat.
+                </Typography>
+              </CardContent>             
+          </Card>
+        </Grid>
+        <Grid item>
+          <Card className="landscape-card">
+              <CardMedia
+                component="img"
+                image={process.env.PUBLIC_URL + '/img/les_paul_studio_bridge.jpg'}
                 className="media" />
               <CardContent>
                 <Typography>
