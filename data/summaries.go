@@ -93,27 +93,27 @@ var Summaries = []*datastore.MonthlySummary{
 	{
 		Year:     2020,
 		Month:    7,
-		Title:    "The Final Countdown Part 1",
-		Subtitle: "The SpongeBob Solo and Microwave Commercial",
+		Title:    "The Final Countdown 1st Month",
+		Subtitle: "The AP Calculus Chant",
 		Body: `After working through Beyond's solos, I have the confidence to tackle my next favorite solo from the band 
 		Europe. This is the song we used to sing in AP Calculus before the class starts. I always thought this is 
 		the example of shredding. However, now I look at it. I think it's more of an introduction to shredding. It is a 
-		great opportunity to introduce myself to sweep picking. The Final Countdown solo has a mini sweep pick across 2 strings. 
-		This is not going to be easy but I am dead set on this goal.`,
+		great opportunity to introduce myself to sweep picking. The Final Countdown solo has a mini sweep pick across 2
+		strings. This is not going to be easy but I am dead set on this goal.`,
 	},
 	{
 		Year:     2020,
 		Month:    8,
-		Title:    "The Final Countdown Part 2",
+		Title:    "The Final Countdown 2nd Month",
 		Subtitle: "Consistent and Persistent",
 		Body: `One month was simply not enough for me to develop the finger strength and dexterity for this song. I am
 		continuing my practice, pushing from 100 beats per minute to the original tempo at 117 beats per minute. 
-        Honestly, it's been getting quite repetitive.`,
+        Honestly, the practice has been getting quite repetitive.`,
 	},
 	{
 		Year:     2020,
 		Month:    9,
-		Title:    "The Final Countdown Part 3",
+		Title:    "The Final Countdown 3rd Month",
 		Subtitle: "Keep Pushing",
 		Body: `The last 10% speed is ridiculously difficult. This is going to be my third month on The Final Countdown
 		solo. I am so determined to execute this song as flawless as possible at its original tempo. It's getting really
@@ -122,11 +122,23 @@ var Summaries = []*datastore.MonthlySummary{
 	{
 		Year:     2020,
 		Month:    10,
-		Title:    "The Final Countdown Part 4",
+		Title:    "The Final Countdown 4th Month",
 		Subtitle: "Overcome the Final Hurdle",
-		Body: `I can play the arpeggio lick pretty reliably. The biggest hurdle is the Blues lick, mixing fast bending
+		Body: `I can play the arpeggio lick reliably. The biggest hurdle is the Blues lick, mixing fast bending
 		into the fast passage. At 110 BPM, this is where my current limit lies. I probably will spend another month to
 		get to 117 BPM. In the meantime, I started working on November Rain's guitar solo. It is an easy solo but
-        the challenge is to get the notes ringing clean and pitch-perfect bending.`,
+        the challenge is to get the notes ringing clean and bend with pitch perfection.`,
+	},
+	{
+		Year:     2020,
+		Month:    11,
+		Title:    "The Final Countdown 5th Month",
+		Subtitle: "Nope I Need Another Month",
+		Body: `I thought this was the final month but nope. I practiced really hard during Thanksgiving break. But, I
+		simply couldn't execute the song with perfection. It seemed to me that I have developed the finger strength and
+		dexterity to perform it at 117 or 118 BPM, but my mind isn't connected to my fingers fluidly. Sometimes the
+		fingers listened and other times they didn't. The end results were that I had inconsistent result throughout the
+		recordings in November. On other hand, I am making good progress on November Rain. I will start uploading
+		November Rain recordings in December`,
 	},
 }

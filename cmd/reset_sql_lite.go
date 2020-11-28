@@ -20,6 +20,9 @@ import (
 
 var databaseFilePath = fmt.Sprintf("./%s.db", datastore.DatabaseName)
 
+const Landscape = "landscape"
+const Portrait = "portrait"
+
 // Reset the database, apply migrationsV1 and then seed it.
 func resetSQLiteRunE(_ *cobra.Command, _ []string) error {
 	if fileExists(databaseFilePath) {
@@ -136,14 +139,14 @@ func loadProgressRecordings(srv youtubeapi.Service) ([]*datastore.ProgressRecord
 			ID:               item.Snippet.Position,
 			Year:             int64(item.ContentDetails.Published.Year()),
 			Month:            int64(item.ContentDetails.Published.Month()),
-			VideoOrientation: data.Landscape,
+			VideoOrientation: Landscape,
 			YouTubeVideoID:   item.ContentDetails.VideoID,
 			Title:            item.Snippet.Title,
 			Description:      item.Snippet.Description,
 		}
 		// Optionally save thumbnail URL in the future
 		if strings.Contains(recording.Title, "AR 9:16") {
-			recording.VideoOrientation = data.Portrait
+			recording.VideoOrientation = Portrait
 		}
 		recordings = append(recordings, recording)
 	}
@@ -168,13 +171,13 @@ func loadPracticeRecordings(srv youtubeapi.Service) ([]*datastore.PracticeRecord
 			Year:             int64(item.ContentDetails.Published.Year()),
 			Month:            int64(item.ContentDetails.Published.Month()),
 			Day:              int64(item.ContentDetails.Published.Day()),
-			VideoOrientation: data.Landscape,
+			VideoOrientation: Landscape,
 			YouTubeVideoID:   item.ContentDetails.VideoID,
 			Title:            item.Snippet.Title,
 		}
 		// Optionally save thumbnail URL in the future
 		if strings.Contains(recording.Title, "AR 9:16") {
-			recording.VideoOrientation = data.Portrait
+			recording.VideoOrientation = Portrait
 		}
 		recordings = append(recordings, recording)
 	}
