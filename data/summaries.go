@@ -141,4 +141,12 @@ var Summaries = []*datastore.MonthlySummary{
 		recordings in November. On other hand, I am making good progress on November Rain. I will start uploading
 		November Rain recordings in December`,
 	},
+	{
+		Year:     2020,
+		Month:    12,
+		Title:    "The Final Countdown 6th Month",
+		Subtitle: "Mission Accomplished",
+		Body: `I finally pulled it off. Despite there are many areas to improve, I think I got the overall feel of the
+		song down. I can finally move onto new material in the upcoming new year. This is a big milestone for my progress!`,
+	},
 }

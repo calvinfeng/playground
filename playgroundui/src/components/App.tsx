@@ -148,16 +148,16 @@ function App() {
           </section>
           <section className="right-container">
             <Toolbar>
-              <GoogleLogin
+              {/* <GoogleLogin
                 disabled={process.env.NODE_ENV !== "development"}
                 clientId={clientID}
                 buttonText={"Login with Google"}
                 onSuccess={handleGoogleResponse}
-                onFailure={handleGoogleResponse} />
+                onFailure={handleGoogleResponse} /> */}
             </Toolbar>
           </section>
         </AppBar>
-        <PracticeTimeProgress />
+        {/* <PracticeTimeProgress /> */}
         {routeSwitch}
       </BrowserRouter>
     </div>
