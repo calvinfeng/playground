@@ -2,13 +2,10 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/calvinfeng/playground/practicelog/logstore"
 	"github.com/calvinfeng/playground/trelloapi"
 	"github.com/calvinfeng/playground/youtubeapi"
 	"github.com/futurenda/google-auth-id-token-verifier"
-	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"google.golang.org/api/oauth2/v2"
@@ -72,73 +69,6 @@ func testTrelloAPI() error {
 		}
 		logrus.Infof("%s %s %s with labels %s", card.ID, card.Name, card.Description, labelNames)
 	}
-	return nil
-}
-
-func testPracticeLogStoreUpdate() error {
-	pg, err := sqlx.Open("postgres", databaseAddress())
-	if err != nil {
-		return err
-	}
-
-	store := logstore.New(pg)
-
-	entries, err := store.SelectLogEntries(20, 0, logstore.ByID("6c9cbb07-9bd6-4cf0-9772-1c9e9753728a"))
-	if err != nil {
-		return err
-	}
-
-	if len(entries) != 1 {
-		return errors.New("entry not found")
-	}
-
-	target := entries[0]
-
-	logrus.Infof("target %s %s has %d labels", target.ID, target.Message, len(target.Labels))
-	for _, label := range target.Labels {
-		logrus.Info(label.Name)
-	}
-
-	if len(target.Labels) == 0 {
-		return errors.New("target entry has no labels")
-	}
-
-	logrus.Infof("removing label %s", target.Labels[0].Name)
-	target.Labels = target.Labels[1:]
-
-	if err := store.UpdateLogEntry(target); err != nil {
-		return err
-	}
-	return nil
-}
-
-func testPracticeLogStoreSelect() error {
-	pg, err := sqlx.Open("postgres", databaseAddress())
-	if err != nil {
-		return err
-	}
-
-	store := logstore.New(pg)
-
-	count, err := store.CountLogEntries(logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
-	if err != nil {
-		return err
-	}
-	logrus.Infof("database counted %d practicelog log entries", count)
-
-	entries, err := store.SelectLogEntries(100, 0, logstore.ByLabelIDs([]string{"a760477b-088d-4e59-a7f6-22601c4817d9"}))
-	if err != nil {
-		return err
-	}
-	logrus.Infof("query returned %d practicelog log entries", len(entries))
-
-	var dur int32
-	for _, entry := range entries {
-		logrus.Infof("entry %s %s %s", entry.ID, entry.Date.String(), entry.Message)
-		dur += entry.Duration
-	}
-	logrus.Infof("%d minutes spent", dur)
-
 	return nil
 }
 

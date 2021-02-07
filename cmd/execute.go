@@ -64,7 +64,7 @@ func Execute() {
 	root.AddCommand(
 		&cobra.Command{
 			Use:   "reset_sqlite",
-			Short: "legacy command to reset and reseed SQLite database",
+			Short: "reset and reseed SQLite database",
 			RunE:  resetSQLiteRunE,
 		},
 		&cobra.Command{
@@ -81,11 +81,6 @@ func Execute() {
 			Use:   "experiment",
 			Short: "experiment some basic backend logic",
 			RunE:  experimentRunE,
-		},
-		&cobra.Command{
-			Use:   "time_spent_on",
-			Short: "calculate the total time in minutes spent on a particular practicelog item",
-			RunE:  timeSpentRunE,
 		},
 	)
 

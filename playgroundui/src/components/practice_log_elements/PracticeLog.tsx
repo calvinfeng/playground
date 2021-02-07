@@ -3,7 +3,7 @@ import './PracticeLog.scss'
 import {
   LogEntryJSON,
   LogLabelJSON
-} from './types'
+} from '../types'
 import {
   Typography,
   Grid,
@@ -11,10 +11,10 @@ import {
   Snackbar,
 } from '@material-ui/core'
 import MuiAlert, { AlertProps, Color } from '@material-ui/lab/Alert';
-import LogTable from './practice_log_elements/LogTable'
-import LogEntryManagement from './practice_log_elements/LogEntryManagement'
-import LogLabelManagement from './practice_log_elements/LogLabelManagement'
-import AssignmentChecklistPopover from './practice_log_elements/AssignmentChecklistPopover'
+import LogTable from './LogTable'
+import LogEntryManagement from './LogEntryManagement'
+import LogLabelManagement from './LogLabelManagement'
+import AssignmentChecklistPopover from './AssignmentChecklistPopover'
 import axios, { AxiosInstance, AxiosResponse }  from 'axios'
 
 type Props = {}
@@ -144,7 +144,7 @@ export default class PracticeLog extends React.Component<Props, State> {
   }
   /**
    * This is a callback for child components to call to create a log label.
-   * @param label is the log label to submit to API for create. 
+   * @param label is the log label to submit to API for create.
    */
   handleHTTPCreateLogLabel = (label: LogLabelJSON) => {
     this.http.post(`/api/v2/practice/log/labels`, label)
@@ -165,10 +165,10 @@ export default class PracticeLog extends React.Component<Props, State> {
         alertSeverity: "error"
       })
     })
-  }  
+  }
   /**
    * This is a callback for child components to call to update a log label.
-   * @param label is the log label to submit to API for update. 
+   * @param label is the log label to submit to API for update.
    */
   handleHTTPUpdateLogLabel = (label: LogLabelJSON) => {
     this.http.put(`/api/v2/practice/log/labels/${label.id}`, label)
@@ -330,7 +330,7 @@ export default class PracticeLog extends React.Component<Props, State> {
             break
           }
         }
-        this.setState({ 
+        this.setState({
           logEntries: entries,
           editLogEntry: updatedEntry,
           alertShown: true,
@@ -364,7 +364,7 @@ export default class PracticeLog extends React.Component<Props, State> {
         </Grid>
       )
     }
-    
+
     if (this.state.hasNextPage) {
       items.push(
         <Grid item>
@@ -398,7 +398,7 @@ export default class PracticeLog extends React.Component<Props, State> {
     const handleSetLogEntryViewAndAnchorEl = (event: React.MouseEvent<HTMLButtonElement>, log: LogEntryJSON) => {
       this.setState({
         viewLogEntry: log,
-        popoverAnchor: event.currentTarget 
+        popoverAnchor: event.currentTarget
       })
     }
     const handleCloseAlert = (event?: React.SyntheticEvent, reason?: string) => {
@@ -411,21 +411,21 @@ export default class PracticeLog extends React.Component<Props, State> {
     // TODO Pass editLogEntry to LogAssignmentManagement
     return (
       <section className="PracticeLog">
-        <AssignmentChecklistPopover 
-          viewLogEntry={this.state.viewLogEntry} 
-          popoverAnchor={this.state.popoverAnchor} 
-          handleClearAssignment={handleClearPopoverAnchorEl} 
-          handleHTTPUpdateLogAssignments={this.handleHTTPUpdateLogAssignments} /> 
+        <AssignmentChecklistPopover
+          viewLogEntry={this.state.viewLogEntry}
+          popoverAnchor={this.state.popoverAnchor}
+          handleClearAssignment={handleClearPopoverAnchorEl}
+          handleHTTPUpdateLogAssignments={this.handleHTTPUpdateLogAssignments} />
         <LogTable
-          logEntries={this.state.logEntries} 
+          logEntries={this.state.logEntries}
           handleSetLogEntryViewAndAnchorEl={handleSetLogEntryViewAndAnchorEl}
           handleSetLogEntryEdit={handleSetLogEntryEdit}
           handleHTTPDeleteLogEntry={this.handleHTTPDeleteLogEntry} />
         {this.PaginationControlPanel}
         <LogEntryManagement
-          logLabels={this.state.logLabels} 
+          logLabels={this.state.logLabels}
           editLogEntry={this.state.editLogEntry}
-          handleClearEditLogEntry={handleClearLogEntryEdit} 
+          handleClearEditLogEntry={handleClearLogEntryEdit}
           handleHTTPUpdateLogEntry={this.handleHTTPUpdateLogEntry}
           handleHTTPCreateLogEntry={this.handleHTTPCreateLogEntry} />
         <LogLabelManagement

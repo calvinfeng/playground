@@ -149,4 +149,13 @@ var Summaries = []*datastore.MonthlySummary{
 		Body: `I finally pulled it off. Despite there are many areas to improve, I think I got the overall feel of the
 		song down. I can finally move onto new material in the upcoming new year. This is a big milestone for my progress!`,
 	},
+	{
+		Year:     2021,
+		Month:    1,
+		Title:    "November Rain",
+		Subtitle: "Melodic Solo",
+		Body: `Soon I will need a little break from Rock solo. However I have been working November Rain for some time now.
+		I might as well finish the recording for it. I want to re-visit acoustic technique and rhythm playing. I should also
+		work on general music theory and arrangement.`,
+	},
 }

@@ -42,7 +42,7 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
   }
 
   componentDidMount() {
-    this.http.get('/api/v1/practicelog/recordings/', {
+    this.http.get('/api/v1/practice/recordings/', {
       params: {
         year: this.props.year,
         month: this.props.month
@@ -72,11 +72,11 @@ export default class PracticeRecordingElement extends React.Component<Props, Sta
     if (this.state.videos.length > 0) {
       date = `${this.state.videos[0].month}, ${this.props.year}`
     }
-  
+
     let textContainer = (
       <div className="text-container"></div>
     )
-    
+
     if (this.state.summary !== null) {
       textContainer = (
         <div className="text-container">
@@ -115,7 +115,7 @@ type VideoPopoverProps = {
 
 function VideoPopover(props: VideoPopoverProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -161,7 +161,7 @@ function VideoPopover(props: VideoPopoverProps) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Paper className={className}>
-          <ReactPlayer 
+          <ReactPlayer
             url={`https://www.youtube.com/watch?v=${props.video.youtube_video_id}`}
             width={width}
             height={height}

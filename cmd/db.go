@@ -45,8 +45,6 @@ func databaseRunE(_ *cobra.Command, args []string) error {
 			logrus.Infof("successfully migrated database to version %d, dirty=%v", version, dirty)
 		}
 		return nil
-	case "seed":
-		return seedDB()
 	default:
 		return fmt.Errorf("%s is not a recognized command", args[0])
 	}
