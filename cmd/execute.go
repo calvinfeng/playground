@@ -73,13 +73,8 @@ func Execute() {
 			RunE:  serveRunE,
 		},
 		&cobra.Command{
-			Use:   "db",
-			Short: "manage database",
-			RunE:  databaseRunE,
-		},
-		&cobra.Command{
 			Use:   "experiment",
-			Short: "experiment some basic backend logic",
+			Short: "experiment with some basic backend logic",
 			RunE:  experimentRunE,
 		},
 	)

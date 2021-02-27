@@ -34,4 +34,4 @@ COPY --from=gobuild /go/src/playground/blog.db .
 COPY --from=gobuild /go/src/playground/conf ./conf
 COPY --from=nodebuild /home/node/playgroundui/build ./playgroundui/build
 
-CMD ["./playground", "--config", "production", "serve"]
+CMD ["./playground", "--config", "elasticbeanstalk", "serve"]

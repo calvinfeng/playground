@@ -1,5 +1,4 @@
-[features]
-v2_endpoint_enabled = false
+environment="elasticbeanstalk"
 
 [postgresql]
 hostname = ""

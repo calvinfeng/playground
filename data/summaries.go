@@ -158,4 +158,14 @@ var Summaries = []*datastore.MonthlySummary{
 		I might as well finish the recording for it. I want to re-visit acoustic technique and rhythm playing. I should also
 		work on general music theory and arrangement.`,
 	},
+	{
+		Year:     2021,
+		Month:    2,
+		Title:    "Wonderful Tonight",
+		Subtitle: "Revisit old song and improve upon it",
+		Body: `I did Wonderful Tonight a year ago. I think this is a good time to revisit the old song and see if I have
+        improved as a guitar player. I will try to focus more on harmony and layering. I also want to learn Eric Clapton's
+		live solo by ear. The original solo is kind of boring because it repeats the same intro licks and phrases. I bought
+        Logic Pro earlier this month. It is a lot better than GarageBand. There is a ton to learn about mixing in general.`,
+	},
 }
