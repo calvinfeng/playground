@@ -1,5 +1,8 @@
 environment="elasticbeanstalk"
 
+[http]
+port = 8080
+
 [postgresql]
 hostname = ""
 port = 0

@@ -33,6 +33,9 @@ func initViper() {
 	try(viper.BindEnv("postgresql.password", "RDS_PASSWORD"))
 	try(viper.BindEnv("postgresql.ssl_mode", "RDS_SSL_MODE"))
 
+	// Heroku Deployment
+	try(viper.BindEnv("http.port", "PORT"))
+
 	if err := viper.ReadInConfig(); err != nil {
 		logrus.Fatal(err)
 	}

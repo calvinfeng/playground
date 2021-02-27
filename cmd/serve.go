@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/spf13/viper"
 	"net/http"
 	"os"
 
@@ -50,6 +52,6 @@ func serveRunE(_ *cobra.Command, _ []string) error {
 		TrelloBoardID:  "woq8deqm", // This is Guitar Practice 2020. I might need multiple boards in 2021.
 	}))
 
-	logrus.Infof("http server is listening on 8080")
-	return e.Start(":8080")
+	logrus.Infof("http server is listening on %s", viper.GetString("http.port"))
+	return e.Start(fmt.Sprintf(":%s", viper.GetString("http.port")))
 }
