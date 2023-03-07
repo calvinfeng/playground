@@ -29,7 +29,7 @@
     "react-katex": "^2.0.2",
     "react-player": "^1.15.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "react-vertical-timeline-component": "^2.6.0",
     "typescript": "^3.7.5"
   },
